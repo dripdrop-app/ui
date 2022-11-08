@@ -16,6 +16,7 @@ import {
 	Dialog,
 	DialogTitle,
 	DialogContent,
+	Tooltip,
 } from '@mui/material';
 import { Close, MenuOpen } from '@mui/icons-material';
 import { useYoutubeVideosQuery } from '../../api/youtube';
@@ -58,14 +59,16 @@ const VideoQueueModal = (props: VideoQueueModalProps) => {
 	return useMemo(
 		() => (
 			<Box>
-				<Button
-					variant="contained"
-					sx={{ borderRadius: 0 }}
-					onClick={() => setOpenModal(true)}
-					startIcon={<MenuOpen />}
-				>
-					Queue
-				</Button>
+				<Tooltip title="Show Queue" placement="left">
+					<Button
+						variant="contained"
+						sx={{ borderRadius: 0 }}
+						onClick={() => setOpenModal(true)}
+						startIcon={<MenuOpen />}
+					>
+						Queue
+					</Button>
+				</Tooltip>
 				<Dialog open={openModal} onClose={() => setOpenModal(false)} fullWidth maxWidth="md">
 					<DialogTitle>
 						<Stack direction="row" alignItems="center" justifyContent="space-between">

@@ -13,6 +13,7 @@ import {
 	Stack,
 	SxProps,
 	Theme,
+	Tooltip,
 	Typography,
 } from '@mui/material';
 import { Category, Close } from '@mui/icons-material';
@@ -69,19 +70,21 @@ const CategorySelect = (props: CategorySelectProps) => {
 	return useMemo(
 		() => (
 			<Box>
-				<Button
-					sx={sx}
-					variant="contained"
-					startIcon={<Category />}
-					onClick={() => {
-						if (currentCategories) {
-							setSelectedCategories(currentCategories);
-						}
-						setOpenModal(true);
-					}}
-				>
-					Categories
-				</Button>
+				<Tooltip title="Select Categories" placement="top">
+					<Button
+						sx={sx}
+						variant="contained"
+						startIcon={<Category />}
+						onClick={() => {
+							if (currentCategories) {
+								setSelectedCategories(currentCategories);
+							}
+							setOpenModal(true);
+						}}
+					>
+						Categories
+					</Button>
+				</Tooltip>
 				<Dialog open={openModal} onClose={() => setOpenModal(false)} scroll="paper" fullWidth maxWidth="md">
 					<DialogTitle>
 						<Stack direction="row" alignItems="center" justifyContent="space-between">
