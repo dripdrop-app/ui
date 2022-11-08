@@ -1,5 +1,5 @@
 import { useMemo, useRef } from 'react';
-import { Box, CircularProgress, Divider, Grid, Stack, Typography } from '@mui/material';
+import { Box, CircularProgress, Divider, Grid, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useYoutubeVideoQuery } from '../api/youtube';
 import VideoCard from '../components/Youtube/VideoCard';
 import YoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
@@ -11,9 +11,12 @@ interface YoutubeVideoProps {
 }
 
 const YoutubeVideo = (props: YoutubeVideoProps) => {
-	const videoStatus = useYoutubeVideoQuery({ videoId: props.id, relatedLength: 4 });
-
 	const ref = useRef<HTMLDivElement>(null);
+
+	const theme = useTheme();
+	const isLarge = useMediaQuery(theme.breakpoints.up('xl'));
+
+	const videoStatus = useYoutubeVideoQuery({ videoId: props.id, relatedLength: isLarge ? 6 : 4 });
 
 	const video = useMemo(() => videoStatus.data?.video, [videoStatus.data?.video]);
 	const relatedVideos = useMemo(() => videoStatus.data?.relatedVideos, [videoStatus.data?.relatedVideos]);
