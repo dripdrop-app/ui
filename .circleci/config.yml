@@ -16,11 +16,8 @@ jobs:
           name: Copy Client to VM Build Directory
           command: scp -o StrictHostKeyChecking=no -vr ./build $SSH_USER@$SSH_HOST:~
       - run:
-          name: Copy Web Deploy Script to VM
-          command: scp -o StrictHostKeyChecking=no -v ./scripts/web_deploy.sh $SSH_USER@$SSH_HOST:~
-      - run:
-          name: Deploy Over SSH
-          command: ssh -o StrictHostKeyChecking=no -v $SSH_USER@$SSH_HOST "chmod +x ./web_deploy.sh && ./web_deploy.sh"
+          name: Update Web on Server
+          command: ssh -o StrictHostKeyChecking=no -v $SSH_USER@$SSH_HOST "\cp -r $HOME/build $HOME/dripdrop"
 
 workflows:
   version: 2
