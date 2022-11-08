@@ -12,9 +12,6 @@ jobs:
       - run:
           name: Create Build Directory on VM
           command: ssh -o StrictHostKeyChecking=no -v $SSH_USER@$SSH_HOST "mkdir -p ~/build"
-      - run:
-          name: Copy Client to VM Build Directory
-          command: scp -o StrictHostKeyChecking=no -vr ./build $SSH_USER@$SSH_HOST:/dripdrop
 
 workflows:
   version: 2
