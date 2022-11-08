@@ -2,6 +2,7 @@
 
 mkdir -p build
 \cp -r $HOME/build $HOME/dripdrop
-docker compose build --progress plain server 
-docker compose down server
-docker compose up server -d
+cd $HOME/dripdrop
+docker compose -f docker-compose.yml build --progress plain
+docker compose -f docker-compose.yml down
+docker compose -f docker-compose.yml up -d
