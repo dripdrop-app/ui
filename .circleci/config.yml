@@ -14,10 +14,7 @@ jobs:
           command: ssh -o StrictHostKeyChecking=no -v $SSH_USER@$SSH_HOST "mkdir -p ~/build"
       - run:
           name: Copy Client to VM Build Directory
-          command: scp -o StrictHostKeyChecking=no -vr ./build $SSH_USER@$SSH_HOST:~
-      - run:
-          name: Update Web on Server
-          command: ssh -o StrictHostKeyChecking=no -v $SSH_USER@$SSH_HOST "\cp -r $HOME/build $HOME/dripdrop"
+          command: scp -o StrictHostKeyChecking=no -vr ./build $SSH_USER@$SSH_HOST:/dripdrop
 
 workflows:
   version: 2
