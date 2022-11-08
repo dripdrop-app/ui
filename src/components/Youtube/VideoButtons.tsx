@@ -25,14 +25,16 @@ export const VideoLikeButton = (props: VideoButtonsProps) => {
 
 	return useMemo(
 		() => (
-			<IconButton
-				disabled={loading}
-				onClick={() => (video.liked ? unLikeVideo(video.id) : likeVideo(video.id))}
-				color={video.liked ? 'success' : 'default'}
-			>
-				<CircularProgress sx={{ display: loading ? 'block' : 'none' }} />
-				<ThumbUp sx={{ display: !loading ? 'block' : 'none' }} />
-			</IconButton>
+			<Tooltip title={video.liked ? 'Remove Like' : 'Like Video'}>
+				<IconButton
+					disabled={loading}
+					onClick={() => (video.liked ? unLikeVideo(video.id) : likeVideo(video.id))}
+					color={video.liked ? 'success' : 'default'}
+				>
+					<CircularProgress sx={{ display: loading ? 'block' : 'none' }} />
+					<ThumbUp sx={{ display: !loading ? 'block' : 'none' }} />
+				</IconButton>
+			</Tooltip>
 		),
 		[likeVideo, loading, unLikeVideo, video.id, video.liked]
 	);
@@ -51,15 +53,17 @@ export const VideoQueueButton = (props: VideoButtonsProps) => {
 
 	return useMemo(
 		() => (
-			<IconButton
-				disabled={loading}
-				onClick={() => (video.queued ? unQueueVideo(video.id) : queueVideo(video.id))}
-				color={video.queued ? 'error' : 'inherit'}
-			>
-				<CircularProgress sx={{ display: loading ? 'block' : 'none' }} />
-				<AddToQueue sx={{ display: video.queued && !loading ? 'none' : 'block' }} />
-				<RemoveFromQueue color="error" sx={{ display: video.queued && !loading ? 'block' : 'none' }} />
-			</IconButton>
+			<Tooltip title={video.queued ? 'Unqueue Video' : 'Queue Video'}>
+				<IconButton
+					disabled={loading}
+					onClick={() => (video.queued ? unQueueVideo(video.id) : queueVideo(video.id))}
+					color={video.queued ? 'error' : 'inherit'}
+				>
+					<CircularProgress sx={{ display: loading ? 'block' : 'none' }} />
+					<AddToQueue sx={{ display: video.queued && !loading ? 'none' : 'block' }} />
+					<RemoveFromQueue color="error" sx={{ display: video.queued && !loading ? 'block' : 'none' }} />
+				</IconButton>
+			</Tooltip>
 		),
 		[loading, queueVideo, unQueueVideo, video.id, video.queued]
 	);
