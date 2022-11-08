@@ -10,17 +10,17 @@ jobs:
           name: Install Client Dependencies and Build
           command: npm install && NODE_ENV=production npm run build
       - run:
-          name: Create Server App Directory
+          name: Create Build Directory on VM
           command: ssh -o StrictHostKeyChecking=no -v $SSH_USER@$SSH_HOST "mkdir -p ~/build"
       - run:
-          name: Copy Client to Server
+          name: Copy Client to VM Build Directory
           command: 'scp -vr ./build $SSH_USER@$SSH_HOST:~'
       - run:
-          name: Copy Deploy Script to Server
-          command: scp -v ./scripts/deploy.sh $SSH_USER@$SSH_HOST:~
+          name: Copy Web Deploy Script to VM
+          command: scp -v ./scripts/web_deploy.sh $SSH_USER@$SSH_HOST:~
       - run:
           name: Deploy Over SSH
-          command: ssh -o StrictHostKeyChecking=no -v $SSH_USER@$SSH_HOST "chmod +x ./deploy.sh && ./deploy.sh"
+          command: ssh -o StrictHostKeyChecking=no -v $SSH_USER@$SSH_HOST "chmod +x ./web_deploy.sh && ./web_deploy.sh"
 
 workflows:
   version: 2
