@@ -1,0 +1,19 @@
+version: '2.4'
+name: dripdrop-ui
+services:
+  web:
+    container_name: web
+    restart: always
+    volumes:
+      - ./:/src
+    env_file: .env
+    build:
+      dockerfile: dockerfiles/Dockerfile.dev.web
+    ports:
+      - $PORT:$PORT
+    networks:
+      - dripdrop
+
+networks:
+  dripdrop:
+    external: true

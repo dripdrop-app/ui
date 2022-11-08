@@ -1,0 +1,32 @@
+version: 2
+
+jobs:
+  build and deploy:
+    docker:
+      - image: node
+    steps:
+      - checkout
+      - run:
+          name: Install Client Dependencies and Build
+          command: npm install && NODE_ENV=production npm run build
+      - run:
+          name: Create Server App Directory
+          command: ssh -o StrictHostKeyChecking=no -v $SSH_USER@$SSH_HOST "mkdir -p ~/build"
+      - run:
+          name: Copy Client to Server
+          command: 'scp -vr ./build $SSH_USER@$SSH_HOST:~'
+      - run:
+          name: Copy Deploy Script to Server
+          command: scp -v ./scripts/deploy.sh $SSH_USER@$SSH_HOST:~
+      - run:
+          name: Deploy Over SSH
+          command: ssh -o StrictHostKeyChecking=no -v $SSH_USER@$SSH_HOST "chmod +x ./deploy.sh && ./deploy.sh"
+
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - build and deploy:
+          filters:
+            branches:
+              only: main # only deploy on the main branch
