@@ -3,17 +3,21 @@ import api from '.';
 const youtubeApi = api.injectEndpoints({
 	endpoints: (build) => ({
 		checkYoutubeAuth: build.query<YoutubeAuthState, void>({
-			query: () => ({ url: '/youtube/account' }),
-			providesTags: ['YoutubeAuth'],
+			query: () => ({ url: '/youtube/account', method: Methods.GET }),
+			providesTags: [Tags.YOUTUBE_AUTH],
 		}),
 		getOauthLink: build.query<string, void>({
-			query: () => ({ url: '/youtube/oauth', responseHandler: (response) => response.text() }),
+			query: () => ({ url: '/youtube/oauth', method: Methods.GET, responseHandler: (response) => response.text() }),
 		}),
 		youtubeVideoCategories: build.query<YoutubeVideoCategoriesResponse, ChannelBody>({
-			query: ({ channelId }) => ({ url: '/youtube/videos/categories', params: { channel_id: channelId } }),
+			query: ({ channelId }) => ({
+				url: '/youtube/videos/categories',
+				method: Methods.GET,
+				params: { channel_id: channelId },
+			}),
 			providesTags: (result) => {
 				if (result) {
-					return result.categories.map((category) => ({ type: 'YoutubeVideoCategory', id: category.id }));
+					return result.categories.map((category) => ({ type: Tags.YOUTUBE_VIDEO_CATEGORY, id: category.id }));
 				}
 				return [];
 			},
@@ -21,12 +25,13 @@ const youtubeApi = api.injectEndpoints({
 		youtubeVideo: build.query<YoutubeVideoResponse, YoutubeVideoBody>({
 			query: ({ videoId, relatedLength }) => ({
 				url: '/youtube/videos',
+				method: Methods.GET,
 				params: { video_id: videoId, related_videos_length: relatedLength },
 			}),
 			providesTags: (result) => {
 				if (result) {
-					return [{ type: 'YoutubeVideo', id: result.video.id }].concat(
-						result.relatedVideos.map((video) => ({ type: 'YoutubeVideo', id: video.id }))
+					return [{ type: Tags.YOUTUBE_VIDEO, id: result.video.id }].concat(
+						result.relatedVideos.map((video) => ({ type: Tags.YOUTUBE_VIDEO, id: video.id }))
 					);
 				}
 				return [];
@@ -35,6 +40,7 @@ const youtubeApi = api.injectEndpoints({
 		youtubeVideos: build.query<YoutubeVideosResponse, YoutubeVideosBody>({
 			query: ({ perPage, page, channelId, selectedCategories, likedOnly, queuedOnly }) => ({
 				url: `/youtube/videos/${page}/${perPage}`,
+				method: Methods.GET,
 				params: {
 					channel_id: channelId,
 					video_categories: selectedCategories.length === 0 ? undefined : selectedCategories,
@@ -46,12 +52,12 @@ const youtubeApi = api.injectEndpoints({
 				if (result) {
 					const tags = [];
 					if (args.likedOnly) {
-						tags.push({ type: 'YoutubeVideoLike' });
+						tags.push({ type: Tags.YOUTUBE_VIDEO_LIKE });
 					}
 					if (args.queuedOnly) {
-						tags.push({ type: 'YoutubeVideoQueue' });
+						tags.push({ type: Tags.YOUTUBE_VIDEO_QUEUE });
 					}
-					return tags.concat(result.videos.map((video) => ({ type: 'YoutubeVideo', id: video.id })));
+					return tags.concat(result.videos.map((video) => ({ type: Tags.YOUTUBE_VIDEO, id: video.id })));
 				}
 				return [];
 			},
@@ -59,20 +65,21 @@ const youtubeApi = api.injectEndpoints({
 		youtubeSubscriptions: build.query<YoutubeSubscriptionsResponse, YoutubeSubscriptionBody>({
 			query: ({ perPage, page, channelId }) => ({
 				url: `/youtube/subscriptions/${page}/${perPage}`,
+				method: Methods.GET,
 				params: { channel_id: channelId },
 			}),
 			providesTags: (result) => {
 				if (result) {
-					return result.subscriptions.map((subscription) => ({ type: 'YoutubeSubscription', id: subscription.id }));
+					return result.subscriptions.map((subscription) => ({ type: Tags.YOUTUBE_SUBSCRIPTION, id: subscription.id }));
 				}
 				return [];
 			},
 		}),
 		addYoutubeVideoLike: build.mutation<undefined, string>({
-			query: (videoId) => ({ url: `/youtube/videos/like`, params: { video_id: videoId }, method: 'PUT' }),
+			query: (videoId) => ({ url: `/youtube/videos/like`, params: { video_id: videoId }, method: Methods.PUT }),
 			invalidatesTags: (result, error, videoId) => {
 				if (!error) {
-					return [{ type: 'YoutubeVideo', id: videoId }, { type: 'YoutubeVideoLike' }];
+					return [{ type: Tags.YOUTUBE_VIDEO_LIKE, id: videoId }, { type: Tags.YOUTUBE_VIDEO_LIKE }];
 				}
 				return [];
 			},
@@ -81,11 +88,11 @@ const youtubeApi = api.injectEndpoints({
 			query: (videoId) => ({
 				url: `/youtube/videos/like`,
 				params: { video_id: videoId },
-				method: 'DELETE',
+				method: Methods.DELETE,
 			}),
 			invalidatesTags: (result, error, videoId) => {
 				if (!error) {
-					return [{ type: 'YoutubeVideo', id: videoId }, { type: 'YoutubeVideoLike' }];
+					return [{ type: Tags.YOUTUBE_VIDEO, id: videoId }, { type: Tags.YOUTUBE_VIDEO_LIKE }];
 				}
 				return [];
 			},
@@ -94,14 +101,14 @@ const youtubeApi = api.injectEndpoints({
 			query: (videoId) => ({
 				url: `/youtube/videos/queue`,
 				params: { video_id: videoId },
-				method: 'PUT',
+				method: Methods.PUT,
 			}),
 			invalidatesTags: (result, error, videoId) => {
 				if (!error) {
 					return [
-						{ type: 'YoutubeVideo', id: videoId },
-						{ type: 'YoutubeVideoQueue' },
-						{ type: 'YoutubeVideoQueueIndex' },
+						{ type: Tags.YOUTUBE_VIDEO, id: videoId },
+						{ type: Tags.YOUTUBE_VIDEO_QUEUE },
+						{ type: Tags.YOUTUBE_VIDEO_QUEUE_INDEX },
 					];
 				}
 				return [];
@@ -111,14 +118,14 @@ const youtubeApi = api.injectEndpoints({
 			query: (videoId) => ({
 				url: `/youtube/videos/queue`,
 				params: { video_id: videoId },
-				method: 'DELETE',
+				method: Methods.DELETE,
 			}),
 			invalidatesTags: (result, error, videoId) => {
 				if (!error) {
 					return [
-						{ type: 'YoutubeVideo', id: videoId },
-						{ type: 'YoutubeVideoQueue' },
-						{ type: 'YoutubeVideoQueueIndex' },
+						{ type: Tags.YOUTUBE_VIDEO, id: videoId },
+						{ type: Tags.YOUTUBE_VIDEO_QUEUE },
+						{ type: Tags.YOUTUBE_VIDEO_QUEUE_INDEX },
 					];
 				}
 				return [];
@@ -128,30 +135,30 @@ const youtubeApi = api.injectEndpoints({
 			query: (videoId) => ({
 				url: `/youtube/videos/watch`,
 				params: { video_id: videoId },
-				method: 'PUT',
+				method: Methods.PUT,
 			}),
 			invalidatesTags: (result, error, videoId) => {
 				if (!error) {
-					return [{ type: 'YoutubeVideo', id: videoId }];
+					return [{ type: Tags.YOUTUBE_VIDEO, id: videoId }];
 				}
 				return [];
 			},
 		}),
 		youtubeVideoQueue: build.query<YoutubeVideoQueueResponse, number>({
-			query: (index) => ({ url: `/youtube/videos/queue`, params: { index }, method: 'GET' }),
+			query: (index) => ({ url: `/youtube/videos/queue`, params: { index }, method: Methods.GET }),
 			providesTags: (result) => {
-				const tags = [{ type: 'YoutubeVideoQueueIndex' }] as any[];
+				const tags = [{ type: Tags.YOUTUBE_VIDEO_QUEUE_INDEX }] as any[];
 				if (result) {
-					tags.push({ type: 'YoutubeVideo', id: result.currentVideo.id });
+					tags.push({ type: Tags.YOUTUBE_VIDEO, id: result.currentVideo.id });
 				}
 				return tags;
 			},
 		}),
 		youtubeChannel: build.query<YoutubeChannel, string>({
-			query: (channelID) => ({ url: '/youtube/channels', params: { channel_id: channelID }, method: 'GET' }),
+			query: (channelID) => ({ url: '/youtube/channels', params: { channel_id: channelID }, method: Methods.GET }),
 			providesTags: (result) => {
 				if (result) {
-					return [{ type: 'YoutubeChannel', id: result.id }];
+					return [{ type: Tags.YOUTUBE_CHANNEL, id: result.id }];
 				}
 				return [];
 			},

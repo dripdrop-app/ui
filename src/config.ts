@@ -1,5 +1,7 @@
 const isProd = process.env.NODE_ENV === 'production';
-const protocol = isProd ? 'wss' : 'ws';
-const server_domain = isProd ? window.location.host : 'localhost:5000';
+const webSocketProtocol = isProd ? 'wss' : 'ws';
+const httpProtocol = isProd ? 'https' : 'http';
+const serverDomain = isProd ? window.location.host : process.env.SERVER_URL;
 
-export const buildWebsocketURL = (endpoint: string) => `${protocol}://${server_domain}/api${endpoint}`;
+export const buildURL = (endpoint: string) => `${httpProtocol}://${serverDomain}/${endpoint}`;
+export const buildWebsocketURL = (endpoint: string) => `${webSocketProtocol}://${serverDomain}/api/${endpoint}`;

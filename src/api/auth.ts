@@ -5,20 +5,21 @@ const authApi = api.injectEndpoints({
 		checkSession: build.query<User, void>({
 			query: () => ({
 				url: '/auth/session',
+				method: Methods.GET,
 			}),
-			providesTags: ['User'],
+			providesTags: [Tags.USER],
 		}),
 		create: build.mutation<undefined, LoginBody>({
 			query: ({ email, password }) => ({
 				url: '/auth/create',
-				method: 'POST',
+				method: Methods.POST,
 				body: { email, password },
 			}),
 		}),
 		login: build.mutation<User, LoginBody>({
 			query: ({ email, password }) => ({
 				url: '/auth/login',
-				method: 'POST',
+				method: Methods.POST,
 				body: { email, password },
 			}),
 			invalidatesTags: (result, error, args) => (!error ? tags : []),
@@ -26,6 +27,7 @@ const authApi = api.injectEndpoints({
 		logout: build.mutation<undefined, void>({
 			query: () => ({
 				url: '/auth/logout',
+				method: Methods.GET,
 			}),
 			invalidatesTags: (result, error) => (!error ? tags : []),
 		}),

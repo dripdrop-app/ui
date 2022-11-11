@@ -1,6 +1,7 @@
 import { BaseQueryApi } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
 import { FetchBaseQueryArgs } from '@reduxjs/toolkit/dist/query/fetchBaseQuery';
 import { createApi, fetchBaseQuery, FetchArgs } from '@reduxjs/toolkit/query/react';
+import { buildURL } from '../config';
 
 export const errorParser = (error: ErrorResponse | undefined) => {
 	if (error && error.detail) {
@@ -40,24 +41,24 @@ const customBaseQuery = (options?: FetchBaseQueryArgs) => {
 };
 
 export const tags = [
-	'User',
-	'MusicJob',
-	'YoutubeAuth',
-	'YoutubeVideo',
-	'YoutubeVideoCategory',
-	'YoutubeVideoQueue',
-	'YoutubeVideoQueueIndex',
-	'YoutubeVideoLike',
-	'YoutubeSubscription',
-	'YoutubeChannel',
-	'MusicGrouping',
-	'MusicArtwork',
-	'MusicTags',
-	'MusicDownload',
+	Tags.USER,
+	Tags.MUSIC_ARTWORK,
+	Tags.MUSIC_DOWNLOAD,
+	Tags.MUSIC_GROUPING,
+	Tags.MUSIC_JOB,
+	Tags.MUSIC_TAGS,
+	Tags.YOUTUBE_AUTH,
+	Tags.YOUTUBE_CHANNEL,
+	Tags.YOUTUBE_SUBSCRIPTION,
+	Tags.YOUTUBE_VIDEO,
+	Tags.YOUTUBE_VIDEO_CATEGORY,
+	Tags.YOUTUBE_VIDEO_QUEUE_INDEX,
+	Tags.YOUTUBE_VIDEO_QUEUE,
+	Tags.YOUTUBE_VIDEO_LIKE,
 ];
 
 const api = createApi({
-	baseQuery: customBaseQuery({ baseUrl: '/api' }),
+	baseQuery: customBaseQuery({ baseUrl: buildURL('api') }),
 	tagTypes: tags,
 	endpoints: (build) => ({}),
 });

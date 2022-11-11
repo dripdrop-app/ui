@@ -4,25 +4,25 @@ import { buildWebsocketURL } from '../config';
 const musicApi = api.injectEndpoints({
 	endpoints: (build) => ({
 		grouping: build.query<GroupingResponse, string>({
-			query: (youtubeUrl) => ({ url: `/music/grouping`, params: { youtube_url: youtubeUrl } }),
-			providesTags: ['MusicGrouping'],
+			query: (youtubeUrl) => ({ url: `/music/grouping`, method: Methods.GET, params: { youtube_url: youtubeUrl } }),
+			providesTags: [Tags.MUSIC_GROUPING],
 		}),
 		artwork: build.query<Artwork, string>({
-			query: (artworkUrl) => ({ url: `/music/artwork`, params: { artwork_url: artworkUrl } }),
-			providesTags: ['MusicArtwork'],
+			query: (artworkUrl) => ({ url: `/music/artwork`, method: Methods.GET, params: { artwork_url: artworkUrl } }),
+			providesTags: [Tags.MUSIC_ARTWORK],
 		}),
 		tags: build.query<TagsResponse, File>({
 			query: (file) => {
 				const formData = new FormData();
 				formData.append('file', file);
-				return { url: '/music/tags', method: 'POST', body: formData };
+				return { url: '/music/tags', method: Methods.POST, body: formData };
 			},
-			providesTags: ['MusicTags'],
+			providesTags: [Tags.MUSIC_TAGS],
 		}),
 		jobs: build.query<JobsResponse, PageBody>({
-			query: ({ page, perPage }) => `/music/jobs/${page}/${perPage}`,
+			query: ({ page, perPage }) => ({ url: `/music/jobs/${page}/${perPage}`, method: Methods.GET }),
 			onCacheEntryAdded: async (args, { cacheDataLoaded, cacheEntryRemoved, dispatch }) => {
-				const url = buildWebsocketURL('/music/jobs/listen');
+				const url = buildWebsocketURL('music/jobs/listen');
 				const ws = new WebSocket(url);
 				try {
 					await cacheDataLoaded;
@@ -30,9 +30,9 @@ const musicApi = api.injectEndpoints({
 						const json = JSON.parse(event.data);
 						const type = json.type;
 						if (type === 'STARTED') {
-							dispatch(musicApi.util.invalidateTags(['MusicJob']));
+							dispatch(musicApi.util.invalidateTags([Tags.MUSIC_JOB]));
 						} else if (type === 'COMPLETED') {
-							dispatch(musicApi.util.invalidateTags([{ type: 'MusicJob', id: json.job.id }]));
+							dispatch(musicApi.util.invalidateTags([{ type: Tags.MUSIC_JOB, id: json.job.id }]));
 						}
 					};
 				} finally {
@@ -43,20 +43,20 @@ const musicApi = api.injectEndpoints({
 			providesTags: (result) => {
 				if (result) {
 					const { jobs } = result;
-					return jobs.map((job) => ({ type: 'MusicJob', id: job.id }));
+					return jobs.map((job) => ({ type: Tags.MUSIC_JOB, id: job.id }));
 				}
-				return ['MusicJob'];
+				return [Tags.MUSIC_JOB];
 			},
 		}),
 		removeJob: build.mutation<undefined, string>({
 			query: (jobId) => ({
 				url: `/music/jobs/delete`,
 				params: { job_id: jobId },
-				method: 'DELETE',
+				method: Methods.GET,
 			}),
 			invalidatesTags: (result, error, jobId) => {
 				if (!error) {
-					return [{ type: 'MusicJob', id: jobId }];
+					return [{ type: Tags.MUSIC_JOB, id: jobId }];
 				}
 				return [];
 			},
@@ -72,7 +72,7 @@ const musicApi = api.injectEndpoints({
 				if (args.grouping) {
 					formData.append('grouping', args.grouping);
 				}
-				return { url: '/music/jobs/create/file', method: 'POST', body: formData };
+				return { url: '/music/jobs/create/file', method: Methods.POST, body: formData };
 			},
 		}),
 		createYoutubeJob: build.query<undefined, CreateYoutubeJobBody>({
@@ -86,7 +86,7 @@ const musicApi = api.injectEndpoints({
 				if (args.grouping) {
 					formData.append('grouping', args.grouping);
 				}
-				return { url: '/music/jobs/create/youtube', method: 'POST', body: formData };
+				return { url: '/music/jobs/create/youtube', method: Methods.POST, body: formData };
 			},
 		}),
 	}),
