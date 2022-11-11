@@ -3,6 +3,30 @@ import { FetchBaseQueryArgs } from '@reduxjs/toolkit/dist/query/fetchBaseQuery';
 import { createApi, fetchBaseQuery, FetchArgs } from '@reduxjs/toolkit/query/react';
 import { buildURL } from '../config';
 
+export const Methods = {
+	POST: 'POST',
+	GET: 'GET',
+	DELETE: 'DELETE',
+	PUT: 'PUT',
+};
+
+export const Tags = {
+	USER: 'User',
+	MUSIC_JOB: 'MusicJob',
+	MUSIC_GROUPING: 'MusicGrouping',
+	MUSIC_ARTWORK: 'MusicArtwork',
+	MUSIC_TAGS: 'MusicTags',
+	MUSIC_DOWNLOAD: 'MusicDownload',
+	YOUTUBE_AUTH: 'YoutubeAuth',
+	YOUTUBE_VIDEO: 'YoutubeVideo',
+	YOUTUBE_VIDEO_CATEGORY: 'YoutubeVideoCategory',
+	YOUTUBE_VIDEO_QUEUE: 'YoutubeVideoQueue',
+	YOUTUBE_VIDEO_QUEUE_INDEX: 'YoutubeVideoQueueIndex',
+	YOUTUBE_SUBSCRIPTION: 'YoutubeSubscription',
+	YOUTUBE_CHANNEL: 'YoutubeChannel',
+	YOUTUBE_VIDEO_LIKE: 'YoutubeVideoLike',
+};
+
 export const errorParser = (error: ErrorResponse | undefined) => {
 	if (error && error.detail) {
 		if (typeof error.detail === 'string') {
@@ -58,7 +82,7 @@ export const tags = [
 ];
 
 const api = createApi({
-	baseQuery: customBaseQuery({ baseUrl: buildURL('api') }),
+	baseQuery: customBaseQuery({ baseUrl: buildURL('api'), credentials: 'include' }),
 	tagTypes: tags,
 	endpoints: (build) => ({}),
 });

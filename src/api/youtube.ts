@@ -1,4 +1,4 @@
-import api from '.';
+import api, { Tags, Methods } from '.';
 
 const youtubeApi = api.injectEndpoints({
 	endpoints: (build) => ({

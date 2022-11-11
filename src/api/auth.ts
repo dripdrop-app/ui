@@ -1,4 +1,4 @@
-import api, { tags } from '.';
+import api, { tags, Tags, Methods } from '.';
 
 const authApi = api.injectEndpoints({
 	endpoints: (build) => ({
