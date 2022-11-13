@@ -23,9 +23,11 @@ export const VideoLikeButton = (props: VideoButtonsProps) => {
 		[likeVideoStatus.isLoading, unLikeVideoStatus.isLoading]
 	);
 
+	const likedDate = video.liked ? new Date(video.liked).toLocaleDateString() : '';
+
 	return useMemo(
 		() => (
-			<Tooltip title={video.liked ? 'Remove Like' : 'Like Video'}>
+			<Tooltip title={video.liked ? `Liked on ${likedDate}` : 'Like Video'}>
 				<IconButton
 					disabled={loading}
 					onClick={() => (video.liked ? unLikeVideo(video.id) : likeVideo(video.id))}
@@ -36,7 +38,7 @@ export const VideoLikeButton = (props: VideoButtonsProps) => {
 				</IconButton>
 			</Tooltip>
 		),
-		[likeVideo, loading, unLikeVideo, video.id, video.liked]
+		[likeVideo, likedDate, loading, unLikeVideo, video.id, video.liked]
 	);
 };
 
