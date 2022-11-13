@@ -9,20 +9,21 @@ const authApi = api.injectEndpoints({
 			}),
 			providesTags: [Tags.USER],
 		}),
-		create: build.mutation<undefined, LoginBody>({
+		create: build.mutation<AuthenticatedResponse, LoginBody>({
 			query: ({ email, password }) => ({
 				url: '/auth/create',
 				method: Methods.POST,
 				body: { email, password },
 			}),
+			invalidatesTags: (result) => (result ? tags : []),
 		}),
-		login: build.mutation<User, LoginBody>({
+		login: build.mutation<AuthenticatedResponse, LoginBody>({
 			query: ({ email, password }) => ({
 				url: '/auth/login',
 				method: Methods.POST,
 				body: { email, password },
 			}),
-			invalidatesTags: (result, error, args) => (!error ? tags : []),
+			invalidatesTags: (result) => (result ? tags : []),
 		}),
 		logout: build.mutation<undefined, void>({
 			query: () => ({

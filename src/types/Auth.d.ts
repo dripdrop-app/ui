@@ -3,6 +3,12 @@ interface User {
 	admin: boolean;
 }
 
+interface AuthenticatedResponse {
+	access_token: string;
+	token_type: string;
+	user: User;
+}
+
 interface LoginBody {
 	email: string;
 	password: string;

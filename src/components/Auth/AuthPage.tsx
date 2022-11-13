@@ -3,6 +3,7 @@ import { Stack, Alert, Button, Container, Tab, Tabs, TextField, IconButton, Circ
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useLoginMutation, useCreateMutation, useCheckSessionQuery } from '../../api/auth';
 import { isFetchBaseQueryError } from '../../utils/helpers';
+import { LoadingButton } from '@mui/lab';
 
 interface AuthWrapperProps extends ComponentProps<'div'> {
 	unAuthenticatedRender: () => JSX.Element;
@@ -36,12 +37,12 @@ export const AuthWrapper = (props: AuthWrapperProps) => {
 
 interface AuthFormProps {
 	error?: string | null;
-	notice?: string | null;
+	loading: boolean;
 	onSubmit: (email: string, password: string) => void;
 }
 
 const AuthForm = (props: AuthFormProps) => {
-	const { error, notice, onSubmit } = props;
+	const { error, loading, onSubmit } = props;
 
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -51,7 +52,6 @@ const AuthForm = (props: AuthFormProps) => {
 		() => (
 			<Container>
 				<Stack direction="column" spacing={2}>
-					{notice ? <Alert severity="info">{notice}</Alert> : null}
 					{error ? <Alert severity="error">{error}</Alert> : null}
 					<TextField type="email" label="Email" value={email} onChange={(e) => setEmail(e.target.value)} fullWidth />
 					<TextField
@@ -70,9 +70,9 @@ const AuthForm = (props: AuthFormProps) => {
 						}}
 					/>
 					<Stack direction="row" spacing={2}>
-						<Button variant="contained" onClick={() => onSubmit(email, password)}>
+						<LoadingButton variant="contained" loading={loading} onClick={() => onSubmit(email, password)}>
 							Submit
-						</Button>
+						</LoadingButton>
 						<Button
 							variant="contained"
 							onClick={() => {
@@ -86,7 +86,7 @@ const AuthForm = (props: AuthFormProps) => {
 				</Stack>
 			</Container>
 		),
-		[email, error, notice, onSubmit, password, showPassword]
+		[email, error, loading, onSubmit, password, showPassword]
 	);
 };
 
@@ -118,13 +118,6 @@ const AuthPage = (props: ComponentProps<'div'>) => {
 		return null;
 	}, [createStatus.error, createStatus.isError]);
 
-	const createNotice = useMemo(() => {
-		if (createStatus.isSuccess) {
-			return 'Account successfully created. You can login to your account now.';
-		}
-		return null;
-	}, [createStatus.isSuccess]);
-
 	const onSubmitForm = useCallback(
 		(email: string, password: string) => {
 			if (tab === 0) {
@@ -134,6 +127,11 @@ const AuthPage = (props: ComponentProps<'div'>) => {
 			}
 		},
 		[tab, login, create]
+	);
+
+	const loading = useMemo(
+		() => loginStatus.isLoading || createStatus.isLoading,
+		[createStatus.isLoading, loginStatus.isLoading]
 	);
 
 	return useMemo(() => {
@@ -146,8 +144,8 @@ const AuthPage = (props: ComponentProps<'div'>) => {
 							<Tab label="Sign up" onClick={() => setTab(1)} />
 						</Tabs>
 						<Stack direction="column" paddingY={4}>
-							{tab === 0 ? <AuthForm error={loginError} onSubmit={onSubmitForm} /> : null}
-							{tab === 1 ? <AuthForm error={createError} notice={createNotice} onSubmit={onSubmitForm} /> : null}
+							{tab === 0 ? <AuthForm loading={loading} error={loginError} onSubmit={onSubmitForm} /> : null}
+							{tab === 1 ? <AuthForm loading={loading} error={createError} onSubmit={onSubmitForm} /> : null}
 						</Stack>
 					</Container>
 				)}
@@ -155,7 +153,7 @@ const AuthPage = (props: ComponentProps<'div'>) => {
 				{props.children}
 			</AuthWrapper>
 		);
-	}, [createError, createNotice, loginError, onSubmitForm, props.children, tab]);
+	}, [createError, loading, loginError, onSubmitForm, props.children, tab]);
 };
 
 export default AuthPage;
