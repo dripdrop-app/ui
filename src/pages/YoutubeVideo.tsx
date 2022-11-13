@@ -25,11 +25,7 @@ const YoutubeVideo = (props: YoutubeVideoProps) => {
 		() => (
 			<YoutubeAuthPage>
 				<Box ref={ref}>
-					<Stack
-						direction="row"
-						justifyContent="center"
-						display={videoStatus.isLoading || videoStatus.isFetching ? 'block' : 'none'}
-					>
+					<Stack direction="row" justifyContent="center" display={videoStatus.isLoading ? 'block' : 'none'}>
 						<CircularProgress />
 					</Stack>
 					{videoStatus.isError ? (
@@ -63,7 +59,7 @@ const YoutubeVideo = (props: YoutubeVideoProps) => {
 				</Box>
 			</YoutubeAuthPage>
 		),
-		[relatedVideos, video, videoStatus.isError, videoStatus.isFetching, videoStatus.isLoading]
+		[relatedVideos, video, videoStatus.isError, videoStatus.isLoading]
 	);
 };
 
