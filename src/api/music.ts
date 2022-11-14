@@ -43,7 +43,9 @@ const musicApi = api.injectEndpoints({
 			providesTags: (result) => {
 				if (result) {
 					const { jobs } = result;
-					return jobs.map((job) => ({ type: Tags.MUSIC_JOB, id: job.id }));
+					if (jobs.length > 0) {
+						return jobs.map((job) => ({ type: Tags.MUSIC_JOB, id: job.id }));
+					}
 				}
 				return [Tags.MUSIC_JOB];
 			},
@@ -52,7 +54,7 @@ const musicApi = api.injectEndpoints({
 			query: (jobId) => ({
 				url: `/music/jobs/delete`,
 				params: { job_id: jobId },
-				method: Methods.GET,
+				method: Methods.DELETE,
 			}),
 			invalidatesTags: (result, error, jobId) => {
 				if (!error) {
