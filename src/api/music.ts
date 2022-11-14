@@ -65,7 +65,7 @@ const musicApi = api.injectEndpoints({
 			query: (args) => {
 				const formData = new FormData();
 				formData.append('file', args.file);
-				formData.append('artworkUrl', args.artworkUrl);
+				formData.append('artwork_url', args.artworkUrl);
 				formData.append('title', args.title);
 				formData.append('artist', args.artist);
 				formData.append('album', args.album);
@@ -78,8 +78,8 @@ const musicApi = api.injectEndpoints({
 		createYoutubeJob: build.query<undefined, CreateYoutubeJobBody>({
 			query: (args) => {
 				const formData = new FormData();
-				formData.append('youtubeUrl', args.youtubeUrl);
-				formData.append('artworkUrl', args.artworkUrl);
+				formData.append('youtube_url', args.youtubeUrl);
+				formData.append('artwork_url', args.artworkUrl);
 				formData.append('title', args.title);
 				formData.append('artist', args.artist);
 				formData.append('album', args.album);
