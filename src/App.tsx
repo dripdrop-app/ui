@@ -54,7 +54,8 @@ const AppShell = (props: ComponentProps<any>) => {
 				observer.unobserve(list);
 			}
 		};
-	}, [isSmall]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [window.innerWidth]);
 
 	const ListItems = useMemo(() => {
 		const items = {

@@ -20,11 +20,8 @@ export const Tags = {
 	YOUTUBE_AUTH: 'YoutubeAuth',
 	YOUTUBE_VIDEO: 'YoutubeVideo',
 	YOUTUBE_VIDEO_CATEGORY: 'YoutubeVideoCategory',
-	YOUTUBE_VIDEO_QUEUE: 'YoutubeVideoQueue',
-	YOUTUBE_VIDEO_QUEUE_INDEX: 'YoutubeVideoQueueIndex',
 	YOUTUBE_SUBSCRIPTION: 'YoutubeSubscription',
 	YOUTUBE_CHANNEL: 'YoutubeChannel',
-	YOUTUBE_VIDEO_LIKE: 'YoutubeVideoLike',
 };
 
 export const errorParser = (error: ErrorResponse | undefined) => {
@@ -76,9 +73,6 @@ export const tags = [
 	Tags.YOUTUBE_SUBSCRIPTION,
 	Tags.YOUTUBE_VIDEO,
 	Tags.YOUTUBE_VIDEO_CATEGORY,
-	Tags.YOUTUBE_VIDEO_QUEUE_INDEX,
-	Tags.YOUTUBE_VIDEO_QUEUE,
-	Tags.YOUTUBE_VIDEO_LIKE,
 ];
 
 const api = createApi({

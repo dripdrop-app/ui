@@ -50,14 +50,7 @@ const youtubeApi = api.injectEndpoints({
 			}),
 			providesTags: (result, error, args) => {
 				if (result) {
-					const tags = [];
-					if (args.likedOnly) {
-						tags.push({ type: Tags.YOUTUBE_VIDEO_LIKE });
-					}
-					if (args.queuedOnly) {
-						tags.push({ type: Tags.YOUTUBE_VIDEO_QUEUE });
-					}
-					return tags.concat(result.videos.map((video) => ({ type: Tags.YOUTUBE_VIDEO, id: video.id })));
+					return result.videos.map((video) => ({ type: Tags.YOUTUBE_VIDEO, id: video.id }));
 				}
 				return [];
 			},
@@ -79,7 +72,7 @@ const youtubeApi = api.injectEndpoints({
 			query: (videoId) => ({ url: `/youtube/videos/like`, params: { video_id: videoId }, method: Methods.PUT }),
 			invalidatesTags: (result, error, videoId) => {
 				if (!error) {
-					return [{ type: Tags.YOUTUBE_VIDEO, id: videoId }, { type: Tags.YOUTUBE_VIDEO_LIKE }];
+					return [{ type: Tags.YOUTUBE_VIDEO, id: videoId }];
 				}
 				return [];
 			},
@@ -105,11 +98,7 @@ const youtubeApi = api.injectEndpoints({
 			}),
 			invalidatesTags: (result, error, videoId) => {
 				if (!error) {
-					return [
-						{ type: Tags.YOUTUBE_VIDEO, id: videoId },
-						{ type: Tags.YOUTUBE_VIDEO_QUEUE },
-						{ type: Tags.YOUTUBE_VIDEO_QUEUE_INDEX },
-					];
+					return [{ type: Tags.YOUTUBE_VIDEO, id: videoId }];
 				}
 				return [];
 			},
@@ -143,11 +132,10 @@ const youtubeApi = api.injectEndpoints({
 		youtubeVideoQueue: build.query<YoutubeVideoQueueResponse, number>({
 			query: (index) => ({ url: `/youtube/videos/queue`, params: { index }, method: Methods.GET }),
 			providesTags: (result) => {
-				const tags = [{ type: Tags.YOUTUBE_VIDEO_QUEUE_INDEX }] as any[];
 				if (result) {
-					tags.push({ type: Tags.YOUTUBE_VIDEO, id: result.currentVideo.id });
+					return [{ type: Tags.YOUTUBE_VIDEO, id: result.currentVideo.id }];
 				}
-				return tags;
+				return [];
 			},
 		}),
 		youtubeChannel: build.query<YoutubeChannel, string>({

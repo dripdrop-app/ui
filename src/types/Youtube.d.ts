@@ -84,6 +84,7 @@ type YoutubeSubscriptionBody = ChannelBody & PageBody;
 
 interface YoutubeSubscriptionsResponse {
 	subscriptions: YoutubeSubscription[];
+	totalPages: number;
 }
 
 interface YoutubeVideoQueueResponse {
