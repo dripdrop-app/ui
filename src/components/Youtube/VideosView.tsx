@@ -1,7 +1,8 @@
-import { useMemo, useRef, useEffect, useCallback, useState } from 'react';
+import { useMemo, useEffect, useCallback, useState } from 'react';
 import { Box, Checkbox, CircularProgress, FormControlLabel, Grid, Stack } from '@mui/material';
 import { useYoutubeVideosQuery } from '../../api/youtube';
-import { useObject } from '../../utils/useObject';
+import useObject from '../../utils/useObject';
+import useFillHeight from '../../utils/useFillHeight';
 import InfiniteScroll from '../InfiniteScroll';
 import YoutubeVideosPage from './VideosPage';
 import YoutubeVideoCard from './VideoCard';
@@ -12,10 +13,9 @@ interface VideosViewProps {
 }
 
 const VideosView = (props: VideosViewProps) => {
-	const [rootHeight, setRootHeight] = useState<number | undefined>(undefined);
-	const rootRef = useRef<HTMLDivElement | null>(null);
 	const [endReached, setEndReached] = useState(false);
 
+	const { elementHeight: rootHeight, ref: rootRef } = useFillHeight(window.innerHeight * 0.05);
 	const { object: filter, setObject: setFilter } = useObject<YoutubeVideosBody>({
 		selectedCategories: [],
 		page: 1,
@@ -41,26 +41,10 @@ const VideosView = (props: VideosViewProps) => {
 		}
 	}, [filter.page, videosStatus.currentData, videosStatus.isSuccess]);
 
-	useEffect(() => {
-		const observer = new ResizeObserver((entries) => {
-			for (const entry of entries) {
-				const element = entry.target;
-				const rect = element.getBoundingClientRect();
-				setRootHeight(window.innerHeight - rect.top - window.innerHeight * 0.05);
-			}
-		});
-		if (rootRef.current) {
-			const root = rootRef.current;
-			observer.observe(root);
-			return () => observer.unobserve(root);
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [window.innerHeight]);
-
 	return useMemo(
 		() => (
 			<Box>
-				<Stack direction="row" justifyContent="space-between" paddingX={2} paddingBottom={1} flexWrap="wrap">
+				<Stack direction="row" justifyContent="space-between" paddingBottom={1} flexWrap="wrap">
 					<FormControlLabel
 						control={
 							<Checkbox
@@ -115,6 +99,7 @@ const VideosView = (props: VideosViewProps) => {
 			filter.perPage,
 			filter.queuedOnly,
 			filter.channelId,
+			rootRef,
 			rootHeight,
 			onEndReached,
 			setFilter,

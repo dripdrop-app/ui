@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
 	List,
 	ListItem,
@@ -26,11 +27,10 @@ import VideosPage from './VideosPage';
 interface VideoQueueModalProps {
 	currentVideo: YoutubeVideo | null;
 	queueIndex: number;
-	setQueueIndex: (newIndex: number) => void;
 }
 
 const VideoQueueModal = (props: VideoQueueModalProps) => {
-	const { currentVideo, queueIndex, setQueueIndex } = props;
+	const { currentVideo, queueIndex } = props;
 
 	const [openModal, setOpenModal] = useState(false);
 	const [filter, setFilter] = useState<YoutubeVideosBody>({
@@ -39,6 +39,8 @@ const VideoQueueModal = (props: VideoQueueModalProps) => {
 		queuedOnly: true,
 		selectedCategories: [],
 	});
+
+	const history = useHistory();
 
 	const videosStatus = useYoutubeVideosQuery(filter);
 
@@ -100,27 +102,25 @@ const VideoQueueModal = (props: VideoQueueModalProps) => {
 										sx={{
 											backgroundColor: (theme) => (video.id === currentVideo?.id ? theme.palette.primary.main : ''),
 										}}
+										alignItems="flex-start"
+										secondaryAction={<VideoQueueButton video={video} />}
+										disablePadding
 									>
 										<ListItemButton
 											onClick={() => {
-												setQueueIndex((filter.page - 1) * filter.perPage + index + 1);
+												history.push(`/youtube/videos/queue/${index + 1 + filter.perPage * (filter.page - 1)}`);
 												setOpenModal(false);
 											}}
 										>
-											<Stack direction="row" alignItems="center">
-												<ListItemAvatar>
-													<Avatar alt={video.title} src={video.thumbnail} />
-												</ListItemAvatar>
-												<Stack direction="column">
-													<ListItemText primary={video.title} secondary={video.channelTitle} />
-													<ListItemText
-														sx={{ display: video.id === currentVideo?.id ? 'block' : 'none' }}
-														primary="Now Playing"
-													/>
-												</Stack>
-											</Stack>
+											<ListItemAvatar>
+												<Avatar alt={video.title} src={video.thumbnail} />
+											</ListItemAvatar>
+											<ListItemText primary={video.title} secondary={video.channelTitle} />
+											<ListItemText
+												sx={{ display: video.id === currentVideo?.id ? 'block' : 'none' }}
+												primary="Now Playing"
+											/>
 										</ListItemButton>
-										<VideoQueueButton video={video} />
 									</ListItem>
 								)}
 								renderLoading={() => (
@@ -150,8 +150,8 @@ const VideoQueueModal = (props: VideoQueueModalProps) => {
 			filter.queuedOnly,
 			filter.selectedCategories,
 			totalPages,
-			currentVideo,
-			setQueueIndex,
+			currentVideo?.id,
+			history,
 		]
 	);
 };

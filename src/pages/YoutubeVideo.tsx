@@ -1,21 +1,21 @@
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import { Box, CircularProgress, Divider, Grid, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useYoutubeVideoQuery } from '../api/youtube';
 import VideoCard from '../components/Youtube/VideoCard';
 import YoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
 import VideoInformation from '../components/Youtube/VideoInformation';
 import VideoPlayer from '../components/Youtube/VideoPlayer';
+import useFillHeight from '../utils/useFillHeight';
 
 interface YoutubeVideoProps {
 	id: string;
 }
 
 const YoutubeVideo = (props: YoutubeVideoProps) => {
-	const ref = useRef<HTMLDivElement>(null);
-
 	const theme = useTheme();
 	const isLarge = useMediaQuery(theme.breakpoints.up('xl'));
 
+	const { elementHeight: rootHeight, ref: rootRef } = useFillHeight(window.innerHeight * 0.1);
 	const videoStatus = useYoutubeVideoQuery({ videoId: props.id, relatedLength: isLarge ? 6 : 4 });
 
 	const video = useMemo(() => videoStatus.data?.video, [videoStatus.data?.video]);
@@ -24,7 +24,7 @@ const YoutubeVideo = (props: YoutubeVideoProps) => {
 	return useMemo(
 		() => (
 			<YoutubeAuthPage>
-				<Box ref={ref}>
+				<Box ref={rootRef}>
 					<Stack direction="row" justifyContent="center" display={videoStatus.isLoading ? 'block' : 'none'}>
 						<CircularProgress />
 					</Stack>
@@ -37,7 +37,7 @@ const YoutubeVideo = (props: YoutubeVideoProps) => {
 					)}
 					{video && relatedVideos ? (
 						<Stack direction="column" spacing={2}>
-							<Box height="70vh">
+							<Box height={rootHeight}>
 								<VideoPlayer video={video} />
 							</Box>
 							<VideoInformation video={video} />
@@ -59,7 +59,7 @@ const YoutubeVideo = (props: YoutubeVideoProps) => {
 				</Box>
 			</YoutubeAuthPage>
 		),
-		[relatedVideos, video, videoStatus.isError, videoStatus.isLoading]
+		[relatedVideos, rootHeight, rootRef, video, videoStatus.isError, videoStatus.isLoading]
 	);
 };
 

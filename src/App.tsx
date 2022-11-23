@@ -72,7 +72,7 @@ const AppShell = (props: ComponentProps<any>) => {
 				icon: Subscriptions,
 			},
 			Queue: {
-				link: '/youtube/videos/queue',
+				link: '/youtube/videos/queue/1',
 				icon: Queue,
 			},
 			Account: {
@@ -166,9 +166,12 @@ const App = () => {
 				<Switch>
 					<Route path="/youtube/channel/:id" render={(props) => <YoutubeChannel channelId={props.match.params.id} />} />
 					<Route path="/youtube/subscriptions" render={() => <YoutubeSubscriptions />} />
-					<Route path="/youtube/videos/queue" render={(props) => <YoutubeVideoQueue />} />
-					<Route path="/youtube/video/:id" render={(props) => <YoutubeVideo id={props.match.params.id} />} />
+					<Route
+						path="/youtube/videos/queue/:index"
+						render={(props) => <YoutubeVideoQueue index={parseInt(props.match.params.index)} />}
+					/>
 					<Route path="/youtube/videos" render={() => <YoutubeVideos />} />
+					<Route path="/youtube/video/:id" render={(props) => <YoutubeVideo id={props.match.params.id} />} />
 					<Route path="/music/downloader" render={() => <MusicDownloader />} />
 					<Route path="/account" render={() => <Account />} />
 					<Route path="/" render={() => <MusicDownloader />} />

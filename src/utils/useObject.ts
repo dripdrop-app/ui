@@ -24,7 +24,7 @@ const reducer = <T>(state: T, action: Action<T>) => {
 	return state;
 };
 
-export const useObject = <T>(object: T) => {
+const useObject = <T>(object: T) => {
 	const [objectState, dispatch] = useReducer<Reducer<T, Action<T>>>(reducer, object);
 
 	const setObject = useCallback(
@@ -37,3 +37,5 @@ export const useObject = <T>(object: T) => {
 		setObject,
 	};
 };
+
+export default useObject;

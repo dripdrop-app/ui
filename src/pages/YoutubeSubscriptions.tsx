@@ -1,17 +1,17 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { CircularProgress, Divider, Grid, Stack, Typography, Box } from '@mui/material';
 import { useYoutubeSubscriptionsQuery } from '../api/youtube';
-import { useObject } from '../utils/useObject';
+import useObject from '../utils/useObject';
+import useFillHeight from '../utils/useFillHeight';
 import InfiniteScroll from '../components/InfiniteScroll';
 import SubscriptionsPage from '../components/Youtube/SubscriptionsPage';
 import SubscriptionCard from '../components/Youtube/SubscriptionCard';
 import YoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
 
 const YoutubeSubscriptions = () => {
-	const [rootHeight, setRootHeight] = useState<number | undefined>(undefined);
-	const rootRef = useRef<HTMLDivElement | null>(null);
 	const [endReached, setEndReached] = useState(false);
 
+	const { elementHeight: rootHeight, ref: rootRef } = useFillHeight(window.innerHeight * 0.05);
 	const { object: filter, setObject: setFilter } = useObject<YoutubeSubscriptionBody>({
 		page: 1,
 		perPage: 48,
@@ -33,22 +33,6 @@ const YoutubeSubscriptions = () => {
 			}
 		}
 	}, [filter.page, subscriptionsStatus.currentData, subscriptionsStatus.isSuccess]);
-
-	useEffect(() => {
-		const observer = new ResizeObserver((entries) => {
-			for (const entry of entries) {
-				const element = entry.target;
-				const rect = element.getBoundingClientRect();
-				setRootHeight(window.innerHeight - rect.top - window.innerHeight * 0.05);
-			}
-		});
-		if (rootRef.current) {
-			const root = rootRef.current;
-			observer.observe(root);
-			return () => observer.unobserve(root);
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [window.innerHeight]);
 
 	return useMemo(
 		() => (
@@ -86,7 +70,7 @@ const YoutubeSubscriptions = () => {
 				</Stack>
 			</YoutubeAuthPage>
 		),
-		[filter.page, filter.perPage, onEndReached, rootHeight]
+		[filter.page, filter.perPage, onEndReached, rootHeight, rootRef]
 	);
 };
 
