@@ -1,50 +1,37 @@
-import { useMemo, useEffect, ComponentProps, Fragment } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { CircularProgress, Stack } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useCheckYoutubeAuthQuery, useLazyGetOauthLinkQuery } from '../../api/youtube';
-import AuthPage from './AuthPage';
+import withAuthPage from './AuthPage';
 
-interface YoutubeAuthWrapperProps extends ComponentProps<'div'> {
-	unAuthenticatedRender: () => JSX.Element;
-}
+export const withYoutubeAuth = <T extends {}>(
+	Component: React.FunctionComponent<T>,
+	UnAuthenticatedRender: React.FunctionComponent<{}>
+) => {
+	return (props: T) => {
+		const youtubeAuthStatus = useCheckYoutubeAuthQuery();
 
-export const YoutubeAuthWrapper = (props: YoutubeAuthWrapperProps) => {
-	const { children, unAuthenticatedRender } = props;
-
-	const youtubeAuthStatus = useCheckYoutubeAuthQuery();
-
-	return useMemo(() => {
-		if (youtubeAuthStatus.isFetching) {
-			return (
-				<Stack direction="row" justifyContent="center">
-					<CircularProgress />
-				</Stack>
-			);
-		} else if (
-			youtubeAuthStatus.isSuccess &&
-			youtubeAuthStatus.currentData &&
-			youtubeAuthStatus.currentData.email &&
-			!youtubeAuthStatus.currentData.refresh
-		) {
-			return <Fragment>{children}</Fragment>;
-		}
-		return unAuthenticatedRender();
-	}, [
-		children,
-		unAuthenticatedRender,
-		youtubeAuthStatus.currentData,
-		youtubeAuthStatus.isFetching,
-		youtubeAuthStatus.isSuccess,
-	]);
+		return useMemo(() => {
+			if (youtubeAuthStatus.isFetching) {
+				return (
+					<Stack direction="row" justifyContent="center">
+						<CircularProgress />
+					</Stack>
+				);
+			} else if (
+				youtubeAuthStatus.isSuccess &&
+				youtubeAuthStatus.currentData &&
+				youtubeAuthStatus.currentData.email &&
+				!youtubeAuthStatus.currentData.refresh
+			) {
+				return <Component {...props} />;
+			}
+			return <UnAuthenticatedRender />;
+		}, [props, youtubeAuthStatus.currentData, youtubeAuthStatus.isFetching, youtubeAuthStatus.isSuccess]);
+	};
 };
 
-interface YoutubeAuthPageProps extends ComponentProps<'div'> {
-	children: JSX.Element;
-}
-
-const YoutubeAuthPage = (props: YoutubeAuthPageProps) => {
-	const { children } = props;
-
+const YoutubeAuthPage = () => {
 	const youtubeAuthStatus = useCheckYoutubeAuthQuery();
 	const [getOAuthLink, getOAuthLinkStatus] = useLazyGetOauthLinkQuery();
 
@@ -61,32 +48,27 @@ const YoutubeAuthPage = (props: YoutubeAuthPageProps) => {
 				? 'Reconnect Google Account'
 				: 'Log in with Google';
 		return (
-			<AuthPage>
-				<YoutubeAuthWrapper
-					unAuthenticatedRender={() => (
-						<Stack direction="row" justifyContent="center">
-							<LoadingButton
-								variant="contained"
-								loading={getOAuthLinkStatus.isFetching || getOAuthLinkStatus.isLoading}
-								onClick={() => getOAuthLink()}
-							>
-								{buttonText}
-							</LoadingButton>
-						</Stack>
-					)}
+			<Stack direction="row" justifyContent="center">
+				<LoadingButton
+					variant="contained"
+					loading={getOAuthLinkStatus.isFetching || getOAuthLinkStatus.isLoading}
+					onClick={() => getOAuthLink()}
 				>
-					{children}
-				</YoutubeAuthWrapper>
-			</AuthPage>
+					{buttonText}
+				</LoadingButton>
+			</Stack>
 		);
 	}, [
 		youtubeAuthStatus.isSuccess,
 		youtubeAuthStatus.currentData,
-		children,
 		getOAuthLinkStatus.isFetching,
 		getOAuthLinkStatus.isLoading,
 		getOAuthLink,
 	]);
 };
 
-export default YoutubeAuthPage;
+const withYoutubeAuthPage = <T extends {}>(Component: React.FunctionComponent<T>) => {
+	return (props: T) => withAuthPage(withYoutubeAuth(Component, YoutubeAuthPage))(props);
+};
+
+export default withYoutubeAuthPage;

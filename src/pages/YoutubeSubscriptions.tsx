@@ -5,7 +5,7 @@ import useObject from '../utils/useObject';
 import InfiniteScroll from '../components/InfiniteScroll';
 import SubscriptionsPage from '../components/Youtube/SubscriptionsPage';
 import SubscriptionCard from '../components/Youtube/SubscriptionCard';
-import YoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
+import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
 
 const YoutubeSubscriptions = () => {
 	const [endReached, setEndReached] = useState(false);
@@ -34,39 +34,37 @@ const YoutubeSubscriptions = () => {
 
 	return useMemo(
 		() => (
-			<YoutubeAuthPage>
-				<Stack direction="column" spacing={2}>
-					<Typography variant="h4">Subscriptions</Typography>
-					<Divider />
-					<InfiniteScroll
-						items={Array(filter.page).fill(1)}
-						renderItem={(page, index) => (
-							<Grid container>
-								<SubscriptionsPage
-									perPage={filter.perPage}
-									page={index + 1}
-									renderItem={(subscription) => (
-										<Grid item xs={12} sm={6} md={3} xl={2} padding={1}>
-											<SubscriptionCard subscription={subscription} />
-										</Grid>
-									)}
-									renderLoading={() => (
-										<Grid item xs={12} padding={2}>
-											<Stack direction="row" justifyContent="center">
-												<CircularProgress />
-											</Stack>
-										</Grid>
-									)}
-								/>
-							</Grid>
-						)}
-						onEndReached={onEndReached}
-					/>
-				</Stack>
-			</YoutubeAuthPage>
+			<Stack direction="column" spacing={2}>
+				<Typography variant="h4">Subscriptions</Typography>
+				<Divider />
+				<InfiniteScroll
+					items={Array(filter.page).fill(1)}
+					renderItem={(page, index) => (
+						<Grid container>
+							<SubscriptionsPage
+								perPage={filter.perPage}
+								page={index + 1}
+								renderItem={(subscription) => (
+									<Grid item xs={12} sm={6} md={3} xl={2} padding={1}>
+										<SubscriptionCard subscription={subscription} />
+									</Grid>
+								)}
+								renderLoading={() => (
+									<Grid item xs={12} padding={2}>
+										<Stack direction="row" justifyContent="center">
+											<CircularProgress />
+										</Stack>
+									</Grid>
+								)}
+							/>
+						</Grid>
+					)}
+					onEndReached={onEndReached}
+				/>
+			</Stack>
 		),
 		[filter.page, filter.perPage, onEndReached]
 	);
 };
 
-export default YoutubeSubscriptions;
+export default withYoutubeAuthPage(YoutubeSubscriptions);

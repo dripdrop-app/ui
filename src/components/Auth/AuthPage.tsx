@@ -1,38 +1,30 @@
-import { ComponentProps, Fragment, useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Stack, Alert, Button, Container, Tab, Tabs, TextField, IconButton, CircularProgress } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { LoadingButton } from '@mui/lab';
 import { useLoginMutation, useCreateMutation, useCheckSessionQuery } from '../../api/auth';
 import { isFetchBaseQueryError } from '../../utils/helpers';
-import { LoadingButton } from '@mui/lab';
 
-interface AuthWrapperProps extends ComponentProps<'div'> {
-	unAuthenticatedRender: () => JSX.Element;
-}
+export const withAuth = <T extends {}>(
+	Component: React.FunctionComponent<T>,
+	UnAuthenticatedRender: React.FunctionComponent<{}>
+) => {
+	return (props: T) => {
+		const sessionStatus = useCheckSessionQuery();
 
-export const AuthWrapper = (props: AuthWrapperProps) => {
-	const { unAuthenticatedRender, children } = props;
-
-	const sessionStatus = useCheckSessionQuery();
-
-	return useMemo(() => {
-		if (sessionStatus.isFetching || sessionStatus.isLoading) {
-			return (
-				<Stack direction="row" justifyContent="center">
-					<CircularProgress />
-				</Stack>
-			);
-		} else if (sessionStatus.isSuccess && sessionStatus.currentData) {
-			return <Fragment>{children}</Fragment>;
-		}
-		return unAuthenticatedRender();
-	}, [
-		children,
-		sessionStatus.currentData,
-		sessionStatus.isFetching,
-		sessionStatus.isLoading,
-		sessionStatus.isSuccess,
-		unAuthenticatedRender,
-	]);
+		return useMemo(() => {
+			if (sessionStatus.isFetching || sessionStatus.isLoading) {
+				return (
+					<Stack direction="row" justifyContent="center">
+						<CircularProgress />
+					</Stack>
+				);
+			} else if (sessionStatus.isSuccess && sessionStatus.currentData) {
+				return <Component {...props} />;
+			}
+			return <UnAuthenticatedRender />;
+		}, [props, sessionStatus.currentData, sessionStatus.isFetching, sessionStatus.isLoading, sessionStatus.isSuccess]);
+	};
 };
 
 interface AuthFormProps {
@@ -90,7 +82,7 @@ const AuthForm = (props: AuthFormProps) => {
 	);
 };
 
-const AuthPage = (props: ComponentProps<'div'>) => {
+const AuthPage = () => {
 	const [tab, setTab] = useState(0);
 
 	const [login, loginStatus] = useLoginMutation();
@@ -136,24 +128,22 @@ const AuthPage = (props: ComponentProps<'div'>) => {
 
 	return useMemo(() => {
 		return (
-			<AuthWrapper
-				unAuthenticatedRender={() => (
-					<Container>
-						<Tabs value={tab}>
-							<Tab label="Login" onClick={() => setTab(0)} />
-							<Tab label="Sign up" onClick={() => setTab(1)} />
-						</Tabs>
-						<Stack direction="column" paddingY={4}>
-							{tab === 0 ? <AuthForm loading={loading} error={loginError} onSubmit={onSubmitForm} /> : null}
-							{tab === 1 ? <AuthForm loading={loading} error={createError} onSubmit={onSubmitForm} /> : null}
-						</Stack>
-					</Container>
-				)}
-			>
-				{props.children}
-			</AuthWrapper>
+			<Container>
+				<Tabs value={tab}>
+					<Tab label="Login" onClick={() => setTab(0)} />
+					<Tab label="Sign up" onClick={() => setTab(1)} />
+				</Tabs>
+				<Stack direction="column" paddingY={4}>
+					{tab === 0 ? <AuthForm loading={loading} error={loginError} onSubmit={onSubmitForm} /> : null}
+					{tab === 1 ? <AuthForm loading={loading} error={createError} onSubmit={onSubmitForm} /> : null}
+				</Stack>
+			</Container>
 		);
-	}, [createError, loading, loginError, onSubmitForm, props.children, tab]);
+	}, [createError, loading, loginError, onSubmitForm, tab]);
 };
 
-export default AuthPage;
+const withAuthPage = <T extends {}>(Component: React.FunctionComponent<T>) => {
+	return (props: T) => withAuth(Component, AuthPage)(props);
+};
+
+export default withAuthPage;

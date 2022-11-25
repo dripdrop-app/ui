@@ -27,6 +27,7 @@ import YoutubeChannel from './pages/YoutubeChannel';
 import YoutubeSubscriptions from './pages/YoutubeSubscriptions';
 import YoutubeVideo from './pages/YoutubeVideo';
 import YoutubeVideoQueue from './pages/YoutubeVideoQueue';
+// import YoutubeVideoQueuePlayer from './components/Youtube/VideoQueuePlayer';
 import YoutubeVideos from './pages/YoutubeVideos';
 import Account from './pages/Account';
 
@@ -35,6 +36,10 @@ const AppShell = (props: ComponentProps<any>) => {
 	const [listWidth, setListWidth] = useState(0);
 
 	const listRef = useRef<HTMLDivElement>(null);
+
+	// const isVideoPage = useRouteMatch({
+	// 	path: ['/youtube/videos/queue', '/youtube/video'],
+	// });
 
 	const theme = useTheme();
 	const isSmall = useMediaQuery(theme.breakpoints.down('md'));
@@ -151,10 +156,14 @@ const AppShell = (props: ComponentProps<any>) => {
 				>
 					<Toolbar />
 					{props.children}
+					{/* <Toolbar />
+					<Box display={isVideoPage ? 'none' : 'contents'}>
+						<YoutubeVideoQueuePlayer />
+					</Box> */}
 				</Box>
 			</Box>
 		),
-		[ListItems, listWidth, isSmall, openDrawer, props.children]
+		[openDrawer, isSmall, ListItems, props.children, listWidth]
 	);
 };
 

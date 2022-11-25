@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Checkbox, Container, FormControlLabel, Stack, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useCheckSessionQuery, useLogoutMutation } from '../api/auth';
-import AuthPage from '../components/Auth/AuthPage';
+import withAuthPage from '../components/Auth/AuthPage';
 
 const Account = () => {
 	const sessionStatus = useCheckSessionQuery();
@@ -15,7 +15,7 @@ const Account = () => {
 		return null;
 	}, [sessionStatus.currentData, sessionStatus.isSuccess]);
 
-	const Content = useMemo(() => {
+	return useMemo(() => {
 		if (user) {
 			return (
 				<Container>
@@ -31,8 +31,6 @@ const Account = () => {
 		}
 		return null;
 	}, [logout, logoutStatus.isLoading, user]);
-
-	return <AuthPage>{Content}</AuthPage>;
 };
 
-export default Account;
+export default withAuthPage(Account);

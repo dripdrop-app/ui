@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Avatar, Box, CircularProgress, Divider, Stack, Typography } from '@mui/material';
 import { useYoutubeChannelQuery } from '../api/youtube';
-import YoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
+import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
 import VideosView from '../components/Youtube/VideosView';
 
 interface YoutubeChannelProps {
@@ -17,39 +17,37 @@ const YoutubeChannel = (props: YoutubeChannelProps) => {
 
 	return useMemo(
 		() => (
-			<YoutubeAuthPage>
-				<Box>
-					<Stack
-						direction="row"
-						justifyContent="center"
-						display={channelStatus.isLoading || channelStatus.isFetching ? 'block' : 'none'}
-					>
-						<CircularProgress />
+			<Box>
+				<Stack
+					direction="row"
+					justifyContent="center"
+					display={channelStatus.isLoading || channelStatus.isFetching ? 'block' : 'none'}
+				>
+					<CircularProgress />
+				</Stack>
+				{channelStatus.isError ? (
+					<Stack direction="row" justifyContent="center">
+						Failed to load channel
 					</Stack>
-					{channelStatus.isError ? (
-						<Stack direction="row" justifyContent="center">
-							Failed to load channel
+				) : (
+					<Box />
+				)}
+				{channel ? (
+					<Stack direction="column" spacing={2}>
+						<Stack direction="row" alignItems="center" spacing={2}>
+							<Avatar alt={channel.title} src={channel.thumbnail} />
+							<Typography variant="h4">{channel.title}</Typography>
 						</Stack>
-					) : (
-						<Box />
-					)}
-					{channel ? (
-						<Stack direction="column" spacing={2}>
-							<Stack direction="row" alignItems="center" spacing={2}>
-								<Avatar alt={channel.title} src={channel.thumbnail} />
-								<Typography variant="h4">{channel.title}</Typography>
-							</Stack>
-							<Divider />
-							<VideosView channelId={channelId} />
-						</Stack>
-					) : (
-						<Box />
-					)}
-				</Box>
-			</YoutubeAuthPage>
+						<Divider />
+						<VideosView channelId={channelId} />
+					</Stack>
+				) : (
+					<Box />
+				)}
+			</Box>
 		),
 		[channel, channelId, channelStatus.isError, channelStatus.isFetching, channelStatus.isLoading]
 	);
 };
 
-export default YoutubeChannel;
+export default withYoutubeAuthPage(YoutubeChannel);

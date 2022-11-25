@@ -4,11 +4,13 @@ import { useAddYoutubeVideoWatchMutation } from '../../api/youtube';
 
 interface VideoPlayerProps {
 	video: YoutubeVideo | null;
-	onEnd?: () => void;
+	playing?: boolean;
+	onEnd?: Function;
+	onProgress?: Function;
 }
 
 const VideoPlayer = (props: VideoPlayerProps) => {
-	const { video, onEnd } = props;
+	const { video, onProgress, onEnd, playing } = props;
 
 	const [watchVideo] = useAddYoutubeVideoWatchMutation();
 
@@ -17,12 +19,15 @@ const VideoPlayer = (props: VideoPlayerProps) => {
 			<ReactPlayer
 				height="100%"
 				width="100%"
-				playing={true}
+				playing={playing}
 				controls={true}
 				url={`https://youtube.com/embed/${video?.id}`}
-				onProgress={({ playedSeconds }) => {
+				onProgress={(state) => {
 					if (video) {
-						if (playedSeconds > 20 && video && !video.watched) {
+						if (onProgress) {
+							onProgress(state);
+						}
+						if (state.playedSeconds > 20 && video && !video.watched) {
 							watchVideo(video.id);
 						}
 					}
@@ -34,7 +39,7 @@ const VideoPlayer = (props: VideoPlayerProps) => {
 				}}
 			/>
 		),
-		[onEnd, video, watchVideo]
+		[onEnd, onProgress, playing, video, watchVideo]
 	);
 };
 
