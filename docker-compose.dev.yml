@@ -9,11 +9,6 @@ services:
     env_file: .env
     build:
       dockerfile: dockerfiles/Dockerfile.dev.web
+    entrypoint: npm start
     ports:
       - $PORT:$PORT
-    networks:
-      - dripdrop
-
-networks:
-  dripdrop:
-    external: true
