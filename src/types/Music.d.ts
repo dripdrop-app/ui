@@ -2,7 +2,9 @@ interface Job {
 	id: string;
 	youtubeUrl?: string;
 	filename?: string;
+	originalFilename?: string;
 	artworkUrl?: string;
+	artworkFilename?: string;
 	title: string;
 	artist: string;
 	album: string;
@@ -11,6 +13,7 @@ interface Job {
 	failed: boolean;
 	createdAt: string;
 	downloadUrl?: string;
+	download_filename?: string;
 }
 
 type MusicFormState =

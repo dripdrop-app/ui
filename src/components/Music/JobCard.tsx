@@ -1,18 +1,18 @@
-import { Link } from 'react-router-dom';
 import {
+	Box,
 	Button,
 	Card,
 	CardMedia,
 	CardContent,
+	Link as MuiLink,
 	TableContainer,
-	Box,
 	Table,
 	TableBody,
 	TableCell,
-	Stack,
 	TableRow,
+	Stack,
 } from '@mui/material';
-import { Download, Delete, Error } from '@mui/icons-material';
+import { Download, Delete, Error, Launch } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import { useRemoveJobMutation } from '../../api/music';
 
@@ -42,11 +42,25 @@ const JobCard = (props: Job) => {
 							</TableRow>
 							<TableRow>
 								<TableCell>Filename</TableCell>
-								<TableCell>{props.filename}</TableCell>
+								<TableCell>
+									<MuiLink href={props.filename} target="_blank">
+										<Stack direction="row" alignItems="center" gap={1}>
+											{props.originalFilename}
+											<Launch fontSize="small" />
+										</Stack>
+									</MuiLink>
+								</TableCell>
 							</TableRow>
 							<TableRow>
 								<TableCell>Artwork URL</TableCell>
-								<TableCell>{props.artworkUrl}</TableCell>
+								<TableCell>
+									<MuiLink href={props.artworkUrl} target="_blank">
+										<Stack direction="row" alignItems="center" gap={1}>
+											{props.artworkFilename}
+											<Launch fontSize="small" />
+										</Stack>
+									</MuiLink>
+								</TableCell>
 							</TableRow>
 							<TableRow>
 								<TableCell>Title</TableCell>
@@ -79,11 +93,11 @@ const JobCard = (props: Job) => {
 					</LoadingButton>
 				</Box>
 				<Box display={props.completed ? 'contents' : 'none'}>
-					<Link to={props.downloadUrl || ''} target="_blank" download>
+					<MuiLink href={props.downloadUrl || ''} target="_blank">
 						<Button variant="contained" color="success" startIcon={<Download />}>
 							Download
 						</Button>
-					</Link>
+					</MuiLink>
 				</Box>
 				<Box display={props.failed ? 'contents' : 'none'}>
 					<Button variant="contained" color="error" startIcon={<Error />}>
