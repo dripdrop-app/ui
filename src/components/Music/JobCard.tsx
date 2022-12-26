@@ -43,7 +43,7 @@ const JobCard = (props: Job) => {
 							<TableRow>
 								<TableCell>Filename</TableCell>
 								<TableCell>
-									<MuiLink href={props.filename} target="_blank">
+									<MuiLink href={props.filename} target="_blank" display={props.filename && 'none'}>
 										<Stack direction="row" alignItems="center" gap={1}>
 											{props.originalFilename}
 											<Launch fontSize="small" />
@@ -54,9 +54,9 @@ const JobCard = (props: Job) => {
 							<TableRow>
 								<TableCell>Artwork URL</TableCell>
 								<TableCell>
-									<MuiLink href={props.artworkUrl} target="_blank">
+									<MuiLink href={props.artworkUrl} target="_blank" display={props.artworkUrl && 'none'}>
 										<Stack direction="row" alignItems="center" gap={1}>
-											{props.artworkFilename}
+											{props.artworkFilename || props.artworkUrl}
 											<Launch fontSize="small" />
 										</Stack>
 									</MuiLink>
