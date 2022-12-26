@@ -43,23 +43,27 @@ const JobCard = (props: Job) => {
 							<TableRow>
 								<TableCell>Filename</TableCell>
 								<TableCell>
-									<MuiLink href={props.filename} target="_blank" display={props.filename && 'none'}>
-										<Stack direction="row" alignItems="center" gap={1}>
-											{props.originalFilename}
-											<Launch fontSize="small" />
-										</Stack>
-									</MuiLink>
+									<Box display={props.filename ? 'contents' : 'none'}>
+										<MuiLink href={props.filename} target="_blank">
+											<Stack direction="row" alignItems="center" gap={1}>
+												{props.originalFilename}
+												<Launch fontSize="small" />
+											</Stack>
+										</MuiLink>
+									</Box>
 								</TableCell>
 							</TableRow>
 							<TableRow>
 								<TableCell>Artwork URL</TableCell>
 								<TableCell>
-									<MuiLink href={props.artworkUrl} target="_blank" display={props.artworkUrl && 'none'}>
-										<Stack direction="row" alignItems="center" gap={1}>
-											{props.artworkFilename || props.artworkUrl}
-											<Launch fontSize="small" />
-										</Stack>
-									</MuiLink>
+									<Box display={props.artworkUrl ? 'contents' : 'none'}>
+										<MuiLink href={props.artworkUrl} target="_blank">
+											<Stack direction="row" alignItems="center" gap={1}>
+												{props.artworkFilename || props.artworkUrl}
+												<Launch fontSize="small" />
+											</Stack>
+										</MuiLink>
+									</Box>
 								</TableCell>
 							</TableRow>
 							<TableRow>
@@ -93,7 +97,7 @@ const JobCard = (props: Job) => {
 					</LoadingButton>
 				</Box>
 				<Box display={props.completed ? 'contents' : 'none'}>
-					<MuiLink href={props.downloadUrl || ''} target="_blank">
+					<MuiLink href={props.downloadUrl} target="_blank">
 						<Button variant="contained" color="success" startIcon={<Download />}>
 							Download
 						</Button>
