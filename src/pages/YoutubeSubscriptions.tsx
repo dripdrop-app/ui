@@ -1,69 +1,59 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { CircularProgress, Divider, Grid, Stack, Typography } from '@mui/material';
+import { useMemo, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { Center, Divider, Grid, Pagination, Stack, Title } from '@mantine/core';
+
 import { useYoutubeSubscriptionsQuery } from '../api/youtube';
-import useObject from '../utils/useObject';
-import InfiniteScroll from '../components/InfiniteScroll';
-import SubscriptionsPage from '../components/Youtube/SubscriptionsPage';
 import SubscriptionCard from '../components/Youtube/SubscriptionCard';
-import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
 
-const YoutubeSubscriptions = () => {
-	const [endReached, setEndReached] = useState(false);
+interface YoutubeSubscriptionsProps {
+	page: number;
+}
 
-	const { object: filter, setObject: setFilter } = useObject<YoutubeSubscriptionBody>({
-		page: 1,
-		perPage: 48,
-	});
+const YoutubeSubscriptions = (props: YoutubeSubscriptionsProps) => {
+	const { page } = props;
 
-	const subscriptionsStatus = useYoutubeSubscriptionsQuery(filter);
+	const [perPage] = useState(48);
 
-	const onEndReached = useCallback(() => {
-		if (!endReached && subscriptionsStatus.isSuccess) {
-			setFilter({ page: filter.page + 1 });
-		}
-	}, [endReached, filter.page, setFilter, subscriptionsStatus.isSuccess]);
+	const history = useHistory();
 
-	useEffect(() => {
-		if (subscriptionsStatus.isSuccess && subscriptionsStatus.currentData) {
-			const { totalPages } = subscriptionsStatus.currentData;
-			if (totalPages <= filter.page) {
-				setEndReached(true);
-			}
-		}
-	}, [filter.page, subscriptionsStatus.currentData, subscriptionsStatus.isSuccess]);
+	const subscriptionsStatus = useYoutubeSubscriptionsQuery({ page, perPage });
+
+	const subscriptions = useMemo(
+		() =>
+			subscriptionsStatus.isSuccess && subscriptionsStatus.currentData
+				? subscriptionsStatus.currentData.subscriptions
+				: [],
+		[subscriptionsStatus.currentData, subscriptionsStatus.isSuccess]
+	);
+
+	const totalPages = useMemo(
+		() =>
+			subscriptionsStatus.isSuccess && subscriptionsStatus.currentData ? subscriptionsStatus.currentData.totalPages : 1,
+		[subscriptionsStatus.currentData, subscriptionsStatus.isSuccess]
+	);
 
 	return useMemo(
 		() => (
-			<Stack direction="column" spacing={2}>
-				<Typography variant="h4">Subscriptions</Typography>
+			<Stack>
+				<Title order={2}>Subscriptions</Title>
 				<Divider />
-				<InfiniteScroll
-					items={Array(filter.page).fill(1)}
-					renderItem={(page, index) => (
-						<Grid container>
-							<SubscriptionsPage
-								perPage={filter.perPage}
-								page={index + 1}
-								renderItem={(subscription) => (
-									<Grid item xs={12} sm={6} md={3} xl={2} padding={1}>
-										<SubscriptionCard subscription={subscription} />
-									</Grid>
-								)}
-								renderLoading={() => (
-									<Grid item xs={12} padding={2}>
-										<Stack direction="row" justifyContent="center">
-											<CircularProgress />
-										</Stack>
-									</Grid>
-								)}
-							/>
-						</Grid>
-					)}
-					onEndReached={onEndReached}
-				/>
+				<Grid>
+					{subscriptions.map((subscription, i) => (
+						<Grid.Col key={subscription.channelId} xs={12} sm={6} md={3} xl={2}>
+							<SubscriptionCard subscription={subscription} />
+						</Grid.Col>
+					))}
+				</Grid>
+				<Center>
+					<Pagination
+						total={totalPages}
+						page={page}
+						onChange={(newPage) => history.push(`/youtube/subscriptions/${newPage}`)}
+					/>
+				</Center>
 			</Stack>
 		),
-		[filter.page, filter.perPage, onEndReached]
+		[history, page, subscriptions, totalPages]
 	);
 };
 
