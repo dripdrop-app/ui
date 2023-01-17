@@ -65,4 +65,4 @@ const YoutubeVideoQueue = (props: YoutubeVideoQueueProps) => {
 	);
 };
 
-export default withYoutubeAuthPage(YoutubeVideoQueue);
+export default YoutubeVideoQueue;

@@ -1,149 +1,69 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { Stack, Alert, Button, Container, Tab, Tabs, TextField, IconButton, CircularProgress } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { LoadingButton } from '@mui/lab';
-import { useLoginMutation, useCreateMutation, useCheckSessionQuery } from '../../api/auth';
-import { isFetchBaseQueryError } from '../../utils/helpers';
+import { useMemo, useState } from 'react';
+import { Button, Container, Flex, LoadingOverlay, PasswordInput, Stack, Tabs, TextInput } from '@mantine/core';
 
-export const withAuth = <T extends {}>(
-	Component: React.FunctionComponent<T>,
-	UnAuthenticatedRender: React.FunctionComponent<{}>
-) => {
-	return (props: T) => {
-		const sessionStatus = useCheckSessionQuery();
-
-		return useMemo(() => {
-			if (sessionStatus.isFetching || sessionStatus.isLoading) {
-				return (
-					<Stack direction="row" justifyContent="center">
-						<CircularProgress />
-					</Stack>
-				);
-			} else if (sessionStatus.isSuccess && sessionStatus.currentData) {
-				return <Component {...props} />;
-			}
-			return <UnAuthenticatedRender />;
-		}, [props, sessionStatus.currentData, sessionStatus.isFetching, sessionStatus.isLoading, sessionStatus.isSuccess]);
-	};
-};
+import { useLoginMutation, useCreateMutation } from '../../api/auth';
 
 interface AuthFormProps {
-	error?: string | null;
-	loading: boolean;
 	onSubmit: (email: string, password: string) => void;
 }
 
 const AuthForm = (props: AuthFormProps) => {
-	const { error, loading, onSubmit } = props;
+	const { onSubmit } = props;
 
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const [showPassword, setShowPassword] = useState(false);
 
 	return useMemo(
 		() => (
-			<Container>
-				<Stack direction="column" spacing={2}>
-					{error ? <Alert severity="error">{error}</Alert> : null}
-					<TextField type="email" label="Email" value={email} onChange={(e) => setEmail(e.target.value)} fullWidth />
-					<TextField
-						type={showPassword ? 'text' : 'password'}
-						label="Password"
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
-						fullWidth
-						InputProps={{
-							endAdornment: (
-								<IconButton onClick={() => setShowPassword(!showPassword)}>
-									<Visibility sx={{ display: showPassword ? 'none' : 'block' }} />
-									<VisibilityOff sx={{ display: !showPassword ? 'none' : 'block' }} />
-								</IconButton>
-							),
+			<Stack p="md">
+				<TextInput label="Email" placeholder="Enter Email" onChange={(e) => setEmail(e.target.value)} withAsterisk />
+				<PasswordInput
+					label="Password"
+					placeholder="Enter Password"
+					onChange={(e) => setPassword(e.target.value)}
+					withAsterisk
+				/>
+				<Flex gap="md">
+					<Button onClick={() => onSubmit(email, password)}>Submit</Button>
+					<Button
+						onClick={() => {
+							setEmail('');
+							setPassword('');
 						}}
-					/>
-					<Stack direction="row" spacing={2}>
-						<LoadingButton variant="contained" loading={loading} onClick={() => onSubmit(email, password)}>
-							Submit
-						</LoadingButton>
-						<Button
-							variant="contained"
-							onClick={() => {
-								setEmail('');
-								setPassword('');
-							}}
-						>
-							Reset
-						</Button>
-					</Stack>
-				</Stack>
-			</Container>
+					>
+						Clear
+					</Button>
+				</Flex>
+			</Stack>
 		),
-		[email, error, loading, onSubmit, password, showPassword]
+		[email, onSubmit, password]
 	);
 };
 
-const AuthPage = () => {
-	const [tab, setTab] = useState(0);
-
+export const AuthPage = () => {
 	const [login, loginStatus] = useLoginMutation();
 	const [create, createStatus] = useCreateMutation();
 
-	const loginError = useMemo(() => {
-		if (loginStatus.isError) {
-			if (isFetchBaseQueryError(loginStatus.error)) {
-				return String(loginStatus.error.data);
-			} else if (loginStatus.error.message) {
-				return loginStatus.error.message;
-			}
-		}
-		return null;
-	}, [loginStatus.error, loginStatus.isError]);
-
-	const createError = useMemo(() => {
-		if (createStatus.isError) {
-			if (isFetchBaseQueryError(createStatus.error)) {
-				return String(createStatus.error.data);
-			} else if (createStatus.error.message) {
-				return createStatus.error.message;
-			}
-		}
-		return null;
-	}, [createStatus.error, createStatus.isError]);
-
-	const onSubmitForm = useCallback(
-		(email: string, password: string) => {
-			if (tab === 0) {
-				login({ email, password });
-			} else {
-				create({ email, password });
-			}
-		},
-		[tab, login, create]
-	);
-
-	const loading = useMemo(
-		() => loginStatus.isLoading || createStatus.isLoading,
-		[createStatus.isLoading, loginStatus.isLoading]
-	);
-
-	return useMemo(() => {
-		return (
-			<Container>
-				<Tabs value={tab}>
-					<Tab label="Login" onClick={() => setTab(0)} />
-					<Tab label="Sign up" onClick={() => setTab(1)} />
+	return useMemo(
+		() => (
+			<Container sx={{ position: 'relative' }}>
+				<LoadingOverlay visible={loginStatus.isLoading || createStatus.isLoading} />
+				<Tabs defaultValue="0">
+					<Tabs.List>
+						<Tabs.Tab value="0">Login</Tabs.Tab>
+						<Tabs.Tab value="1">Sign up</Tabs.Tab>
+					</Tabs.List>
+					<Tabs.Panel value="0">
+						<AuthForm onSubmit={(email, password) => login({ email, password })} />
+					</Tabs.Panel>
+					<Tabs.Panel value="1">
+						<AuthForm onSubmit={(email, password) => create({ email, password })} />
+					</Tabs.Panel>
 				</Tabs>
-				<Stack direction="column" paddingY={4}>
-					{tab === 0 ? <AuthForm loading={loading} error={loginError} onSubmit={onSubmitForm} /> : null}
-					{tab === 1 ? <AuthForm loading={loading} error={createError} onSubmit={onSubmitForm} /> : null}
-				</Stack>
 			</Container>
-		);
-	}, [createError, loading, loginError, onSubmitForm, tab]);
+		),
+		[create, createStatus.isLoading, login, loginStatus.isLoading]
+	);
 };
 
-const withAuthPage = <T extends {}>(Component: React.FunctionComponent<T>) => {
-	return (props: T) => withAuth(Component, AuthPage)(props);
-};
-
-export default withAuthPage;
+export default AuthPage;

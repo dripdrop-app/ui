@@ -55,4 +55,4 @@ const YoutubeVideo = (props: YoutubeVideoProps) => {
 	);
 };
 
-export default withYoutubeAuthPage(YoutubeVideo);
+export default YoutubeVideo;

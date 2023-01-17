@@ -1,15 +1,14 @@
-import { Stack } from '@mui/material';
-import withAuthPage from '../components/Auth/AuthPage';
+import { Stack } from '@mantine/core';
 import JobList from '../components/Music/JobList';
 import MusicForm from '../components/Music/MusicForm';
 
 const MusicDownloader = () => {
 	return (
-		<Stack spacing={2} direction="column">
+		<Stack spacing={2}>
 			<MusicForm />
-			<JobList />
+			{/* <JobList /> */}
 		</Stack>
 	);
 };
 
-export default withAuthPage(MusicDownloader);
+export default MusicDownloader;

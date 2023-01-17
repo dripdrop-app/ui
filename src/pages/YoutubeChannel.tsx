@@ -50,4 +50,4 @@ const YoutubeChannel = (props: YoutubeChannelProps) => {
 	);
 };
 
-export default withYoutubeAuthPage(YoutubeChannel);
+export default YoutubeChannel;

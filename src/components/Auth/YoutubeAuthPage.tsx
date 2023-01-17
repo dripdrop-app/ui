@@ -1,37 +1,9 @@
-import React, { useMemo, useEffect } from 'react';
-import { CircularProgress, Stack } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
+import { useMemo, useEffect } from 'react';
+import { Button, Center } from '@mantine/core';
+
 import { useCheckYoutubeAuthQuery, useLazyGetOauthLinkQuery } from '../../api/youtube';
-import withAuthPage from './AuthPage';
 
-export const withYoutubeAuth = <T extends {}>(
-	Component: React.FunctionComponent<T>,
-	UnAuthenticatedRender: React.FunctionComponent<{}>
-) => {
-	return (props: T) => {
-		const youtubeAuthStatus = useCheckYoutubeAuthQuery();
-
-		return useMemo(() => {
-			if (youtubeAuthStatus.isFetching) {
-				return (
-					<Stack direction="row" justifyContent="center">
-						<CircularProgress />
-					</Stack>
-				);
-			} else if (
-				youtubeAuthStatus.isSuccess &&
-				youtubeAuthStatus.currentData &&
-				youtubeAuthStatus.currentData.email &&
-				!youtubeAuthStatus.currentData.refresh
-			) {
-				return <Component {...props} />;
-			}
-			return <UnAuthenticatedRender />;
-		}, [props, youtubeAuthStatus.currentData, youtubeAuthStatus.isFetching, youtubeAuthStatus.isSuccess]);
-	};
-};
-
-const YoutubeAuthPage = () => {
+export const YoutubeAuthPage = () => {
 	const youtubeAuthStatus = useCheckYoutubeAuthQuery();
 	const [getOAuthLink, getOAuthLinkStatus] = useLazyGetOauthLinkQuery();
 
@@ -48,15 +20,11 @@ const YoutubeAuthPage = () => {
 				? 'Reconnect Google Account'
 				: 'Log in with Google';
 		return (
-			<Stack direction="row" justifyContent="center">
-				<LoadingButton
-					variant="contained"
-					loading={getOAuthLinkStatus.isFetching || getOAuthLinkStatus.isLoading}
-					onClick={() => getOAuthLink()}
-				>
+			<Center>
+				<Button onClick={() => getOAuthLink()} loading={getOAuthLinkStatus.isFetching || getOAuthLinkStatus.isLoading}>
 					{buttonText}
-				</LoadingButton>
-			</Stack>
+				</Button>
+			</Center>
 		);
 	}, [
 		youtubeAuthStatus.isSuccess,
@@ -67,8 +35,4 @@ const YoutubeAuthPage = () => {
 	]);
 };
 
-const withYoutubeAuthPage = <T extends {}>(Component: React.FunctionComponent<T>) => {
-	return (props: T) => withAuthPage(withYoutubeAuth(Component, YoutubeAuthPage))(props);
-};
-
-export default withYoutubeAuthPage;
+export default YoutubeAuthPage;

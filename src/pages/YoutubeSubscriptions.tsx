@@ -67,4 +67,4 @@ const YoutubeSubscriptions = () => {
 	);
 };
 
-export default withYoutubeAuthPage(YoutubeSubscriptions);
+export default YoutubeSubscriptions;
