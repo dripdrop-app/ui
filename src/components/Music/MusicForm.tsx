@@ -13,9 +13,9 @@ import {
 	TextInput,
 	Title,
 } from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { useForm, Controller, useWatch } from 'react-hook-form';
-import { debounce } from 'lodash';
 
 import {
 	useLazyCreateFileJobQuery,
@@ -31,6 +31,9 @@ const MusicForm = () => {
 		reValidateMode: 'onBlur',
 	});
 	const watchFields = useWatch({ control });
+
+	const [debouncedArtworkUrl] = useDebouncedValue(watchFields.artworkUrl, 500);
+	const [debouncedYoutubeUrl] = useDebouncedValue(watchFields.youtubeUrl, 500);
 
 	const [createFileJob, createFileJobStatus] = useLazyCreateFileJobQuery();
 	const [createYoutubeJob, createYoutubeJobStatus] = useLazyCreateYoutubeJobQuery();
@@ -103,9 +106,8 @@ const MusicForm = () => {
 		[createFileJob, createYoutubeJob, reset]
 	);
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const debounceResolveArtworkUrl = useCallback(
-		debounce(async (artworkUrl: string) => {
+	const resolveArtworkUrl = useCallback(
+		async (artworkUrl: string) => {
 			if (artworkUrl) {
 				if (isBase64(artworkUrl) || isValidImage(artworkUrl)) {
 					return setValue('resolvedArtworkUrl', artworkUrl);
@@ -118,13 +120,13 @@ const MusicForm = () => {
 				}
 			}
 			return setValue('resolvedArtworkUrl', '');
-		}, 500),
-		[]
+		},
+		[getArtwork, setValue]
 	);
 
 	useEffect(() => {
-		debounceResolveArtworkUrl(watchFields.artworkUrl || '');
-	}, [debounceResolveArtworkUrl, watchFields.artworkUrl]);
+		resolveArtworkUrl(debouncedArtworkUrl || '');
+	}, [debouncedArtworkUrl, resolveArtworkUrl]);
 
 	const getFileTags = useCallback(
 		async (file: File) => {
@@ -164,9 +166,8 @@ const MusicForm = () => {
 		}
 	}, [setValue, watchFields.title]);
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const debounceGetGrouping = useCallback(
-		debounce(async (youtubeUrl: string) => {
+	const resolveGrouping = useCallback(
+		async (youtubeUrl: string) => {
 			if (youtubeUrl) {
 				if (isValidYTLink(youtubeUrl)) {
 					const status = await getGrouping(youtubeUrl);
@@ -176,13 +177,13 @@ const MusicForm = () => {
 					}
 				}
 			}
-		}, 500),
-		[]
+		},
+		[getGrouping, setValue]
 	);
 
 	useEffect(() => {
-		debounceGetGrouping(watchFields.youtubeUrl || '');
-	}, [debounceGetGrouping, watchFields.youtubeUrl]);
+		resolveGrouping(debouncedYoutubeUrl || '');
+	}, [debouncedYoutubeUrl, resolveGrouping]);
 
 	return useMemo(
 		() => (
