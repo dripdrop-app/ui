@@ -60,6 +60,12 @@ const App = () => {
 			theme={{
 				colorScheme: 'dark',
 				components: {
+					Anchor: {
+						defaultProps: {
+							target: '_blank',
+							rel: 'noopener noreferrer',
+						},
+					},
 					Flex: {
 						defaultProps: {
 							wrap: { base: 'wrap', sm: 'nowrap' },

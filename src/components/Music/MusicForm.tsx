@@ -1,14 +1,4 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useForm, Controller, useWatch } from 'react-hook-form';
-import { debounce } from 'lodash';
-import {
-	useLazyCreateFileJobQuery,
-	useLazyCreateYoutubeJobQuery,
-	useLazyArtworkQuery,
-	useLazyTagsQuery,
-	useLazyGroupingQuery,
-} from '../../api/music';
-import { isBase64, isValidImage, isValidLink, isValidYTLink, resolveAlbumFromTitle } from '../../utils/helpers';
 import {
 	Box,
 	Button,
@@ -24,6 +14,17 @@ import {
 	Title,
 } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
+import { useForm, Controller, useWatch } from 'react-hook-form';
+import { debounce } from 'lodash';
+
+import {
+	useLazyCreateFileJobQuery,
+	useLazyCreateYoutubeJobQuery,
+	useLazyArtworkQuery,
+	useLazyTagsQuery,
+	useLazyGroupingQuery,
+} from '../../api/music';
+import { isBase64, isValidImage, isValidLink, isValidYTLink, resolveAlbumFromTitle } from '../../utils/helpers';
 
 const MusicForm = () => {
 	const { reset, handleSubmit, control, trigger, setValue } = useForm<MusicFormState>({

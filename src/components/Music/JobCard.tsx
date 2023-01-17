@@ -1,19 +1,6 @@
-import {
-	Box,
-	Button,
-	Card,
-	CardMedia,
-	CardContent,
-	Link as MuiLink,
-	TableContainer,
-	Table,
-	TableBody,
-	TableCell,
-	TableRow,
-	Stack,
-} from '@mui/material';
-import { Download, Delete, Error, Launch } from '@mui/icons-material';
-import { LoadingButton } from '@mui/lab';
+import { Anchor, Button, Card, Flex, Image, Stack, Table } from '@mantine/core';
+import { MdDelete, MdDownload, MdError } from 'react-icons/md';
+
 import { useRemoveJobMutation } from '../../api/music';
 
 const JobCard = (props: Job) => {
@@ -23,100 +10,85 @@ const JobCard = (props: Job) => {
 
 	return (
 		<Card>
-			<CardMedia
-				component="img"
-				image={props.artworkUrl || 'https://dripdrop-space.nyc3.digitaloceanspaces.com/artwork/blank_image.jpeg'}
-				alt={props.id}
-			/>
-			<CardContent>
-				<TableContainer component={Box}>
-					<Table>
-						<TableBody>
-							<TableRow>
-								<TableCell>ID</TableCell>
-								<TableCell>{props.id}</TableCell>
-							</TableRow>
-							<TableRow>
-								<TableCell>Youtube URL</TableCell>
-								<TableCell>{props.youtubeUrl}</TableCell>
-							</TableRow>
-							<TableRow>
-								<TableCell>Filename</TableCell>
-								<TableCell>
-									<Box display={props.filename ? 'contents' : 'none'}>
-										<MuiLink href={props.filename} target="_blank">
-											<Stack direction="row" alignItems="center" gap={1}>
-												{props.originalFilename}
-												<Launch fontSize="small" />
-											</Stack>
-										</MuiLink>
-									</Box>
-								</TableCell>
-							</TableRow>
-							<TableRow>
-								<TableCell>Artwork URL</TableCell>
-								<TableCell>
-									<Box display={props.artworkUrl ? 'contents' : 'none'}>
-										<MuiLink href={props.artworkUrl} target="_blank">
-											<Stack direction="row" alignItems="center" gap={1}>
-												{props.artworkFilename || props.artworkUrl}
-												<Launch fontSize="small" />
-											</Stack>
-										</MuiLink>
-									</Box>
-								</TableCell>
-							</TableRow>
-							<TableRow>
-								<TableCell>Title</TableCell>
-								<TableCell>{props.title}</TableCell>
-							</TableRow>
-							<TableRow>
-								<TableCell>Artist</TableCell>
-								<TableCell>{props.artist}</TableCell>
-							</TableRow>
-							<TableRow>
-								<TableCell>Album</TableCell>
-								<TableCell>{props.album}</TableCell>
-							</TableRow>
-							<TableRow>
-								<TableCell>Grouping</TableCell>
-								<TableCell>{props.grouping}</TableCell>
-							</TableRow>
-							<TableRow>
-								<TableCell>Created</TableCell>
-								<TableCell>{createdAt}</TableCell>
-							</TableRow>
-						</TableBody>
-					</Table>
-				</TableContainer>
-			</CardContent>
-			<Stack direction="row" justifyContent="center" paddingY={2} spacing={2} flexWrap="wrap">
-				<Box display={props.completed || props.failed ? 'none' : 'contents'}>
-					<LoadingButton variant="contained" color="primary" loading={true}>
+			<Card.Section>
+				<Image
+					src={props.artworkUrl || 'https://dripdrop-space.nyc3.digitaloceanspaces.com/artwork/blank_image.jpeg'}
+					alt="Artwork"
+					withPlaceholder
+					height={150}
+				/>
+			</Card.Section>
+			<Stack>
+				<Table>
+					<tbody>
+						<tr>
+							<td>ID</td>
+							<td>{props.id}</td>
+						</tr>
+						<tr>
+							<td>Youtube URL</td>
+							<td>
+								{props.youtubeUrl ? <Anchor href={props.youtubeUrl}>{props.youtubeUrl}</Anchor> : props.youtubeUrl}
+							</td>
+						</tr>
+						<tr>
+							<td>Filename</td>
+							<td>
+								{props.filename ? (
+									<Anchor href={props.filename}>{props.originalFilename}</Anchor>
+								) : (
+									props.originalFilename
+								)}
+							</td>
+						</tr>
+						<tr>
+							<td>Artwork URL</td>
+							<td>
+								{props.artworkUrl ? <Anchor href={props.artworkUrl}>{props.artworkUrl}</Anchor> : props.artworkUrl}
+							</td>
+						</tr>
+						<tr>
+							<td>Title</td>
+							<td>{props.title}</td>
+						</tr>
+						<tr>
+							<td>Artist</td>
+							<td>{props.artist}</td>
+						</tr>
+						<tr>
+							<td>Album</td>
+							<td>{props.album}</td>
+						</tr>
+						<tr>
+							<td>Grouping</td>
+							<td>{props.grouping}</td>
+						</tr>
+						<tr>
+							<td>Created At</td>
+							<td>{createdAt}</td>
+						</tr>
+					</tbody>
+				</Table>
+				<Flex justify="center">
+					<Button display={!props.completed && !props.failed ? 'initial' : 'none'} loading>
 						Loading
-					</LoadingButton>
-				</Box>
-				<Box display={props.completed ? 'contents' : 'none'}>
-					<MuiLink href={props.downloadUrl} target="_blank">
-						<Button variant="contained" color="success" startIcon={<Download />}>
-							Download
-						</Button>
-					</MuiLink>
-				</Box>
-				<Box display={props.failed ? 'contents' : 'none'}>
-					<Button variant="contained" color="error" startIcon={<Error />}>
+					</Button>
+					<Button display={props.failed ? 'initial' : 'none'} color="red" leftIcon={<MdError />}>
 						Failed
 					</Button>
-				</Box>
-				<LoadingButton
-					variant="contained"
-					color="error"
-					startIcon={<Delete />}
-					loading={removeJobStatus.isLoading}
-					onClick={() => removeJob(props.id)}
-				>
-					Delete
-				</LoadingButton>
+					<Button display={props.completed ? 'initial' : 'none'} color="green" leftIcon={<MdDownload />}>
+						Download
+					</Button>
+					<Button
+						display={props.completed || props.failed ? 'initial' : 'none'}
+						color="red"
+						leftIcon={<MdDelete />}
+						loading={removeJobStatus.isLoading}
+						onClick={() => removeJob(props.id)}
+					>
+						Delete
+					</Button>
+				</Flex>
 			</Stack>
 		</Card>
 	);
