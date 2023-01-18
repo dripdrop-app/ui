@@ -69,7 +69,11 @@ const VideosView = () => {
 				) : (
 					<>
 						<LoadingOverlay visible={videosStatus.isFetching} />
-						<Checkbox label="Show Liked Only" onChange={(e) => updateUrl({ likedOnly: e.target.checked })} />
+						<Checkbox
+							label="Show Liked Only"
+							checked={likedOnly}
+							onChange={(e) => updateUrl({ likedOnly: e.target.checked })}
+						/>
 						<MultiSelect
 							label="Categories"
 							placeholder="Select Categories"
@@ -77,6 +81,7 @@ const VideosView = () => {
 								value: category.id.toString(),
 								label: category.name,
 							}))}
+							value={selectedCategories.map((n) => n.toString())}
 							onChange={(newCategories) => updateUrl({ selectedCategories: newCategories.map((n) => parseInt(n)) })}
 						/>
 						<Grid>
@@ -97,7 +102,9 @@ const VideosView = () => {
 			videoCategoriesStatus.isLoading,
 			videosStatus.isLoading,
 			videosStatus.isFetching,
+			likedOnly,
 			categories,
+			selectedCategories,
 			videos,
 			totalPages,
 			page,
