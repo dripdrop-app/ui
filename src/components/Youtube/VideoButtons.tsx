@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
-import { CircularProgress, IconButton, Tooltip } from '@mui/material';
-import { AddToQueue, RemoveFromQueue, ThumbUp, Visibility } from '@mui/icons-material';
+import { useMemo } from 'react';
+import { ActionIcon, Tooltip } from '@mantine/core';
+import { MdAddToQueue, MdRemoveFromQueue, MdThumbUp, MdVisibility } from 'react-icons/md';
+
 import {
 	useAddYoutubeVideoLikeMutation,
 	useAddYoutubeVideoQueueMutation,
@@ -27,15 +28,10 @@ export const VideoLikeButton = (props: VideoButtonsProps) => {
 
 	return useMemo(
 		() => (
-			<Tooltip title={video.liked ? `Liked on ${likedDate}` : 'Like Video'}>
-				<IconButton
-					disabled={loading}
-					onClick={() => (video.liked ? unLikeVideo(video.id) : likeVideo(video.id))}
-					color={video.liked ? 'success' : 'default'}
-				>
-					<CircularProgress sx={{ display: loading ? 'block' : 'none' }} />
-					<ThumbUp sx={{ display: !loading ? 'block' : 'none' }} />
-				</IconButton>
+			<Tooltip label={video.liked ? `Liked on ${likedDate}` : 'Like Video'}>
+				<ActionIcon onClick={() => (video.liked ? unLikeVideo(video.id) : likeVideo(video.id))} loading={loading}>
+					<MdThumbUp size={25} color={video.liked ? 'green' : ''} />
+				</ActionIcon>
 			</Tooltip>
 		),
 		[likeVideo, likedDate, loading, unLikeVideo, video.id, video.liked]
@@ -55,16 +51,10 @@ export const VideoQueueButton = (props: VideoButtonsProps) => {
 
 	return useMemo(
 		() => (
-			<Tooltip title={video.queued ? 'Unqueue Video' : 'Queue Video'}>
-				<IconButton
-					disabled={loading}
-					onClick={() => (video.queued ? unQueueVideo(video.id) : queueVideo(video.id))}
-					color={video.queued ? 'error' : 'inherit'}
-				>
-					<CircularProgress sx={{ display: loading ? 'block' : 'none' }} />
-					<AddToQueue sx={{ display: video.queued && !loading ? 'none' : 'block' }} />
-					<RemoveFromQueue color="error" sx={{ display: video.queued && !loading ? 'block' : 'none' }} />
-				</IconButton>
+			<Tooltip label={video.queued ? 'Unqueue Video' : 'Queue Video'}>
+				<ActionIcon loading={loading} onClick={() => (video.queued ? unQueueVideo(video.id) : queueVideo(video.id))}>
+					{video.queued ? <MdRemoveFromQueue size={25} color="red" /> : <MdAddToQueue size={25} />}
+				</ActionIcon>
 			</Tooltip>
 		),
 		[loading, queueVideo, unQueueVideo, video.id, video.queued]
@@ -73,23 +63,18 @@ export const VideoQueueButton = (props: VideoButtonsProps) => {
 
 export const VideoWatchButton = (props: VideoButtonsProps) => {
 	const { video } = props;
-	const [open, setOpen] = useState(false);
 
 	const watchedDate = video.watched ? new Date(video.watched).toLocaleDateString() : '';
 
 	return useMemo(
-		() => (
-			<Tooltip
-				open={open}
-				onOpen={() => setOpen(true)}
-				onClose={() => setOpen(false)}
-				title={`Watched on ${watchedDate}`}
-			>
-				<IconButton onClick={() => setOpen(true)}>
-					<Visibility sx={{ display: video.watched ? 'block' : 'none' }} />
-				</IconButton>
-			</Tooltip>
-		),
-		[open, video.watched, watchedDate]
+		() =>
+			video.watched ? (
+				<Tooltip label={`Watched on ${watchedDate}`}>
+					<ActionIcon>
+						<MdVisibility size={25} />
+					</ActionIcon>
+				</Tooltip>
+			) : null,
+		[video.watched, watchedDate]
 	);
 };

@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Box, Button, Stack, Tooltip } from '@mui/material';
-import { SkipNext, SkipPrevious } from '@mui/icons-material';
+import { AspectRatio, Button, Flex, Stack } from '@mantine/core';
+import { MdSkipNext, MdSkipPrevious } from 'react-icons/md';
+
 import { useYoutubeVideoQueueQuery } from '../api/youtube';
 import VideoQueuePlayer from '../components/Youtube/VideoPlayer';
 import VideoQueueModal from '../components/Youtube/VideoQueueModal';
 import VideoInformation from '../components/Youtube/VideoInformation';
-import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
 
 interface YoutubeVideoQueueProps {
 	index: number;
@@ -28,8 +28,25 @@ const YoutubeVideoQueue = (props: YoutubeVideoQueueProps) => {
 
 	return useMemo(
 		() => (
-			<Stack direction="column">
-				<Box position="relative" height="80vh">
+			<Stack p="md">
+				<Flex justify="space-between">
+					<Button
+						leftIcon={<MdSkipPrevious />}
+						disabled={!prev}
+						onClick={() => history.push(`/youtube/videos/queue/${queueIndex - 1}`)}
+					>
+						Previous
+					</Button>
+					<VideoQueueModal currentVideo={currentVideo} queueIndex={queueIndex} />
+					<Button
+						rightIcon={<MdSkipNext />}
+						disabled={!next}
+						onClick={() => history.push(`/youtube/videos/queue/${queueIndex + 1}`)}
+					>
+						Next
+					</Button>
+				</Flex>
+				<AspectRatio ratio={16 / 9} sx={{ maxHeight: '75vh' }}>
 					<VideoQueuePlayer
 						video={currentVideo}
 						playing={true}
@@ -39,26 +56,8 @@ const YoutubeVideoQueue = (props: YoutubeVideoQueueProps) => {
 							}
 						}}
 					/>
-					<Box position="absolute" top="50%" right={0} display={next ? 'block' : 'none'}>
-						<Tooltip title="Next">
-							<Button variant="contained" onClick={() => history.push(`/youtube/videos/queue/${queueIndex + 1}`)}>
-								<SkipNext />
-							</Button>
-						</Tooltip>
-					</Box>
-					<Box position="absolute" top="50%" left={0} display={prev ? 'block' : 'none'}>
-						<Tooltip title="Previous">
-							<Button variant="contained" onClick={() => history.push(`/youtube/videos/queue/${queueIndex - 1}`)}>
-								<SkipPrevious />
-							</Button>
-						</Tooltip>
-					</Box>
-				</Box>
-				{currentVideo ? <VideoInformation video={currentVideo} /> : <Box />}
-				<Stack direction="row" gap={2}></Stack>
-				<Box position="fixed" top="25%" right={0}>
-					<VideoQueueModal currentVideo={currentVideo} queueIndex={queueIndex} />
-				</Box>
+				</AspectRatio>
+				{currentVideo && <VideoInformation video={currentVideo} />}
 			</Stack>
 		),
 		[currentVideo, history, next, prev, queueIndex]

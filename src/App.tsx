@@ -25,6 +25,7 @@ import YoutubeChannel from './pages/YoutubeChannel';
 import Account from './pages/Account';
 import MusicDownloader from './pages/MusicDownloader';
 import YoutubeSubscriptions from './pages/YoutubeSubscriptions';
+import YoutubeVideoQueue from './pages/YoutubeVideoQueue';
 
 const App = () => {
 	const [showSideBar, setShowSideBar] = useState(false);
@@ -140,10 +141,10 @@ const App = () => {
 								render={(props) => <YoutubeSubscriptions page={parseInt(props.match.params.page) || 1} />}
 							/>
 							<Route path="/youtube/subscriptions" render={() => <YoutubeSubscriptions page={1} />} />
-							{/* <Route
-						path="/youtube/videos/queue/:index"
-						render={(props) => <YoutubeVideoQueue index={parseInt(props.match.params.index)} />}
-					/> */}
+							<Route
+								path="/youtube/videos/queue/:index"
+								render={(props) => <YoutubeVideoQueue index={parseInt(props.match.params.index)} />}
+							/>
 							{/* <Route path="/youtube/videos" render={() => <YoutubeVideos />} /> */}
 							{/* <Route path="/youtube/video/:id" render={(props) => <YoutubeVideo id={props.match.params.id} />} /> */}
 							{/* <Route path="/music/downloader" render={() => <MusicDownloader />} /> */}

@@ -18,18 +18,16 @@ const SubscriptionCard = (props: SubscriptionCardProps) => {
 
 		return (
 			<Box ref={ref}>
-				<Link to={channelLink} style={{ textDecoration: 'none' }}>
-					<Card>
-						<Card.Section sx={{ position: 'relative' }}>
-							<Image src={subscription.channelThumbnail} alt={subscription.channelTitle} withPlaceholder height={200} />
-							{hovered && <Overlay opacity={0.5} color="black" />}
-						</Card.Section>
-						<Stack py={10}>
-							<Text>{subscription.channelTitle}</Text>
-							<Text>Subscribed on {publishedAt}</Text>
-						</Stack>
-					</Card>
-				</Link>
+				<Card component={Link} to={channelLink}>
+					<Card.Section sx={{ position: 'relative' }}>
+						<Image src={subscription.channelThumbnail} alt={subscription.channelTitle} withPlaceholder height={200} />
+						{hovered && <Overlay opacity={0.5} color="black" zIndex={1} />}
+					</Card.Section>
+					<Stack py={10}>
+						<Text>{subscription.channelTitle}</Text>
+						<Text>Subscribed on {publishedAt}</Text>
+					</Stack>
+				</Card>
 			</Box>
 		);
 	}, [

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Center, Divider, Grid, Pagination, Stack, Title } from '@mantine/core';
+import { Center, Divider, Grid, Loader, LoadingOverlay, Pagination, Stack, Title } from '@mantine/core';
 
 import { useYoutubeSubscriptionsQuery } from '../api/youtube';
 import SubscriptionCard from '../components/Youtube/SubscriptionCard';
@@ -19,17 +19,12 @@ const YoutubeSubscriptions = (props: YoutubeSubscriptionsProps) => {
 	const subscriptionsStatus = useYoutubeSubscriptionsQuery({ page, perPage });
 
 	const subscriptions = useMemo(
-		() =>
-			subscriptionsStatus.isSuccess && subscriptionsStatus.currentData
-				? subscriptionsStatus.currentData.subscriptions
-				: [],
-		[subscriptionsStatus.currentData, subscriptionsStatus.isSuccess]
+		() => (subscriptionsStatus.data ? subscriptionsStatus.data.subscriptions : []),
+		[subscriptionsStatus.data]
 	);
-
 	const totalPages = useMemo(
-		() =>
-			subscriptionsStatus.isSuccess && subscriptionsStatus.currentData ? subscriptionsStatus.currentData.totalPages : 1,
-		[subscriptionsStatus.currentData, subscriptionsStatus.isSuccess]
+		() => (subscriptionsStatus.data ? subscriptionsStatus.data.totalPages : 1),
+		[subscriptionsStatus.data]
 	);
 
 	return useMemo(
@@ -37,23 +32,34 @@ const YoutubeSubscriptions = (props: YoutubeSubscriptionsProps) => {
 			<Stack>
 				<Title order={2}>Subscriptions</Title>
 				<Divider />
-				<Grid>
-					{subscriptions.map((subscription, i) => (
-						<Grid.Col key={subscription.channelId} xs={12} sm={6} md={3} xl={2}>
-							<SubscriptionCard subscription={subscription} />
-						</Grid.Col>
-					))}
-				</Grid>
-				<Center>
-					<Pagination
-						total={totalPages}
-						page={page}
-						onChange={(newPage) => history.push(`/youtube/subscriptions/${newPage}`)}
-					/>
-				</Center>
+				<Stack sx={{ position: 'relative' }}>
+					{subscriptionsStatus.isLoading ? (
+						<Center>
+							<Loader />
+						</Center>
+					) : (
+						<>
+							<LoadingOverlay visible={subscriptionsStatus.isFetching} />
+							<Grid>
+								{subscriptions.map((subscription) => (
+									<Grid.Col key={subscription.channelId} xs={12} sm={6} md={3} xl={2}>
+										<SubscriptionCard subscription={subscription} />
+									</Grid.Col>
+								))}
+							</Grid>
+							<Center>
+								<Pagination
+									total={totalPages}
+									page={page}
+									onChange={(newPage) => history.push(`/youtube/subscriptions/${newPage}`)}
+								/>
+							</Center>
+						</>
+					)}
+				</Stack>
 			</Stack>
 		),
-		[history, page, subscriptions, totalPages]
+		[history, page, subscriptions, subscriptionsStatus.isFetching, subscriptionsStatus.isLoading, totalPages]
 	);
 };
 
