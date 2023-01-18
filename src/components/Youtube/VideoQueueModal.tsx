@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
-	ActionIcon,
 	Avatar,
 	Box,
 	Button,
@@ -12,14 +11,15 @@ import {
 	LoadingOverlay,
 	Modal,
 	Pagination,
+	ScrollArea,
 	Stack,
 	Text,
 	Title,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { MdClose } from 'react-icons/md';
 
 import { useYoutubeVideosQuery } from '../../api/youtube';
+import { VideoQueueButton } from './VideoButtons';
 
 interface VideoQueueModalProps {
 	currentVideo: YoutubeVideo | null;
@@ -38,8 +38,6 @@ const VideoQueueModal = (props: VideoQueueModalProps) => {
 
 	const [opened, handlers] = useDisclosure(false);
 
-	const history = useHistory();
-
 	const videosStatus = useYoutubeVideosQuery(filter);
 
 	const videos = useMemo(() => (videosStatus.data ? videosStatus.data.videos : []), [videosStatus.data]);
@@ -54,7 +52,7 @@ const VideoQueueModal = (props: VideoQueueModalProps) => {
 		() => (
 			<>
 				<Button onClick={handlers.open}>Open Queue</Button>
-				<Modal title="Queue" overflow="inside" size="lg" opened={opened} onClose={handlers.close}>
+				<Modal title="Queue" size="lg" opened={opened} onClose={handlers.close}>
 					{videosStatus.isLoading ? (
 						<Center>
 							<Loader />
@@ -63,45 +61,50 @@ const VideoQueueModal = (props: VideoQueueModalProps) => {
 						<>
 							<LoadingOverlay visible={videosStatus.isFetching} />
 							<Stack>
-								{videos.map((video, i) => (
-									<>
-										<Box
-											component={Link}
-											to={`/youtube/videos/queue/${i}`}
-											p="sm"
-											sx={{
-												textDecoration: 'none',
-												color: 'inherit',
-												borderRadius: 5,
-												'&:hover': {
-													backgroundColor: '#111111',
-												},
-											}}
-										>
-											<Flex align="center">
-												<Flex align="center" sx={{ flex: 9 }}>
-													<Avatar src={video.thumbnail} />
-													<Stack spacing="xs">
-														<Title order={6}>{video.title}</Title>
-														<Text sx={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{video.channelTitle}</Text>
-													</Stack>
-												</Flex>
-												<Box sx={{ flex: 3 }}>{video.id === currentVideo?.id && <Text>Now Playing</Text>}</Box>
+								<ScrollArea style={{ height: '70vh' }}>
+									{videos.map((video, i) => (
+										<>
+											<Flex
+												align="center"
+												p="sm"
+												sx={{
+													borderRadius: 5,
+													'&:hover': {
+														backgroundColor: '#111111',
+													},
+												}}
+											>
+												<Box
+													component={Link}
+													to={`/youtube/videos/queue/${i + 1 + filter.perPage * (filter.page - 1)}`}
+													sx={{
+														textDecoration: 'none',
+														color: 'inherit',
+														flex: 9,
+													}}
+													onClick={handlers.close}
+												>
+													<Flex align="center">
+														<Flex sx={{ flex: 3 }} align="center">
+															<Avatar src={video.thumbnail} />
+															<Stack spacing="xs">
+																<Title order={6}>{video.title}</Title>
+																<Text sx={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+																	{video.channelTitle}
+																</Text>
+															</Stack>
+														</Flex>
+														<Box sx={{ flex: 1 }}>{video.id === currentVideo?.id && <Text>Now Playing</Text>}</Box>
+													</Flex>
+												</Box>
 												<Box sx={{ flex: 1, alignItems: 'end' }}>
-													<ActionIcon
-														onClick={() => {
-															history.push(`/youtube/videos/queue/${i + 1 + filter.perPage * (filter.page - 1)}`);
-															handlers.close();
-														}}
-													>
-														<MdClose color="red" size={30} />
-													</ActionIcon>
+													<VideoQueueButton video={video} />
 												</Box>
 											</Flex>
-										</Box>
-										<Divider />
-									</>
-								))}
+											<Divider />
+										</>
+									))}
+								</ScrollArea>
 								<Center>
 									<Pagination
 										total={totalPages}
@@ -125,7 +128,6 @@ const VideoQueueModal = (props: VideoQueueModalProps) => {
 			filter.page,
 			filter.perPage,
 			currentVideo?.id,
-			history,
 		]
 	);
 };
