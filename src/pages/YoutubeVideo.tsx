@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { Box, CircularProgress, Divider, Grid, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+
 import { useYoutubeVideoQuery } from '../api/youtube';
 import VideoCard from '../components/Youtube/VideoCard';
 import VideoInformation from '../components/Youtube/VideoInformation';
 import VideoPlayer from '../components/Youtube/VideoPlayer';
-import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
 
 interface YoutubeVideoProps {
 	id: string;

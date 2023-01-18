@@ -85,7 +85,7 @@ const VideoQueueModal = (props: VideoQueueModalProps) => {
 													onClick={handlers.close}
 												>
 													<Flex align="center">
-														<Flex sx={{ flex: 3 }} align="center">
+														<Flex sx={{ flex: 3 }} align="center" wrap="nowrap">
 															<Avatar src={video.thumbnail} />
 															<Stack spacing="xs">
 																<Title order={6}>{video.title}</Title>

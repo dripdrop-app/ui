@@ -1,20 +1,21 @@
-import { useMemo, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useCallback, useMemo, useState } from 'react';
+import { generatePath, useHistory, useRouteMatch } from 'react-router-dom';
 import { Center, Divider, Grid, Loader, LoadingOverlay, Pagination, Stack, Title } from '@mantine/core';
 
 import { useYoutubeSubscriptionsQuery } from '../api/youtube';
 import SubscriptionCard from '../components/Youtube/SubscriptionCard';
 
-interface YoutubeSubscriptionsProps {
-	page: number;
-}
-
-const YoutubeSubscriptions = (props: YoutubeSubscriptionsProps) => {
-	const { page } = props;
-
+const YoutubeSubscriptions = () => {
 	const [perPage] = useState(48);
 
+	const { path, url, params } = useRouteMatch<{ page?: string }>();
 	const history = useHistory();
+
+	const { page } = useMemo(() => {
+		return {
+			page: params.page ? parseInt(params.page) : 1,
+		};
+	}, [params.page]);
 
 	const subscriptionsStatus = useYoutubeSubscriptionsQuery({ page, perPage });
 
@@ -25,6 +26,17 @@ const YoutubeSubscriptions = (props: YoutubeSubscriptionsProps) => {
 	const totalPages = useMemo(
 		() => (subscriptionsStatus.data ? subscriptionsStatus.data.totalPages : 1),
 		[subscriptionsStatus.data]
+	);
+
+	const updateUrl = useCallback(
+		(update: Partial<YoutubeVideosBody>) => {
+			let pathname = url;
+			if (update.page) {
+				pathname = generatePath(path, { ...params, page: update.page });
+			}
+			history.push({ ...history.location, pathname });
+		},
+		[history, params, path, url]
 	);
 
 	return useMemo(
@@ -48,18 +60,14 @@ const YoutubeSubscriptions = (props: YoutubeSubscriptionsProps) => {
 								))}
 							</Grid>
 							<Center>
-								<Pagination
-									total={totalPages}
-									page={page}
-									onChange={(newPage) => history.push(`/youtube/subscriptions/${newPage}`)}
-								/>
+								<Pagination total={totalPages} page={page} onChange={(newPage) => updateUrl({ page: newPage })} />
 							</Center>
 						</>
 					)}
 				</Stack>
 			</Stack>
 		),
-		[history, page, subscriptions, subscriptionsStatus.isFetching, subscriptionsStatus.isLoading, totalPages]
+		[page, subscriptions, subscriptionsStatus.isFetching, subscriptionsStatus.isLoading, totalPages, updateUrl]
 	);
 };
 

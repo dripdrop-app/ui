@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Route, Switch, Link, useRouteMatch } from 'react-router-dom';
+import { Route, Switch, Link, useRouteMatch, useLocation } from 'react-router-dom';
 import {
 	AppShell,
 	Avatar,
@@ -26,11 +26,14 @@ import Account from './pages/Account';
 import MusicDownloader from './pages/MusicDownloader';
 import YoutubeSubscriptions from './pages/YoutubeSubscriptions';
 import YoutubeVideoQueue from './pages/YoutubeVideoQueue';
+import YoutubeVideo from './pages/YoutubeVideo';
+import YoutubeVideos from './pages/YoutubeVideos';
 
 const App = () => {
 	const [showSideBar, setShowSideBar] = useState(false);
 
 	const match = useRouteMatch('/youtube/*');
+	const location = useLocation();
 
 	const sessionStatus = useCheckSessionQuery();
 	const youtubeAuthStatus = useCheckYoutubeAuthQuery();
@@ -54,6 +57,10 @@ const App = () => {
 			});
 		}
 	});
+
+	useEffect(() => {
+		window.scrollTo({ top: 0 });
+	}, [location.pathname]);
 
 	return (
 		<MantineProvider
@@ -100,7 +107,7 @@ const App = () => {
 										label="Cloud Downloader"
 										icon={<MdCloudDownload />}
 									/>
-									<NavLink component={Link} to="/youtube/videos" label="YouTube" icon={<BsYoutube />} />
+									<NavLink component={Link} to="/youtube/videos" label="Videos" icon={<BsYoutube />} />
 									<NavLink
 										component={Link}
 										to="/youtube/subscriptions"
@@ -132,22 +139,15 @@ const App = () => {
 						}
 					>
 						<Switch>
-							<Route
-								path="/youtube/channel/:id"
-								render={(props) => <YoutubeChannel channelId={props.match.params.id} />}
-							/>
-							<Route
-								path="/youtube/subscriptions/:page"
-								render={(props) => <YoutubeSubscriptions page={parseInt(props.match.params.page) || 1} />}
-							/>
-							<Route path="/youtube/subscriptions" render={() => <YoutubeSubscriptions page={1} />} />
+							<Route path="/youtube/channel/:channelId/:page?" render={() => <YoutubeChannel />} />
+							<Route path="/youtube/subscriptions/:page?" render={() => <YoutubeSubscriptions />} />
 							<Route
 								path="/youtube/videos/queue/:index"
 								render={(props) => <YoutubeVideoQueue index={parseInt(props.match.params.index)} />}
 							/>
-							{/* <Route path="/youtube/videos" render={() => <YoutubeVideos />} /> */}
+							<Route path="/youtube/videos/:page?" render={() => <YoutubeVideos />} />
 							{/* <Route path="/youtube/video/:id" render={(props) => <YoutubeVideo id={props.match.params.id} />} /> */}
-							{/* <Route path="/music/downloader" render={() => <MusicDownloader />} /> */}
+							<Route path="/music/downloader" render={() => <MusicDownloader />} />
 							<Route path="/account" render={() => <Account />} />
 							<Route path="/" render={() => <MusicDownloader />} />
 						</Switch>

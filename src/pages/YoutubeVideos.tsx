@@ -1,22 +1,18 @@
+import { Divider, Stack, Title } from '@mantine/core';
 import { useMemo } from 'react';
-import { Divider, Stack, Typography } from '@mui/material';
+
 import VideosView from '../components/Youtube/VideosView';
-import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
 
-interface YoutubeVideosProps {
-	channelId?: string;
-}
-
-const YoutubeVideos = (props: YoutubeVideosProps) => {
+const YoutubeVideos = () => {
 	return useMemo(
 		() => (
-			<Stack direction="column" spacing={2}>
-				<Typography variant="h4">Videos</Typography>
+			<Stack>
+				<Title order={2}>Videos</Title>
 				<Divider />
-				<VideosView channelId={props.channelId} />
+				<VideosView />
 			</Stack>
 		),
-		[props.channelId]
+		[]
 	);
 };
 
