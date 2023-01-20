@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
 	Avatar,
@@ -63,7 +63,7 @@ const VideoQueueModal = (props: VideoQueueModalProps) => {
 							<Stack>
 								<ScrollArea style={{ height: '70vh' }}>
 									{videos.map((video, i) => (
-										<>
+										<React.Fragment key={video.id}>
 											<Flex
 												align="center"
 												p="sm"
@@ -102,7 +102,7 @@ const VideoQueueModal = (props: VideoQueueModalProps) => {
 												</Box>
 											</Flex>
 											<Divider />
-										</>
+										</React.Fragment>
 									))}
 								</ScrollArea>
 								<Center>

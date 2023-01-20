@@ -29,7 +29,7 @@ const YoutubeVideo = (props: YoutubeVideoProps) => {
 				<Title order={3}>Related Videos</Title>
 				<Flex justify="space-between">
 					{relatedVideos?.map((video) => (
-						<Box sx={{ flex: 1 }}>
+						<Box sx={{ flex: 1 }} key={video.id}>
 							<VideoCard video={video} />
 						</Box>
 					))}
