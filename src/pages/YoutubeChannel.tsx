@@ -31,7 +31,7 @@ const YoutubeChannel = (props: YoutubeChannelProps) => {
 							<Title order={2}>{channel?.title}</Title>
 						</Flex>
 						<Divider />
-						<VideosView />
+						<VideosView channelId={channel.id} />
 					</>
 				)}
 			</Stack>
