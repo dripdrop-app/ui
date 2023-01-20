@@ -1,53 +1,41 @@
 import { useMemo } from 'react';
-import { Avatar, Box, CircularProgress, Divider, Stack, Typography } from '@mui/material';
+import { Avatar, Center, Divider, Flex, Loader, Stack, Title } from '@mantine/core';
+
 import { useYoutubeChannelQuery } from '../api/youtube';
-import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
 import VideosView from '../components/Youtube/VideosView';
 
 interface YoutubeChannelProps {
-	channelId: string;
+	id: string;
 }
 
 const YoutubeChannel = (props: YoutubeChannelProps) => {
-	const { channelId } = props;
+	const { id } = props;
 
-	const channelStatus = useYoutubeChannelQuery(channelId);
+	const channelStatus = useYoutubeChannelQuery(id);
 
 	const channel = useMemo(() => channelStatus.data, [channelStatus.data]);
 
 	return useMemo(
 		() => (
-			<Box>
-				<Stack
-					direction="row"
-					justifyContent="center"
-					display={channelStatus.isLoading || channelStatus.isFetching ? 'block' : 'none'}
-				>
-					<CircularProgress />
-				</Stack>
-				{channelStatus.isError ? (
-					<Stack direction="row" justifyContent="center">
-						Failed to load channel
-					</Stack>
+			<Stack sx={{ position: 'relative' }}>
+				{!channel ? (
+					<Center>
+						<Loader />
+					</Center>
 				) : (
-					<Box />
-				)}
-				{channel ? (
-					<Stack direction="column" spacing={2}>
-						<Stack direction="row" alignItems="center" spacing={2}>
-							<Avatar alt={channel.title} src={channel.thumbnail} />
-							<Typography variant="h4">{channel.title}</Typography>
-						</Stack>
+					<>
+						<Flex align="center">
+							<Avatar src={channel.thumbnail} />
+							<Title order={2}>{channel?.title}</Title>
+						</Flex>
 						<Divider />
-						<VideosView channelId={channelId} />
-					</Stack>
-				) : (
-					<Box />
+						<VideosView />
+					</>
 				)}
-			</Box>
+			</Stack>
 		),
-		[channel, channelId, channelStatus.isError, channelStatus.isFetching, channelStatus.isLoading]
+		[channel]
 	);
 };
 
-export default withYoutubeAuthPage(YoutubeChannel);
+export default YoutubeChannel;

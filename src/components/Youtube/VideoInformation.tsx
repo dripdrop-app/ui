@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { Stack, Typography, Link } from '@mui/material';
+import { Link } from 'react-router-dom';
+import { Flex, Stack, Text, Title } from '@mantine/core';
+
 import { VideoWatchButton, VideoLikeButton, VideoQueueButton } from './VideoButtons';
 
 interface VideoInformationProps {
@@ -15,23 +16,29 @@ const VideoInformation = (props: VideoInformationProps) => {
 
 	return useMemo(
 		() => (
-			<Stack direction="column" padding={2}>
-				<Stack direction="row" flexWrap="wrap" justifyContent="space-between">
-					<Typography variant="h6">{video.title}</Typography>
-					<Stack direction="row" alignItems="center">
+			<Stack>
+				<Flex justify="space-between">
+					<Title order={3}>{video.title}</Title>
+					<Flex>
 						<VideoWatchButton video={video} />
 						<VideoLikeButton video={video} />
 						<VideoQueueButton video={video} />
-					</Stack>
-				</Stack>
-				<Stack direction="row" flexWrap="wrap" justifyContent="space-between">
-					<Typography variant="body1">
-						<Link component={RouterLink} to={channelLink}>
-							{video.channelTitle}
-						</Link>
-					</Typography>
-					<Typography variant="body1">{publishedAt}</Typography>
-				</Stack>
+					</Flex>
+				</Flex>
+				<Flex justify="space-between">
+					<Text
+						component={Link}
+						to={channelLink}
+						sx={{
+							':hover': {
+								textDecoration: 'underline',
+							},
+						}}
+					>
+						{video.channelTitle}
+					</Text>
+					<Text>{publishedAt}</Text>
+				</Flex>
 			</Stack>
 		),
 		[channelLink, publishedAt, video]

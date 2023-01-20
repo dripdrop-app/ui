@@ -1,70 +1,57 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { CircularProgress, Divider, Grid, Stack, Typography } from '@mui/material';
+import { useMemo } from 'react';
+import { Center, Divider, Grid, Loader, Pagination, Stack, Title } from '@mantine/core';
+
 import { useYoutubeSubscriptionsQuery } from '../api/youtube';
-import useObject from '../utils/useObject';
-import InfiniteScroll from '../components/InfiniteScroll';
-import SubscriptionsPage from '../components/Youtube/SubscriptionsPage';
 import SubscriptionCard from '../components/Youtube/SubscriptionCard';
-import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
+import useSearchParams from '../utils/useSearchParams';
 
 const YoutubeSubscriptions = () => {
-	const [endReached, setEndReached] = useState(false);
+	const { params, setSearchParams } = useSearchParams({ perPage: 48, page: 1 });
 
-	const { object: filter, setObject: setFilter } = useObject<YoutubeSubscriptionBody>({
-		page: 1,
-		perPage: 48,
-	});
+	const subscriptionsStatus = useYoutubeSubscriptionsQuery(params);
 
-	const subscriptionsStatus = useYoutubeSubscriptionsQuery(filter);
-
-	const onEndReached = useCallback(() => {
-		if (!endReached && subscriptionsStatus.isSuccess) {
-			setFilter({ page: filter.page + 1 });
-		}
-	}, [endReached, filter.page, setFilter, subscriptionsStatus.isSuccess]);
-
-	useEffect(() => {
-		if (subscriptionsStatus.isSuccess && subscriptionsStatus.currentData) {
-			const { totalPages } = subscriptionsStatus.currentData;
-			if (totalPages <= filter.page) {
-				setEndReached(true);
-			}
-		}
-	}, [filter.page, subscriptionsStatus.currentData, subscriptionsStatus.isSuccess]);
+	const subscriptions = useMemo(
+		() => (subscriptionsStatus.data ? subscriptionsStatus.data.subscriptions : []),
+		[subscriptionsStatus.data]
+	);
+	const totalPages = useMemo(
+		() => (subscriptionsStatus.data ? subscriptionsStatus.data.totalPages : 1),
+		[subscriptionsStatus.data]
+	);
 
 	return useMemo(
 		() => (
-			<Stack direction="column" spacing={2}>
-				<Typography variant="h4">Subscriptions</Typography>
+			<Stack>
+				<Title order={2}>Subscriptions</Title>
 				<Divider />
-				<InfiniteScroll
-					items={Array(filter.page).fill(1)}
-					renderItem={(page, index) => (
-						<Grid container>
-							<SubscriptionsPage
-								perPage={filter.perPage}
-								page={index + 1}
-								renderItem={(subscription) => (
-									<Grid item xs={12} sm={6} md={3} xl={2} padding={1}>
+				<Stack sx={{ position: 'relative' }}>
+					{subscriptionsStatus.isLoading ? (
+						<Center>
+							<Loader />
+						</Center>
+					) : (
+						<>
+							<Grid>
+								{subscriptions.map((subscription) => (
+									<Grid.Col key={subscription.channelId} xs={12} sm={6} md={3} xl={2}>
 										<SubscriptionCard subscription={subscription} />
-									</Grid>
-								)}
-								renderLoading={() => (
-									<Grid item xs={12} padding={2}>
-										<Stack direction="row" justifyContent="center">
-											<CircularProgress />
-										</Stack>
-									</Grid>
-								)}
-							/>
-						</Grid>
+									</Grid.Col>
+								))}
+							</Grid>
+							<Center>
+								<Pagination
+									total={totalPages}
+									page={params.page}
+									onChange={(newPage) => setSearchParams({ page: newPage })}
+								/>
+							</Center>
+						</>
 					)}
-					onEndReached={onEndReached}
-				/>
+				</Stack>
 			</Stack>
 		),
-		[filter.page, filter.perPage, onEndReached]
+		[params.page, setSearchParams, subscriptions, subscriptionsStatus.isLoading, totalPages]
 	);
 };
 
-export default withYoutubeAuthPage(YoutubeSubscriptions);
+export default YoutubeSubscriptions;

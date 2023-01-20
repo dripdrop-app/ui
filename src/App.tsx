@@ -1,192 +1,157 @@
-import { ComponentProps, useEffect, useMemo, useRef, useState } from 'react';
-import { Route, Switch, Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Route, Switch, Link, useRouteMatch, useLocation } from 'react-router-dom';
 import {
-	Box,
-	AppBar,
+	AppShell,
 	Avatar,
-	Toolbar,
-	Typography,
-	Drawer,
-	List,
-	ListItem,
-	ListItemButton,
-	ListItemIcon,
-	ListItemText,
-	IconButton,
-	useTheme,
-	useMediaQuery,
-	Paper,
-	Tooltip,
-	CssBaseline,
-} from '@mui/material';
-import { CloudDownload, YouTube, Subscriptions, Queue, Menu, Close, AccountCircle } from '@mui/icons-material';
-import { ThemeProvider } from '@mui/material/styles';
-import { createCustomTheme } from './theme';
-import MusicDownloader from './pages/MusicDownloader';
+	Burger,
+	Flex,
+	Header,
+	MantineProvider,
+	MediaQuery,
+	Navbar,
+	NavLink,
+	Title,
+} from '@mantine/core';
+import { ModalsProvider, openModal } from '@mantine/modals';
+import { NotificationsProvider } from '@mantine/notifications';
+import { BsYoutube } from 'react-icons/bs';
+import { MdAccountCircle, MdCloudDownload, MdQueue, MdSubscriptions } from 'react-icons/md';
+
+import { useCheckSessionQuery } from './api/auth';
+import { useCheckYoutubeAuthQuery } from './api/youtube';
+import AuthPage from './components/Auth/AuthPage';
+import YoutubeAuthPage from './components/Auth/YoutubeAuthPage';
 import YoutubeChannel from './pages/YoutubeChannel';
-import YoutubeSubscriptions from './pages/YoutubeSubscriptions';
-import YoutubeVideo from './pages/YoutubeVideo';
-import YoutubeVideoQueue from './pages/YoutubeVideoQueue';
-// import YoutubeVideoQueuePlayer from './components/Youtube/VideoQueuePlayer';
-import YoutubeVideos from './pages/YoutubeVideos';
 import Account from './pages/Account';
+import MusicDownloader from './pages/MusicDownloader';
+import YoutubeSubscriptions from './pages/YoutubeSubscriptions';
+import YoutubeVideoQueue from './pages/YoutubeVideoQueue';
+import YoutubeVideo from './pages/YoutubeVideo';
+import YoutubeVideos from './pages/YoutubeVideos';
 
-const AppShell = (props: ComponentProps<any>) => {
-	const [openDrawer, setOpenDrawer] = useState(false);
-	const [listWidth, setListWidth] = useState(0);
+const App = () => {
+	const [showSideBar, setShowSideBar] = useState(false);
 
-	const listRef = useRef<HTMLDivElement>(null);
+	const match = useRouteMatch('/youtube/*');
+	const location = useLocation();
 
-	// const isVideoPage = useRouteMatch({
-	// 	path: ['/youtube/videos/queue', '/youtube/video'],
-	// });
-
-	const theme = useTheme();
-	const isSmall = useMediaQuery(theme.breakpoints.down('md'));
+	const sessionStatus = useCheckSessionQuery();
+	const youtubeAuthStatus = useCheckYoutubeAuthQuery();
 
 	useEffect(() => {
-		const list = listRef.current;
-		const observer = new ResizeObserver((entries) => {
-			for (const entry of entries) {
-				setListWidth(entry.target.clientWidth);
-			}
-		});
-		if (list) {
-			observer.observe(list);
+		if (sessionStatus.isError) {
+			openModal({
+				withCloseButton: false,
+				children: <AuthPage />,
+				closeOnClickOutside: false,
+			});
 		}
-		return () => {
-			if (list) {
-				observer.unobserve(list);
-			}
-		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [window.innerWidth]);
+	}, [sessionStatus.isError]);
 
-	const ListItems = useMemo(() => {
-		const items = {
-			'Music Downloader': {
-				link: '/music/downloader',
-				icon: CloudDownload,
-			},
-			Videos: {
-				link: '/youtube/videos',
-				icon: YouTube,
-			},
-			Subscriptions: {
-				link: '/youtube/subscriptions',
-				icon: Subscriptions,
-			},
-			Queue: {
-				link: '/youtube/videos/queue/1',
-				icon: Queue,
-			},
-			Account: {
-				link: '/account',
-				icon: AccountCircle,
-			},
-		};
-		return Object.keys(items).map((title) => {
-			const info = items[title as keyof typeof items];
-			const Icon = info.icon;
-			return (
-				<ListItem key={title} disablePadding>
-					<Tooltip title={title} placement="right">
-						<ListItemButton sx={{ padding: 2 }} component={Link} to={info.link} onClick={() => setOpenDrawer(false)}>
-							<ListItemIcon
+	useEffect(() => {
+		if (sessionStatus.isSuccess && youtubeAuthStatus.isError && match) {
+			openModal({
+				withCloseButton: false,
+				children: <YoutubeAuthPage />,
+				closeOnClickOutside: false,
+			});
+		}
+	});
+
+	useEffect(() => {
+		window.scrollTo({ top: 0 });
+	}, [location.pathname]);
+
+	return (
+		<MantineProvider
+			withGlobalStyles
+			withNormalizeCSS
+			theme={{
+				colorScheme: 'dark',
+				components: {
+					Anchor: {
+						defaultProps: {
+							target: '_blank',
+							rel: 'noopener noreferrer',
+						},
+					},
+					Flex: {
+						defaultProps: {
+							wrap: { base: 'wrap', sm: 'nowrap' },
+							gap: 'md',
+						},
+					},
+				},
+			}}
+		>
+			<ModalsProvider>
+				<NotificationsProvider position="top-center">
+					<AppShell
+						navbarOffsetBreakpoint="sm"
+						navbar={
+							<Navbar
+								width={{ sm: 200 }}
+								hiddenBreakpoint="sm"
+								hidden={!showSideBar}
+								p="sm"
 								sx={(theme) => ({
-									[theme.breakpoints.up('md')]: {
-										minWidth: 0,
+									'& .mantine-NavLink-icon': {
+										color: theme.colors.blue[8],
 									},
 								})}
 							>
-								<Icon />
-							</ListItemIcon>
-							<ListItemText
-								sx={(theme) => ({
-									[theme.breakpoints.up('md')]: {
-										display: 'none',
-									},
-								})}
-								primary={title}
-							/>
-						</ListItemButton>
-					</Tooltip>
-				</ListItem>
-			);
-		});
-	}, []);
-
-	return useMemo(
-		() => (
-			<Box display="flex">
-				<AppBar position="fixed" component={Paper} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-					<Toolbar>
-						<IconButton
-							sx={(theme) => ({
-								[theme.breakpoints.up('md')]: {
-									display: 'none',
-								},
-							})}
-							onClick={() => setOpenDrawer(!openDrawer)}
-						>
-							<Menu sx={{ display: openDrawer ? 'none' : 'block' }} />
-							<Close sx={{ display: openDrawer ? 'block' : 'none' }} />
-						</IconButton>
-						<Avatar alt="dripdrop" src="https://dripdrop-space.nyc3.digitaloceanspaces.com/artwork/dripdrop.png" />
-						<Typography variant="h5">dripdrop</Typography>
-					</Toolbar>
-				</AppBar>
-				<Drawer variant={isSmall ? 'temporary' : 'permanent'} anchor="left" open={openDrawer}>
-					<List ref={listRef} component={Paper} sx={{ height: '100%' }}>
-						<Toolbar />
-						{ListItems}
-					</List>
-				</Drawer>
-				<Box
-					component="main"
-					padding={4}
-					sx={(theme) => ({
-						width: '100%',
-						height: '100%',
-						marginLeft: `${listWidth}px`,
-						[theme.breakpoints.down('md')]: {
-							marginLeft: 0,
-						},
-					})}
-				>
-					<Toolbar />
-					{props.children}
-					{/* <Toolbar />
-					<Box display={isVideoPage ? 'none' : 'contents'}>
-						<YoutubeVideoQueuePlayer />
-					</Box> */}
-				</Box>
-			</Box>
-		),
-		[openDrawer, isSmall, ListItems, props.children, listWidth]
-	);
-};
-
-const App = () => {
-	return (
-		<ThemeProvider theme={createCustomTheme('dark')}>
-			<CssBaseline />
-			<AppShell>
-				<Switch>
-					<Route path="/youtube/channel/:id" render={(props) => <YoutubeChannel channelId={props.match.params.id} />} />
-					<Route path="/youtube/subscriptions" render={() => <YoutubeSubscriptions />} />
-					<Route
-						path="/youtube/videos/queue/:index"
-						render={(props) => <YoutubeVideoQueue index={parseInt(props.match.params.index)} />}
-					/>
-					<Route path="/youtube/videos" render={() => <YoutubeVideos />} />
-					<Route path="/youtube/video/:id" render={(props) => <YoutubeVideo id={props.match.params.id} />} />
-					<Route path="/music/downloader" render={() => <MusicDownloader />} />
-					<Route path="/account" render={() => <Account />} />
-					<Route path="/" render={() => <MusicDownloader />} />
-				</Switch>
-			</AppShell>
-		</ThemeProvider>
+								<Navbar.Section grow>
+									<NavLink
+										component={Link}
+										to="/music/downloader"
+										label="Cloud Downloader"
+										icon={<MdCloudDownload />}
+									/>
+									<NavLink component={Link} to="/youtube/videos" label="Videos" icon={<BsYoutube />} />
+									<NavLink
+										component={Link}
+										to="/youtube/subscriptions"
+										label="Subscriptions"
+										icon={<MdSubscriptions />}
+									/>
+									<NavLink component={Link} to="/youtube/videos/queue" label="Queue" icon={<MdQueue />} />
+								</Navbar.Section>
+								<Navbar.Section>
+									<NavLink component={Link} to="/account" label="Account" icon={<MdAccountCircle />} />
+								</Navbar.Section>
+							</Navbar>
+						}
+						header={
+							<Header sx={(theme) => ({ backgroundColor: theme.colors.blue[8] })} height={{ base: 65 }}>
+								<Flex align="center" direction="row" sx={{ height: '100%' }} mx="lg">
+									<MediaQuery largerThan="sm" styles={{ display: 'none' }}>
+										<Burger opened={showSideBar} onClick={() => setShowSideBar(!showSideBar)} />
+									</MediaQuery>
+									<Avatar
+										alt="dripdrop"
+										src="https://dripdrop-space.nyc3.digitaloceanspaces.com/artwork/dripdrop.png"
+									/>
+									<Title color="white" order={3} weight={600}>
+										dripdrop
+									</Title>
+								</Flex>
+							</Header>
+						}
+					>
+						<Switch>
+							<Route path="/youtube/channel/:id" render={(props) => <YoutubeChannel id={props.match.params.id} />} />
+							<Route path="/youtube/subscriptions" render={() => <YoutubeSubscriptions />} />
+							<Route path="/youtube/videos/queue" render={() => <YoutubeVideoQueue />} />
+							<Route path="/youtube/videos" render={() => <YoutubeVideos />} />
+							<Route path="/youtube/video/:id" render={(props) => <YoutubeVideo id={props.match.params.id} />} />
+							<Route path="/music/downloader" render={() => <MusicDownloader />} />
+							<Route path="/account" render={() => <Account />} />
+							<Route path="/" render={() => <MusicDownloader />} />
+						</Switch>
+					</AppShell>
+				</NotificationsProvider>
+			</ModalsProvider>
+		</MantineProvider>
 	);
 };
 

@@ -3,7 +3,7 @@ import ReactPlayer from 'react-player';
 import { useAddYoutubeVideoWatchMutation } from '../../api/youtube';
 
 interface VideoPlayerProps {
-	video: YoutubeVideo | null;
+	video: YoutubeVideo | null | undefined;
 	playing?: boolean;
 	onEnd?: Function;
 	onProgress?: Function;

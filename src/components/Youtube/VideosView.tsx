@@ -1,101 +1,92 @@
-import { useMemo, useEffect, useCallback, useState } from 'react';
-import { Box, Checkbox, CircularProgress, FormControlLabel, Grid, Stack } from '@mui/material';
-import { useYoutubeVideosQuery } from '../../api/youtube';
-import useObject from '../../utils/useObject';
-import InfiniteScroll from '../InfiniteScroll';
-import YoutubeVideosPage from './VideosPage';
+import { useMemo } from 'react';
+import { Center, Checkbox, Grid, Loader, MultiSelect, Pagination, Stack } from '@mantine/core';
+
+import { useYoutubeVideoCategoriesQuery, useYoutubeVideosQuery } from '../../api/youtube';
 import YoutubeVideoCard from './VideoCard';
-import CategorySelect from './CategorySelect';
+import useSearchParams from '../../utils/useSearchParams';
 
 interface VideosViewProps {
 	channelId?: string;
 }
 
 const VideosView = (props: VideosViewProps) => {
-	const [endReached, setEndReached] = useState(false);
+	const { channelId } = props;
 
-	const { object: filter, setObject: setFilter } = useObject<YoutubeVideosBody>({
-		selectedCategories: [],
-		page: 1,
+	const { params, setSearchParams } = useSearchParams({
 		perPage: 48,
-		likedOnly: false,
-		channelId: props.channelId,
+		page: 1,
+		selectedCategories: [] as string[],
+		likedOnly: false as boolean,
 	});
 
-	const videosStatus = useYoutubeVideosQuery(filter);
+	const videosStatus = useYoutubeVideosQuery({
+		...params,
+		selectedCategories: params.selectedCategories.map((id) => parseInt(id)),
+		channelId,
+	});
+	const videoCategoriesStatus = useYoutubeVideoCategoriesQuery({ channelId });
 
-	const onEndReached = useCallback(() => {
-		if (!endReached && !videosStatus.isLoading && !videosStatus.isFetching) {
-			setFilter({ page: filter.page + 1 });
-		}
-	}, [endReached, filter.page, setFilter, videosStatus.isFetching, videosStatus.isLoading]);
-
-	useEffect(() => {
-		if (videosStatus.isSuccess && videosStatus.currentData) {
-			const { totalPages } = videosStatus.currentData;
-			if (totalPages < filter.page) {
-				setEndReached(true);
-			}
-		}
-	}, [filter.page, videosStatus.currentData, videosStatus.isSuccess]);
+	const categories = useMemo(
+		() => (videoCategoriesStatus.data ? videoCategoriesStatus.data.categories : []),
+		[videoCategoriesStatus.data]
+	);
+	const { videos, totalPages } = useMemo(
+		() => (videosStatus.data ? videosStatus.data : { videos: [], totalPages: 1 }),
+		[videosStatus.data]
+	);
 
 	return useMemo(
 		() => (
-			<Box>
-				<Stack direction="row" justifyContent="space-between" paddingBottom={1} flexWrap="wrap">
-					<FormControlLabel
-						control={
-							<Checkbox
-								checked={filter.likedOnly}
-								onChange={(e, checked) => setFilter({ likedOnly: checked, page: 1 })}
-							/>
-						}
-						label="Show Liked Only"
-					/>
-					<CategorySelect
-						currentCategories={filter.selectedCategories}
-						onChange={(newCategories) => setFilter({ selectedCategories: newCategories, page: 1 })}
-					/>
-				</Stack>
-				<InfiniteScroll
-					items={Array(filter.page).fill(1)}
-					renderItem={(page, index) => (
-						<Grid container>
-							<YoutubeVideosPage
-								selectedCategories={filter.selectedCategories}
-								perPage={filter.perPage}
-								page={index + 1}
-								likedOnly={filter.likedOnly}
-								queuedOnly={filter.queuedOnly}
-								channelId={filter.channelId}
-								renderItem={(video) => (
-									<Grid item xs={12} sm={6} md={3} xl={2} padding={1}>
-										<YoutubeVideoCard video={video} />
-									</Grid>
-								)}
-								renderLoading={() => (
-									<Grid item xs={12} padding={2}>
-										<Stack direction="row" justifyContent="center">
-											<CircularProgress />
-										</Stack>
-									</Grid>
-								)}
-							/>
+			<Stack sx={{ position: 'relative' }}>
+				{videoCategoriesStatus.isLoading || videosStatus.isLoading ? (
+					<Center>
+						<Loader />
+					</Center>
+				) : (
+					<>
+						<Checkbox
+							label="Show Liked Only"
+							checked={params.likedOnly}
+							onChange={(e) => setSearchParams({ likedOnly: e.target.checked })}
+						/>
+						<MultiSelect
+							label="Categories"
+							placeholder="Select Categories"
+							data={categories.map((category) => ({
+								value: category.id.toString(),
+								label: category.name,
+							}))}
+							value={params.selectedCategories}
+							onChange={(newCategories) => setSearchParams({ selectedCategories: newCategories })}
+						/>
+						<Grid>
+							{videos.map((video) => (
+								<Grid.Col key={video.id} xs={12} sm={6} md={3} xl={2}>
+									<YoutubeVideoCard video={video} />
+								</Grid.Col>
+							))}
 						</Grid>
-					)}
-					onEndReached={onEndReached}
-				/>
-			</Box>
+						<Center>
+							<Pagination
+								total={totalPages}
+								page={params.page}
+								onChange={(newPage) => setSearchParams({ page: newPage })}
+							/>
+						</Center>
+					</>
+				)}
+			</Stack>
 		),
 		[
-			filter.likedOnly,
-			filter.selectedCategories,
-			filter.page,
-			filter.perPage,
-			filter.queuedOnly,
-			filter.channelId,
-			onEndReached,
-			setFilter,
+			videoCategoriesStatus.isLoading,
+			videosStatus.isLoading,
+			params.likedOnly,
+			params.selectedCategories,
+			params.page,
+			categories,
+			videos,
+			totalPages,
+			setSearchParams,
 		]
 	);
 };

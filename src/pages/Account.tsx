@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
-import { Checkbox, Container, FormControlLabel, Stack, TextField } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
+import { Button, Checkbox, Container, Stack, TextInput } from '@mantine/core';
 import { useCheckSessionQuery, useLogoutMutation } from '../api/auth';
-import withAuthPage from '../components/Auth/AuthPage';
 
 const Account = () => {
 	const sessionStatus = useCheckSessionQuery();
@@ -19,12 +17,12 @@ const Account = () => {
 		if (user) {
 			return (
 				<Container>
-					<Stack direction="column" spacing={2}>
-						<TextField label="Email" value={user.email} disabled />
-						<FormControlLabel control={<Checkbox checked={user.admin} disabled />} label="Admin" />
-						<LoadingButton color="error" loading={logoutStatus.isLoading} onClick={() => logout()}>
+					<Stack spacing="md">
+						<TextInput label="Email" value={user.email} onChange={() => {}} />
+						<Checkbox label="Admin" checked={user.admin} onChange={() => {}} />
+						<Button variant="light" color="red" onClick={() => logout()} loading={logoutStatus.isLoading}>
 							Logout
-						</LoadingButton>
+						</Button>
 					</Stack>
 				</Container>
 			);
@@ -33,4 +31,4 @@ const Account = () => {
 	}, [logout, logoutStatus.isLoading, user]);
 };
 
-export default withAuthPage(Account);
+export default Account;

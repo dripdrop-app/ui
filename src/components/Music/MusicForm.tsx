@@ -1,25 +1,22 @@
-import { useRef, useCallback, useEffect, useMemo, useState } from 'react';
-import { useForm, Controller, useWatch } from 'react-hook-form';
+import { useCallback, useEffect, useMemo } from 'react';
 import {
-	Container,
-	Stack,
-	Typography,
-	TextField,
-	Switch,
-	InputAdornment,
-	Button,
-	Paper,
-	IconButton,
-	CircularProgress,
-	Tooltip,
-	Snackbar,
-	Alert,
 	Box,
+	Button,
+	Container,
 	Divider,
-} from '@mui/material';
-import { LoadingButton } from '@mui/lab';
-import { FileUpload } from '@mui/icons-material';
-import { debounce } from 'lodash';
+	FileInput,
+	Flex,
+	Image,
+	Loader,
+	Stack,
+	Switch,
+	TextInput,
+	Title,
+} from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
+import { showNotification } from '@mantine/notifications';
+import { useForm, Controller, useWatch } from 'react-hook-form';
+
 import {
 	useLazyCreateFileJobQuery,
 	useLazyCreateYoutubeJobQuery,
@@ -30,14 +27,13 @@ import {
 import { isBase64, isValidImage, isValidLink, isValidYTLink, resolveAlbumFromTitle } from '../../utils/helpers';
 
 const MusicForm = () => {
-	const [openSuccess, setOpenSuccess] = useState(false);
-	const [openError, setOpenError] = useState(false);
-	const fileRef = useRef<HTMLInputElement>(null);
-
 	const { reset, handleSubmit, control, trigger, setValue } = useForm<MusicFormState>({
 		reValidateMode: 'onBlur',
 	});
 	const watchFields = useWatch({ control });
+
+	const [debouncedArtworkUrl] = useDebouncedValue(watchFields.artworkUrl, 500);
+	const [debouncedYoutubeUrl] = useDebouncedValue(watchFields.youtubeUrl, 500);
 
 	const [createFileJob, createFileJobStatus] = useLazyCreateFileJobQuery();
 	const [createYoutubeJob, createYoutubeJobStatus] = useLazyCreateYoutubeJobQuery();
@@ -76,35 +72,42 @@ const MusicForm = () => {
 
 	const onSubmit = useCallback(
 		async (data: MusicFormState) => {
+			const successNotification = () =>
+				showNotification({
+					title: 'Success',
+					message: 'Job Created Successfully',
+					color: 'green',
+				});
+			const errorNotification = () =>
+				showNotification({
+					title: 'Error',
+					message: 'Job Failed to Start',
+					color: 'red',
+				});
+
 			if (data.fileSwitch) {
 				const status = await createFileJob(data);
 				if (status.isSuccess) {
 					reset();
-					setOpenSuccess(true);
+					successNotification();
 				} else if (status.isError) {
-					setOpenError(true);
+					errorNotification();
 				}
 			} else {
 				const status = await createYoutubeJob(data);
 				if (status.isSuccess) {
 					reset();
-					setOpenSuccess(true);
+					successNotification();
 				} else if (status.isError) {
-					setOpenError(true);
+					errorNotification();
 				}
 			}
 		},
 		[createFileJob, createYoutubeJob, reset]
 	);
 
-	const createInputLoadingAdornment = useCallback(
-		(b: boolean) => <CircularProgress sx={{ display: b ? 'block' : 'none' }} size="1em" />,
-		[]
-	);
-
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const debounceResolveArtworkUrl = useCallback(
-		debounce(async (artworkUrl: string) => {
+	const resolveArtworkUrl = useCallback(
+		async (artworkUrl: string) => {
 			if (artworkUrl) {
 				if (isBase64(artworkUrl) || isValidImage(artworkUrl)) {
 					return setValue('resolvedArtworkUrl', artworkUrl);
@@ -117,13 +120,13 @@ const MusicForm = () => {
 				}
 			}
 			return setValue('resolvedArtworkUrl', '');
-		}, 500),
-		[]
+		},
+		[getArtwork, setValue]
 	);
 
 	useEffect(() => {
-		debounceResolveArtworkUrl(watchFields.artworkUrl || '');
-	}, [debounceResolveArtworkUrl, watchFields.artworkUrl]);
+		resolveArtworkUrl(debouncedArtworkUrl || '');
+	}, [debouncedArtworkUrl, resolveArtworkUrl]);
 
 	const getFileTags = useCallback(
 		async (file: File) => {
@@ -163,9 +166,8 @@ const MusicForm = () => {
 		}
 	}, [setValue, watchFields.title]);
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const debounceGetGrouping = useCallback(
-		debounce(async (youtubeUrl: string) => {
+	const resolveGrouping = useCallback(
+		async (youtubeUrl: string) => {
 			if (youtubeUrl) {
 				if (isValidYTLink(youtubeUrl)) {
 					const status = await getGrouping(youtubeUrl);
@@ -175,48 +177,23 @@ const MusicForm = () => {
 					}
 				}
 			}
-		}, 500),
-		[]
+		},
+		[getGrouping, setValue]
 	);
 
 	useEffect(() => {
-		debounceGetGrouping(watchFields.youtubeUrl || '');
-	}, [debounceGetGrouping, watchFields.youtubeUrl]);
+		resolveGrouping(debouncedYoutubeUrl || '');
+	}, [debouncedYoutubeUrl, resolveGrouping]);
 
 	return useMemo(
 		() => (
-			<Stack direction="column" spacing={2}>
-				<Snackbar
-					open={openSuccess}
-					onClose={() => setOpenSuccess(false)}
-					anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-				>
-					<Alert severity="success">Job Started Successfully</Alert>
-				</Snackbar>
-				<Snackbar
-					open={openError}
-					onClose={() => setOpenError(false)}
-					anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-				>
-					<Alert severity="error">Job Failed to Submit</Alert>
-				</Snackbar>
-				<Typography variant="h4">Music Downloader / Converter</Typography>
+			<Stack>
+				<Title order={2}>Music Downloader / Converter</Title>
 				<Divider />
-				<Box>
-					<Container>
-						<Stack component="form" onSubmit={handleSubmit(onSubmit)} spacing={4}>
-							<Stack
-								direction="row"
-								alignItems="center"
-								spacing={{
-									xs: 0,
-									md: 2,
-								}}
-								flexWrap={{
-									xs: 'wrap',
-									md: 'nowrap',
-								}}
-							>
+				<Container fluid w={{ base: '100%', sm: 1500 }}>
+					<Box component="form" onSubmit={handleSubmit(onSubmit)}>
+						<Stack>
+							<Flex align="center">
 								<Controller
 									name="youtubeUrl"
 									control={control}
@@ -232,15 +209,16 @@ const MusicForm = () => {
 										} else if (fieldState.error?.type === 'required') {
 											error = 'Required';
 										}
+
 										return (
-											<TextField
+											<TextInput
+												sx={{ width: '100%' }}
 												{...field}
-												error={!!error}
-												helperText={error}
+												error={error}
 												label="Youtube URL"
-												variant="standard"
+												placeholder="Enter Youtube URL"
 												disabled={watchFields.fileSwitch}
-												fullWidth
+												required={!watchFields.fileSwitch}
 											/>
 										);
 									}}
@@ -249,7 +227,7 @@ const MusicForm = () => {
 									name="fileSwitch"
 									control={control}
 									defaultValue={false}
-									render={({ field }) => <Switch {...field} checked={field.value} />}
+									render={({ field }) => <Switch {...field} value="" checked={field.value} />}
 								/>
 								<Controller
 									name="file"
@@ -262,96 +240,42 @@ const MusicForm = () => {
 											error = 'Required';
 										}
 										return (
-											<TextField
-												value={watchFields.file?.name || ''}
-												error={!!error}
-												helperText={error}
-												variant="standard"
-												disabled={true}
-												InputProps={{
-													endAdornment: (
-														<InputAdornment position="end">
-															<Tooltip title="Upload">
-																<Box>
-																	<IconButton
-																		onClick={() => {
-																			if (fileRef.current) {
-																				const file = fileRef.current;
-																				file.click();
-																			}
-																		}}
-																		disabled={!watchFields.fileSwitch}
-																	>
-																		<input
-																			ref={fileRef}
-																			onChange={(e) => {
-																				const files = e.target.files;
-																				if (files) {
-																					const file = files[0];
-																					setValue('file', file);
-																					trigger();
-																				}
-																			}}
-																			onBlur={field.onBlur}
-																			hidden
-																			type="file"
-																			accept="audio/*"
-																		/>
-																		<FileUpload />
-																	</IconButton>
-																</Box>
-															</Tooltip>
-														</InputAdornment>
-													),
-												}}
-												fullWidth
+											<FileInput
+												sx={{ width: '100%' }}
+												{...field}
+												error={error}
+												label="Filename"
+												placeholder="Select File"
+												required={watchFields.fileSwitch}
+												disabled={!watchFields.fileSwitch}
+												accept="audio/mpeg,audio/wav"
 											/>
 										);
 									}}
 								/>
-							</Stack>
-							<Stack
-								direction="row"
-								alignItems="center"
-								spacing={{
-									xs: 0,
-									md: 2,
-								}}
-								flexWrap={{
-									xs: 'wrap',
-									md: 'nowrap',
-								}}
-							>
-								<Paper variant="outlined">
-									<img
+							</Flex>
+							<Flex align="center">
+								<Box w="100%">
+									<Image
 										alt="blank"
-										width="100%"
 										src={
 											watchFields.resolvedArtworkUrl ||
 											'https://dripdrop-space.nyc3.digitaloceanspaces.com/artwork/blank_image.jpeg'
 										}
+										withPlaceholder
 									/>
-								</Paper>
-								<Stack
-									spacing={2}
-									direction="column"
-									width={{
-										xs: '100%',
-										md: '50%',
-									}}
-								>
+								</Box>
+								<Stack justify="center" spacing="md" w="100%">
 									<Controller
 										name="artworkUrl"
 										control={control}
 										defaultValue={''}
 										render={({ field, fieldState }) => (
-											<TextField
+											<TextInput
 												{...field}
-												error={!!fieldState.error}
-												helperText={fieldState.error?.message}
+												error={fieldState.error}
 												label="Artwork URL"
-												variant="standard"
-												fullWidth
+												placeholder="Enter Artwork URL"
 												disabled={tagsLoading}
 											/>
 										)}
@@ -360,34 +284,20 @@ const MusicForm = () => {
 										name="resolvedArtworkUrl"
 										control={control}
 										defaultValue={''}
-										render={({ field }) => (
-											<TextField
+										render={({ field, fieldState }) => (
+											<TextInput
 												{...field}
+												error={fieldState.error}
 												label="Resolved Artwork URL"
-												variant="standard"
-												fullWidth
 												disabled
-												InputProps={{
-													endAdornment: createInputLoadingAdornment(artworkLoading || tagsLoading),
-												}}
+												rightSection={artworkLoading || tagsLoading ? <Loader size="xs" /> : null}
 											/>
 										)}
 									/>
 									<Button onClick={() => setValue('artworkUrl', '')}>Clear</Button>
 								</Stack>
-							</Stack>
-							<Stack
-								direction="row"
-								justifyContent="space-around"
-								spacing={{
-									xs: 0,
-									md: 2,
-								}}
-								flexWrap={{
-									xs: 'wrap',
-									md: 'nowrap',
-								}}
-							>
+							</Flex>
+							<Flex>
 								<Controller
 									name="title"
 									control={control}
@@ -399,17 +309,15 @@ const MusicForm = () => {
 											error = 'Required';
 										}
 										return (
-											<TextField
+											<TextInput
+												sx={{ width: '100%' }}
 												{...field}
-												error={!!error}
-												helperText={error}
+												error={error}
 												label="Title"
-												variant="standard"
-												fullWidth
+												placeholder="Enter Title"
+												withAsterisk
 												disabled={tagsLoading}
-												InputProps={{
-													endAdornment: createInputLoadingAdornment(tagsLoading),
-												}}
+												rightSection={tagsLoading ? <Loader size="xs" /> : null}
 											/>
 										);
 									}}
@@ -425,17 +333,15 @@ const MusicForm = () => {
 											error = 'Required';
 										}
 										return (
-											<TextField
+											<TextInput
+												sx={{ width: '100%' }}
 												{...field}
-												error={!!error}
-												helperText={error}
+												error={error}
 												label="Artist"
-												variant="standard"
-												fullWidth
+												placeholder="Enter Artist"
+												withAsterisk
 												disabled={tagsLoading}
-												InputProps={{
-													endAdornment: createInputLoadingAdornment(tagsLoading),
-												}}
+												rightSection={tagsLoading ? <Loader size="xs" /> : null}
 											/>
 										);
 									}}
@@ -451,17 +357,15 @@ const MusicForm = () => {
 											error = 'Required';
 										}
 										return (
-											<TextField
+											<TextInput
+												sx={{ width: '100%' }}
 												{...field}
-												error={!!error}
-												helperText={error}
+												error={error}
 												label="Album"
-												variant="standard"
-												fullWidth
+												placeholder="Enter Album"
+												withAsterisk
 												disabled={tagsLoading}
-												InputProps={{
-													endAdornment: createInputLoadingAdornment(tagsLoading),
-												}}
+												rightSection={tagsLoading ? <Loader size="xs" /> : null}
 											/>
 										);
 									}}
@@ -471,61 +375,39 @@ const MusicForm = () => {
 									control={control}
 									defaultValue={''}
 									render={({ field }) => (
-										<TextField
+										<TextInput
+											sx={{ width: '100%' }}
 											{...field}
 											label="Grouping"
-											variant="standard"
-											fullWidth
+											placeholder="Enter Grouping"
 											disabled={tagsLoading || groupingLoading}
-											InputProps={{
-												endAdornment: createInputLoadingAdornment(tagsLoading || groupingLoading),
-											}}
+											rightSection={tagsLoading || groupingLoading ? <Loader size="xs" /> : null}
 										/>
 									)}
 								/>
-							</Stack>
-							<Stack
-								direction="row"
-								justifyContent="center"
-								spacing={2}
-								flexWrap={{
-									xs: 'wrap',
-									md: 'nowrap',
-								}}
-							>
-								<LoadingButton
-									disabled={artworkLoading || tagsLoading || groupingLoading}
-									loading={jobLoading}
-									variant="contained"
-									type="submit"
-								>
+							</Flex>
+							<Flex justify="center">
+								<Button disabled={artworkLoading || tagsLoading || groupingLoading} loading={jobLoading} type="submit">
 									Download / Convert
-								</LoadingButton>
-								<Button variant="contained" onClick={() => reset()}>
-									Reset
 								</Button>
-							</Stack>
+								<Button onClick={() => reset()}>Reset</Button>
+							</Flex>
 						</Stack>
-					</Container>
-				</Box>
+					</Box>
+				</Container>
 			</Stack>
 		),
 		[
-			openSuccess,
-			openError,
 			handleSubmit,
 			onSubmit,
 			control,
 			watchFields.fileSwitch,
 			watchFields.resolvedArtworkUrl,
-			watchFields.file?.name,
 			artworkLoading,
 			tagsLoading,
 			groupingLoading,
 			jobLoading,
 			setValue,
-			trigger,
-			createInputLoadingAdornment,
 			reset,
 		]
 	);
