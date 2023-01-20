@@ -1,38 +1,55 @@
-import { useMemo, useEffect } from 'react';
-import { Button, Center } from '@mantine/core';
+import React, { useMemo, useEffect } from 'react';
+import { Button, Center, Modal } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 
 import { useCheckYoutubeAuthQuery, useLazyGetOauthLinkQuery } from '../../api/youtube';
 
-export const YoutubeAuthPage = () => {
-	const youtubeAuthStatus = useCheckYoutubeAuthQuery();
-	const [getOAuthLink, getOAuthLinkStatus] = useLazyGetOauthLinkQuery();
+export const withYoutubeAuthPage = <T extends {}>(Wrapped: React.FC<T>) => {
+	return (props: T) => {
+		const [opened, handlers] = useDisclosure(false);
 
-	useEffect(() => {
-		if (getOAuthLinkStatus.isSuccess && getOAuthLinkStatus.currentData) {
-			const oAuthURL = getOAuthLinkStatus.currentData;
-			window.location.href = oAuthURL;
-		}
-	}, [getOAuthLinkStatus]);
+		const youtubeAuthStatus = useCheckYoutubeAuthQuery();
+		const [getOAuthLink, getOAuthLinkStatus] = useLazyGetOauthLinkQuery();
 
-	return useMemo(() => {
-		const buttonText =
-			youtubeAuthStatus.isSuccess && youtubeAuthStatus.currentData && youtubeAuthStatus.currentData.refresh
-				? 'Reconnect Google Account'
-				: 'Log in with Google';
-		return (
-			<Center>
-				<Button onClick={() => getOAuthLink()} loading={getOAuthLinkStatus.isFetching || getOAuthLinkStatus.isLoading}>
-					{buttonText}
-				</Button>
-			</Center>
+		useEffect(() => {
+			if (youtubeAuthStatus.isError) {
+				handlers.open();
+			} else if (youtubeAuthStatus.isSuccess && opened) {
+				handlers.close();
+			}
+		}, [handlers, opened, youtubeAuthStatus.isError, youtubeAuthStatus.isSuccess]);
+
+		useEffect(() => {
+			if (getOAuthLinkStatus.isSuccess && getOAuthLinkStatus.currentData) {
+				const oAuthURL = getOAuthLinkStatus.currentData;
+				window.location.href = oAuthURL;
+			}
+		}, [getOAuthLinkStatus]);
+
+		const buttonText = useMemo(
+			() =>
+				youtubeAuthStatus.isSuccess && youtubeAuthStatus.currentData && youtubeAuthStatus.currentData.refresh
+					? 'Reconnect Google Account'
+					: 'Log in with Google',
+			[youtubeAuthStatus.currentData, youtubeAuthStatus.isSuccess]
 		);
-	}, [
-		youtubeAuthStatus.isSuccess,
-		youtubeAuthStatus.currentData,
-		getOAuthLinkStatus.isFetching,
-		getOAuthLinkStatus.isLoading,
-		getOAuthLink,
-	]);
+
+		return (
+			<>
+				<Modal opened={opened} onClose={handlers.close} withCloseButton={false} closeOnClickOutside={false}>
+					<Center>
+						<Button
+							onClick={() => getOAuthLink()}
+							loading={getOAuthLinkStatus.isFetching || getOAuthLinkStatus.isLoading}
+						>
+							{buttonText}
+						</Button>
+					</Center>
+				</Modal>
+				<Wrapped {...props} />
+			</>
+		);
+	};
 };
 
-export default YoutubeAuthPage;
+export default withYoutubeAuthPage;
