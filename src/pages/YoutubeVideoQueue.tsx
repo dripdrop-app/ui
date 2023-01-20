@@ -7,6 +7,8 @@ import VideoPlayer from '../components/Youtube/VideoPlayer';
 import VideoQueueModal from '../components/Youtube/VideoQueueModal';
 import VideoInformation from '../components/Youtube/VideoInformation';
 import useSearchParams from '../utils/useSearchParams';
+import withAuthPage from '../components/Auth/AuthPage';
+import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
 
 const YoutubeVideoQueue = () => {
 	const { params, setSearchParams } = useSearchParams({ index: 1 });
@@ -58,4 +60,4 @@ const YoutubeVideoQueue = () => {
 	);
 };
 
-export default YoutubeVideoQueue;
+export default withAuthPage(withYoutubeAuthPage(YoutubeVideoQueue));

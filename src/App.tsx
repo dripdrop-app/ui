@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Route, Switch, Link, useRouteMatch, useLocation } from 'react-router-dom';
+import { Route, Switch, Link, useLocation } from 'react-router-dom';
 import {
 	AppShell,
 	Avatar,
@@ -12,15 +12,11 @@ import {
 	NavLink,
 	Title,
 } from '@mantine/core';
-import { ModalsProvider, openModal } from '@mantine/modals';
+import { ModalsProvider } from '@mantine/modals';
 import { NotificationsProvider } from '@mantine/notifications';
 import { BsYoutube } from 'react-icons/bs';
 import { MdAccountCircle, MdCloudDownload, MdQueue, MdSubscriptions } from 'react-icons/md';
 
-import { useCheckSessionQuery } from './api/auth';
-import { useCheckYoutubeAuthQuery } from './api/youtube';
-import AuthPage from './components/Auth/AuthPage';
-import YoutubeAuthPage from './components/Auth/YoutubeAuthPage';
 import YoutubeChannel from './pages/YoutubeChannel';
 import Account from './pages/Account';
 import MusicDownloader from './pages/MusicDownloader';
@@ -32,31 +28,7 @@ import YoutubeVideos from './pages/YoutubeVideos';
 const App = () => {
 	const [showSideBar, setShowSideBar] = useState(false);
 
-	const match = useRouteMatch('/youtube/*');
 	const location = useLocation();
-
-	const sessionStatus = useCheckSessionQuery();
-	const youtubeAuthStatus = useCheckYoutubeAuthQuery();
-
-	useEffect(() => {
-		if (sessionStatus.isError) {
-			openModal({
-				withCloseButton: false,
-				children: <AuthPage />,
-				closeOnClickOutside: false,
-			});
-		}
-	}, [sessionStatus.isError]);
-
-	useEffect(() => {
-		if (sessionStatus.isSuccess && youtubeAuthStatus.isError && match) {
-			openModal({
-				withCloseButton: false,
-				children: <YoutubeAuthPage />,
-				closeOnClickOutside: false,
-			});
-		}
-	});
 
 	useEffect(() => {
 		window.scrollTo({ top: 0 });

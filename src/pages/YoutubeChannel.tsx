@@ -3,6 +3,8 @@ import { Avatar, Center, Divider, Flex, Loader, Stack, Title } from '@mantine/co
 
 import { useYoutubeChannelQuery } from '../api/youtube';
 import VideosView from '../components/Youtube/VideosView';
+import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
+import withAuthPage from '../components/Auth/AuthPage';
 
 interface YoutubeChannelProps {
 	id: string;
@@ -38,4 +40,4 @@ const YoutubeChannel = (props: YoutubeChannelProps) => {
 	);
 };
 
-export default YoutubeChannel;
+export default withAuthPage(withYoutubeAuthPage(YoutubeChannel));

@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react';
-import { Button, Container, Flex, LoadingOverlay, PasswordInput, Stack, Tabs, TextInput } from '@mantine/core';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Button, Container, Flex, LoadingOverlay, Modal, PasswordInput, Stack, Tabs, TextInput } from '@mantine/core';
 
-import { useLoginMutation, useCreateMutation } from '../../api/auth';
+import { useLoginMutation, useCreateMutation, useCheckSessionQuery } from '../../api/auth';
+import { useDisclosure } from '@mantine/hooks';
 
 interface AuthFormProps {
 	onSubmit: (email: string, password: string) => void;
@@ -66,4 +67,29 @@ export const AuthPage = () => {
 	);
 };
 
-export default AuthPage;
+const withAuthPage = <T extends {}>(Wrapped: React.FC<T>) => {
+	return (props: T) => {
+		const [opened, handlers] = useDisclosure(false);
+
+		const sessionStatus = useCheckSessionQuery();
+
+		useEffect(() => {
+			if (sessionStatus.isError) {
+				handlers.open();
+			} else if (sessionStatus.isSuccess && opened) {
+				handlers.close();
+			}
+		}, [handlers, opened, sessionStatus.isError, sessionStatus.isSuccess]);
+
+		return (
+			<>
+				<Modal opened={opened} onClose={handlers.close} withCloseButton={false} closeOnClickOutside={false}>
+					<AuthPage />
+				</Modal>
+				<Wrapped {...props} />
+			</>
+		);
+	};
+};
+
+export default withAuthPage;

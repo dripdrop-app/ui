@@ -1,4 +1,5 @@
 import { Stack } from '@mantine/core';
+import withAuthPage from '../components/Auth/AuthPage';
 
 import JobList from '../components/Music/JobList';
 import MusicForm from '../components/Music/MusicForm';
@@ -12,4 +13,4 @@ const MusicDownloader = () => {
 	);
 };
 
-export default MusicDownloader;
+export default withAuthPage(MusicDownloader);

@@ -4,6 +4,8 @@ import { Center, Divider, Grid, Loader, Pagination, Stack, Title } from '@mantin
 import { useYoutubeSubscriptionsQuery } from '../api/youtube';
 import SubscriptionCard from '../components/Youtube/SubscriptionCard';
 import useSearchParams from '../utils/useSearchParams';
+import withAuthPage from '../components/Auth/AuthPage';
+import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
 
 const YoutubeSubscriptions = () => {
 	const { params, setSearchParams } = useSearchParams({ perPage: 48, page: 1 });
@@ -54,4 +56,4 @@ const YoutubeSubscriptions = () => {
 	);
 };
 
-export default YoutubeSubscriptions;
+export default withAuthPage(withYoutubeAuthPage(YoutubeSubscriptions));

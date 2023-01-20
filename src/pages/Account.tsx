@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Button, Checkbox, Container, Stack, TextInput } from '@mantine/core';
 import { useCheckSessionQuery, useLogoutMutation } from '../api/auth';
+import withAuthPage from '../components/Auth/AuthPage';
 
 const Account = () => {
 	const sessionStatus = useCheckSessionQuery();
@@ -31,4 +32,4 @@ const Account = () => {
 	}, [logout, logoutStatus.isLoading, user]);
 };
 
-export default Account;
+export default withAuthPage(Account);

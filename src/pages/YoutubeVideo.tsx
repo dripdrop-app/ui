@@ -5,6 +5,8 @@ import { useYoutubeVideoQuery } from '../api/youtube';
 import VideoCard from '../components/Youtube/VideoCard';
 import VideoInformation from '../components/Youtube/VideoInformation';
 import VideoPlayer from '../components/Youtube/VideoPlayer';
+import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
+import withAuthPage from '../components/Auth/AuthPage';
 
 interface YoutubeVideoProps {
 	id: string;
@@ -38,4 +40,4 @@ const YoutubeVideo = (props: YoutubeVideoProps) => {
 	);
 };
 
-export default YoutubeVideo;
+export default withAuthPage(withYoutubeAuthPage(YoutubeVideo));
