@@ -1,14 +1,17 @@
 import { useMemo } from 'react';
-import { useRouteMatch } from 'react-router-dom';
 import { Avatar, Center, Divider, Flex, Loader, Stack, Title } from '@mantine/core';
 
 import { useYoutubeChannelQuery } from '../api/youtube';
 import VideosView from '../components/Youtube/VideosView';
 
-const YoutubeChannel = () => {
-	const { params } = useRouteMatch<{ channelId?: string }>();
+interface YoutubeChannelProps {
+	id: string;
+}
 
-	const channelStatus = useYoutubeChannelQuery(params.channelId || '');
+const YoutubeChannel = (props: YoutubeChannelProps) => {
+	const { id } = props;
+
+	const channelStatus = useYoutubeChannelQuery(id);
 
 	const channel = useMemo(() => channelStatus.data, [channelStatus.data]);
 

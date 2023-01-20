@@ -1,23 +1,14 @@
-import { useCallback, useMemo, useState } from 'react';
-import { generatePath, useHistory, useRouteMatch } from 'react-router-dom';
-import { Center, Divider, Grid, Loader, LoadingOverlay, Pagination, Stack, Title } from '@mantine/core';
+import { useMemo } from 'react';
+import { Center, Divider, Grid, Loader, Pagination, Stack, Title } from '@mantine/core';
 
 import { useYoutubeSubscriptionsQuery } from '../api/youtube';
 import SubscriptionCard from '../components/Youtube/SubscriptionCard';
+import useSearchParams from '../utils/useSearchParams';
 
 const YoutubeSubscriptions = () => {
-	const [perPage] = useState(48);
+	const { params, setSearchParams } = useSearchParams({ perPage: 48, page: 1 });
 
-	const { path, url, params } = useRouteMatch<{ page?: string }>();
-	const history = useHistory();
-
-	const { page } = useMemo(() => {
-		return {
-			page: params.page ? parseInt(params.page) : 1,
-		};
-	}, [params.page]);
-
-	const subscriptionsStatus = useYoutubeSubscriptionsQuery({ page, perPage });
+	const subscriptionsStatus = useYoutubeSubscriptionsQuery(params);
 
 	const subscriptions = useMemo(
 		() => (subscriptionsStatus.data ? subscriptionsStatus.data.subscriptions : []),
@@ -26,17 +17,6 @@ const YoutubeSubscriptions = () => {
 	const totalPages = useMemo(
 		() => (subscriptionsStatus.data ? subscriptionsStatus.data.totalPages : 1),
 		[subscriptionsStatus.data]
-	);
-
-	const updateUrl = useCallback(
-		(update: Partial<YoutubeVideosBody>) => {
-			let pathname = url;
-			if (update.page) {
-				pathname = generatePath(path, { ...params, page: update.page });
-			}
-			history.push({ ...history.location, pathname });
-		},
-		[history, params, path, url]
 	);
 
 	return useMemo(
@@ -51,7 +31,6 @@ const YoutubeSubscriptions = () => {
 						</Center>
 					) : (
 						<>
-							<LoadingOverlay visible={subscriptionsStatus.isFetching} />
 							<Grid>
 								{subscriptions.map((subscription) => (
 									<Grid.Col key={subscription.channelId} xs={12} sm={6} md={3} xl={2}>
@@ -60,14 +39,18 @@ const YoutubeSubscriptions = () => {
 								))}
 							</Grid>
 							<Center>
-								<Pagination total={totalPages} page={page} onChange={(newPage) => updateUrl({ page: newPage })} />
+								<Pagination
+									total={totalPages}
+									page={params.page}
+									onChange={(newPage) => setSearchParams({ page: newPage })}
+								/>
 							</Center>
 						</>
 					)}
 				</Stack>
 			</Stack>
 		),
-		[page, subscriptions, subscriptionsStatus.isFetching, subscriptionsStatus.isLoading, totalPages, updateUrl]
+		[params.page, setSearchParams, subscriptions, subscriptionsStatus.isLoading, totalPages]
 	);
 };
 

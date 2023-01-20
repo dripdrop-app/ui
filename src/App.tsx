@@ -114,7 +114,7 @@ const App = () => {
 										label="Subscriptions"
 										icon={<MdSubscriptions />}
 									/>
-									<NavLink component={Link} to="/youtube/videos/queue/1" label="Queue" icon={<MdQueue />} />
+									<NavLink component={Link} to="/youtube/videos/queue" label="Queue" icon={<MdQueue />} />
 								</Navbar.Section>
 								<Navbar.Section>
 									<NavLink component={Link} to="/account" label="Account" icon={<MdAccountCircle />} />
@@ -139,14 +139,11 @@ const App = () => {
 						}
 					>
 						<Switch>
-							<Route path="/youtube/channel/:channelId/:page?" render={() => <YoutubeChannel />} />
-							<Route path="/youtube/subscriptions/:page?" render={() => <YoutubeSubscriptions />} />
-							<Route
-								path="/youtube/videos/queue/:index"
-								render={(props) => <YoutubeVideoQueue index={parseInt(props.match.params.index)} />}
-							/>
-							<Route path="/youtube/videos/:page?" render={() => <YoutubeVideos />} />
-							{/* <Route path="/youtube/video/:id" render={(props) => <YoutubeVideo id={props.match.params.id} />} /> */}
+							<Route path="/youtube/channel/:id" render={(props) => <YoutubeChannel id={props.match.params.id} />} />
+							<Route path="/youtube/subscriptions" render={() => <YoutubeSubscriptions />} />
+							<Route path="/youtube/videos/queue" render={() => <YoutubeVideoQueue />} />
+							<Route path="/youtube/videos" render={() => <YoutubeVideos />} />
+							<Route path="/youtube/video/:id" render={(props) => <YoutubeVideo id={props.match.params.id} />} />
 							<Route path="/music/downloader" render={() => <MusicDownloader />} />
 							<Route path="/account" render={() => <Account />} />
 							<Route path="/" render={() => <MusicDownloader />} />

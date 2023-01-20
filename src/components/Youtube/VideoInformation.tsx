@@ -26,7 +26,15 @@ const VideoInformation = (props: VideoInformationProps) => {
 					</Flex>
 				</Flex>
 				<Flex justify="space-between">
-					<Text component={Link} to={channelLink}>
+					<Text
+						component={Link}
+						to={channelLink}
+						sx={{
+							':hover': {
+								textDecoration: 'underline',
+							},
+						}}
+					>
 						{video.channelTitle}
 					</Text>
 					<Text>{publishedAt}</Text>

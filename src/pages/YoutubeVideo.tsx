@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Box, CircularProgress, Divider, Grid, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { AspectRatio, Box, Divider, Flex, Stack, Title } from '@mantine/core';
 
 import { useYoutubeVideoQuery } from '../api/youtube';
 import VideoCard from '../components/Youtube/VideoCard';
@@ -11,47 +11,30 @@ interface YoutubeVideoProps {
 }
 
 const YoutubeVideo = (props: YoutubeVideoProps) => {
-	const theme = useTheme();
-	const isLarge = useMediaQuery(theme.breakpoints.up('xl'));
-
-	const videoStatus = useYoutubeVideoQuery({ videoId: props.id, relatedLength: isLarge ? 6 : 4 });
+	const videoStatus = useYoutubeVideoQuery({ videoId: props.id, relatedLength: 4 });
 
 	const video = useMemo(() => videoStatus.data?.video, [videoStatus.data?.video]);
 	const relatedVideos = useMemo(() => videoStatus.data?.relatedVideos, [videoStatus.data?.relatedVideos]);
 
 	return useMemo(
 		() => (
-			<Box>
-				<Stack direction="row" justifyContent="center" display={videoStatus.isLoading ? 'block' : 'none'}>
-					<CircularProgress />
-				</Stack>
-				{videoStatus.isError && (
-					<Stack direction="row" justifyContent="center">
-						Failed to load video
-					</Stack>
-				)}
-				{video && relatedVideos && (
-					<Stack direction="column" spacing={2}>
-						<Box height="80vh">
-							<VideoPlayer video={video} playing={true} />
+			<Stack p="md">
+				<AspectRatio ratio={16 / 9} sx={{ maxHeight: '75vh' }}>
+					<VideoPlayer video={video} playing={true} />
+				</AspectRatio>
+				{video && <VideoInformation video={video} />}
+				<Divider />
+				<Title order={3}>Related Videos</Title>
+				<Flex justify="space-between">
+					{relatedVideos?.map((video) => (
+						<Box sx={{ flex: 1 }}>
+							<VideoCard video={video} />
 						</Box>
-						<VideoInformation video={video} />
-						<Divider />
-						<Box padding={2}>
-							<Typography variant="h6">Related Videos</Typography>
-							<Grid container>
-								{relatedVideos.map((video) => (
-									<Grid item xs={12} sm={6} md={3} xl={2} padding={1} key={video.id}>
-										<VideoCard video={video} />
-									</Grid>
-								))}
-							</Grid>
-						</Box>
-					</Stack>
-				)}
-			</Box>
+					))}
+				</Flex>
+			</Stack>
 		),
-		[relatedVideos, video, videoStatus.isError, videoStatus.isLoading]
+		[relatedVideos, video]
 	);
 };
 
