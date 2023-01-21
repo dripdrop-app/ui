@@ -1,6 +1,7 @@
 import React, { useMemo, useEffect } from 'react';
-import { Button, Center, Modal } from '@mantine/core';
+import { Button, Center, Modal, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { openModal } from '@mantine/modals';
 
 import { useCheckYoutubeAuthQuery, useLazyGetOauthLinkQuery } from '../../api/youtube';
 
@@ -14,10 +15,31 @@ export const withYoutubeAuthPage = <T extends {}>(Wrapped: React.FC<T>) => {
 		useEffect(() => {
 			if (youtubeAuthStatus.isError) {
 				handlers.open();
-			} else if (youtubeAuthStatus.isSuccess && opened) {
-				handlers.close();
+			} else if (youtubeAuthStatus.isSuccess) {
+				if (opened) {
+					handlers.close();
+				}
+				const { refresh } = youtubeAuthStatus.data;
+				if (refresh) {
+					openModal({
+						title: 'Refresh Tokens',
+						children: (
+							<Stack>
+								<Text>Reconnect Google Account to receive update to date subscriptions</Text>
+								<Button onClick={() => getOAuthLink()}>Reconnect</Button>
+							</Stack>
+						),
+					});
+				}
 			}
-		}, [handlers, opened, youtubeAuthStatus.isError, youtubeAuthStatus.isSuccess]);
+		}, [
+			getOAuthLink,
+			handlers,
+			opened,
+			youtubeAuthStatus.data,
+			youtubeAuthStatus.isError,
+			youtubeAuthStatus.isSuccess,
+		]);
 
 		useEffect(() => {
 			if (getOAuthLinkStatus.isSuccess && getOAuthLinkStatus.currentData) {
