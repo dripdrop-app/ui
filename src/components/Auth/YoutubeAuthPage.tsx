@@ -46,7 +46,7 @@ export const withYoutubeAuthPage = <T extends {}>(Wrapped: React.FC<T>) => {
 						</Button>
 					</Center>
 				</Modal>
-				<Wrapped {...props} />
+				{youtubeAuthStatus.isSuccess && <Wrapped {...props} />}
 			</>
 		);
 	};

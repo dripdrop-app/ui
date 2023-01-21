@@ -24,6 +24,8 @@ import YoutubeSubscriptions from './pages/YoutubeSubscriptions';
 import YoutubeVideoQueue from './pages/YoutubeVideoQueue';
 import YoutubeVideo from './pages/YoutubeVideo';
 import YoutubeVideos from './pages/YoutubeVideos';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 
 const App = () => {
 	const [showSideBar, setShowSideBar] = useState(false);
@@ -76,7 +78,7 @@ const App = () => {
 									<NavLink
 										component={Link}
 										to="/music/downloader"
-										label="Cloud Downloader"
+										label="Music Downloader"
 										icon={<MdCloudDownload />}
 									/>
 									<NavLink component={Link} to="/youtube/videos" label="Videos" icon={<BsYoutube />} />
@@ -111,14 +113,32 @@ const App = () => {
 						}
 					>
 						<Switch>
+							<Route path="/privacy">
+								<PrivacyPolicy />
+							</Route>
+							<Route path="/terms">
+								<TermsOfService />
+							</Route>
 							<Route path="/youtube/channel/:id" render={(props) => <YoutubeChannel id={props.match.params.id} />} />
-							<Route path="/youtube/subscriptions" render={() => <YoutubeSubscriptions />} />
-							<Route path="/youtube/videos/queue" render={() => <YoutubeVideoQueue />} />
-							<Route path="/youtube/videos" render={() => <YoutubeVideos />} />
+							<Route path="/youtube/subscriptions">
+								<YoutubeSubscriptions />
+							</Route>
+							<Route path="/youtube/videos/queue">
+								<YoutubeVideoQueue />
+							</Route>
+							<Route path="/youtube/videos">
+								<YoutubeVideos />
+							</Route>
 							<Route path="/youtube/video/:id" render={(props) => <YoutubeVideo id={props.match.params.id} />} />
-							<Route path="/music/downloader" render={() => <MusicDownloader />} />
-							<Route path="/account" render={() => <Account />} />
-							<Route path="/" render={() => <MusicDownloader />} />
+							<Route path="/music/downloader">
+								<MusicDownloader />
+							</Route>
+							<Route path="/account">
+								<Account />
+							</Route>
+							<Route path="/">
+								<MusicDownloader />
+							</Route>
 						</Switch>
 					</AppShell>
 				</NotificationsProvider>
