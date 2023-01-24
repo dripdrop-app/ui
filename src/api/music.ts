@@ -21,11 +21,13 @@ const musicApi = api.injectEndpoints({
 		}),
 		jobs: build.query<JobsResponse, PageBody>({
 			query: ({ page, perPage }) => ({ url: `/music/jobs/${page}/${perPage}`, method: Methods.GET }),
-			onCacheEntryAdded: async (args, { cacheDataLoaded, cacheEntryRemoved, dispatch }) => {
+			onQueryStarted: async (args, { queryFulfilled, dispatch }) => {
 				const url = buildWebsocketURL('music/jobs/listen');
 				const ws = new WebSocket(url);
 				try {
-					await cacheDataLoaded;
+					await queryFulfilled;
+				} catch (e) {
+				} finally {
 					ws.onmessage = (event) => {
 						const json = JSON.parse(event.data);
 						const type = json.type;
@@ -35,9 +37,6 @@ const musicApi = api.injectEndpoints({
 							dispatch(musicApi.util.invalidateTags([{ type: Tags.MUSIC_JOB, id: json.job.id }]));
 						}
 					};
-				} finally {
-					await cacheEntryRemoved;
-					ws.close();
 				}
 			},
 			providesTags: (result) => {
@@ -74,7 +73,7 @@ const musicApi = api.injectEndpoints({
 				if (args.grouping) {
 					formData.append('grouping', args.grouping);
 				}
-				return { url: '/music/jobs/create/file', method: Methods.POST, body: formData };
+				return { url: '/music/jobs/create', method: Methods.POST, body: formData };
 			},
 		}),
 		createYoutubeJob: build.query<undefined, CreateYoutubeJobBody>({
@@ -88,7 +87,7 @@ const musicApi = api.injectEndpoints({
 				if (args.grouping) {
 					formData.append('grouping', args.grouping);
 				}
-				return { url: '/music/jobs/create/youtube', method: Methods.POST, body: formData };
+				return { url: '/music/jobs/create', method: Methods.POST, body: formData };
 			},
 		}),
 	}),

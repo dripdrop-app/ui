@@ -1,6 +1,5 @@
-import { BaseQueryApi } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
-import { FetchBaseQueryArgs } from '@reduxjs/toolkit/dist/query/fetchBaseQuery';
-import { createApi, fetchBaseQuery, FetchArgs } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
+
 import { buildURL } from '../config';
 
 export const Methods = {
@@ -24,43 +23,6 @@ export const Tags = {
 	YOUTUBE_CHANNEL: 'YoutubeChannel',
 };
 
-export const errorParser = (error: ErrorResponse | undefined) => {
-	if (error && error.detail) {
-		if (typeof error.detail === 'string') {
-			return error.detail;
-		} else if (typeof error.detail === 'object') {
-			return error.detail.reduce((msg, error) => {
-				const field = error.loc.pop();
-				if (field) {
-					let message = error.msg.replace('value', field);
-					message = message.charAt(0).toLocaleUpperCase() + message.substring(1);
-					msg = !msg ? message : `${msg}, ${message}`;
-				}
-				return msg;
-			}, '');
-		}
-	}
-	return error;
-};
-
-const customBaseQuery = (options?: FetchBaseQueryArgs) => {
-	const fetch = fetchBaseQuery(options);
-	return async (args: string | FetchArgs, api: BaseQueryApi, extraOptions: {}) => {
-		const response = await fetch(args, api, extraOptions);
-		let error;
-		if (response.error) {
-			if (response.error.status === 401 && api.endpoint !== 'checkSession') {
-				window.history.pushState({}, '', new URL(window.location.host));
-			} else if (response.error.data) {
-				error = response.error.data as ErrorResponse;
-				error = errorParser(error);
-				response.error.data = error;
-			}
-		}
-		return response;
-	};
-};
-
 export const tags = [
 	Tags.USER,
 	Tags.MUSIC_ARTWORK,
@@ -75,8 +37,18 @@ export const tags = [
 	Tags.YOUTUBE_VIDEO_CATEGORY,
 ];
 
+const isErrorWithMessage = (error: any): error is { detail: string } =>
+	typeof error === 'object' && error != null && 'detail' in error && typeof (error as any).detail === 'string';
+
+export const transformErrorResponse = (response: FetchBaseQueryError) => {
+	if (isErrorWithMessage(response.data)) {
+		return response.data.detail;
+	}
+	return response.data;
+};
+
 const api = createApi({
-	baseQuery: customBaseQuery({ baseUrl: buildURL('api'), credentials: 'include' }),
+	baseQuery: fetchBaseQuery({ baseUrl: buildURL('api'), credentials: 'include' }),
 	tagTypes: tags,
 	endpoints: (build) => ({}),
 });

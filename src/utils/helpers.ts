@@ -1,5 +1,3 @@
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
-
 export const resolveAlbumFromTitle = (title: string) => {
 	let album = '';
 
@@ -34,8 +32,6 @@ export const isValidImage = (url: string) => RegExp(/^http(s?):\/\/(www\.)?.+\.(
 export const isValidLink = (url: string) => RegExp(/^http(s?):\/\/(www\.)?.*/).test(url);
 
 export const isValidYTLink = (url: string) => RegExp(/^http(s?):\/\/(www\.)?youtube\.com\/watch\?v=.+/).test(url);
-
-export const isFetchBaseQueryError = (error: any): error is FetchBaseQueryError => 'status' in error;
 
 export const generateTime = (seconds: number) => {
 	const formattedMinutes = Math.floor(seconds / 60)

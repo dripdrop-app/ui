@@ -1,4 +1,4 @@
-import api, { tags, Tags, Methods } from '.';
+import api, { tags, Tags, Methods, transformErrorResponse } from '.';
 
 const authApi = api.injectEndpoints({
 	endpoints: (build) => ({
@@ -16,6 +16,7 @@ const authApi = api.injectEndpoints({
 				body: { email, password },
 			}),
 			invalidatesTags: (result) => (result ? tags : []),
+			transformErrorResponse,
 		}),
 		login: build.mutation<AuthenticatedResponse, LoginBody>({
 			query: ({ email, password }) => ({
@@ -24,6 +25,7 @@ const authApi = api.injectEndpoints({
 				body: { email, password },
 			}),
 			invalidatesTags: (result) => (result ? tags : []),
+			transformErrorResponse,
 		}),
 		logout: build.mutation<undefined, void>({
 			query: () => ({

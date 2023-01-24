@@ -1,7 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
+	Alert,
 	Anchor,
+	Box,
 	Button,
 	Checkbox,
 	Container,
@@ -14,120 +16,158 @@ import {
 	Text,
 	TextInput,
 } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { Controller, useForm } from 'react-hook-form';
+import { MdError } from 'react-icons/md';
 
 import { useLoginMutation, useCreateMutation, useCheckSessionQuery } from '../../api/auth';
-import { useDisclosure } from '@mantine/hooks';
 
-interface AuthFormProps {
-	onSubmit: (email: string, password: string) => void;
-	signUp?: boolean;
+interface AuthForm {
+	email: string;
+	password: string;
+	agree: boolean;
 }
 
-const AuthForm = (props: AuthFormProps) => {
-	const { onSubmit, signUp } = props;
-
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
-	const [agree, setAgree] = useState(false);
-
-	return useMemo(
-		() => (
-			<Stack p="md">
-				<TextInput
-					label="Email"
-					placeholder="Enter Email"
-					value={email}
-					onChange={(e) => setEmail(e.target.value)}
-					withAsterisk
-				/>
-				<PasswordInput
-					label="Password"
-					placeholder="Enter Password"
-					value={password}
-					onChange={(e) => setPassword(e.target.value)}
-					withAsterisk
-				/>
-				<Checkbox
-					sx={{ ...(!signUp && { display: 'none' }) }}
-					label={
-						<Text>
-							Agree to our{' '}
-							<Anchor
-								component={Link}
-								to="/terms"
-								sx={{
-									':hover': {
-										textDecoration: 'underline',
-									},
-								}}
-							>
-								Terms of Service
-							</Anchor>{' '}
-							and acknowledge our{' '}
-							<Anchor
-								component={Link}
-								to="/privacy"
-								sx={{
-									':hover': {
-										textDecoration: 'underline',
-									},
-								}}
-							>
-								Privacy Policy
-							</Anchor>
-						</Text>
-					}
-					checked={agree}
-					onChange={(e) => setAgree(e.target.checked)}
-				/>
-				<Flex gap="md">
-					<Button
-						onClick={() => {
-							if ((signUp && agree) || !signUp) {
-								onSubmit(email, password);
-							}
-						}}
-					>
-						Submit
-					</Button>
-					<Button
-						onClick={() => {
-							setEmail('');
-							setPassword('');
-						}}
-					>
-						Clear
-					</Button>
-				</Flex>
-			</Stack>
-		),
-		[agree, email, onSubmit, password, signUp]
-	);
-};
-
 export const AuthPage = () => {
+	const [tab, setTab] = useState<string | null>('0');
+	const { reset, handleSubmit, control } = useForm<AuthForm>({ reValidateMode: 'onSubmit' });
+
 	const [login, loginStatus] = useLoginMutation();
 	const [create, createStatus] = useCreateMutation();
+
+	const onSubmit = useCallback(
+		(data: AuthForm) => {
+			if (tab === '0') {
+				login({ ...data });
+			} else {
+				create({ ...data });
+			}
+		},
+		[create, login, tab]
+	);
+
+	useEffect(() => {
+		reset();
+	}, [reset, tab]);
+
+	const error = useMemo(() => {
+		if (loginStatus.isError || createStatus.isError) {
+			if (loginStatus.startedTimeStamp && createStatus.startedTimeStamp) {
+				return loginStatus.startedTimeStamp > createStatus.startedTimeStamp ? loginStatus.error : createStatus.error;
+			} else if (loginStatus.startedTimeStamp) {
+				return loginStatus.error;
+			} else if (createStatus.startedTimeStamp) {
+				return createStatus.error;
+			}
+		}
+		return '';
+	}, [
+		createStatus.error,
+		createStatus.isError,
+		createStatus.startedTimeStamp,
+		loginStatus.error,
+		loginStatus.isError,
+		loginStatus.startedTimeStamp,
+	]);
 
 	return useMemo(
 		() => (
 			<Container sx={{ position: 'relative' }}>
 				<LoadingOverlay visible={loginStatus.isLoading || createStatus.isLoading} />
-				<Tabs defaultValue="1">
+				<Tabs value={tab} onTabChange={setTab}>
 					<Tabs.List>
 						<Tabs.Tab value="0">Login</Tabs.Tab>
 						<Tabs.Tab value="1">Sign up</Tabs.Tab>
 					</Tabs.List>
-					<Tabs.Panel value="0">
-						<AuthForm onSubmit={(email, password) => login({ email, password })} />
-					</Tabs.Panel>
-					<Tabs.Panel value="1">
-						<AuthForm onSubmit={(email, password) => create({ email, password })} signUp />
-					</Tabs.Panel>
+					<Box component="form" onSubmit={handleSubmit(onSubmit)}>
+						<Stack p="md">
+							<Controller
+								name="email"
+								control={control}
+								defaultValue={''}
+								rules={{ required: true }}
+								render={({ field, fieldState }) => (
+									<TextInput
+										{...field}
+										label="Email"
+										placeholder="Enter Email"
+										error={fieldState.error?.type === 'required' ? 'Required' : ''}
+										required
+										withAsterisk
+									/>
+								)}
+							/>
+							<Controller
+								name="password"
+								control={control}
+								defaultValue={''}
+								rules={{ required: true }}
+								render={({ field, fieldState }) => (
+									<PasswordInput
+										{...field}
+										label="Password"
+										placeholder="Enter Password"
+										error={fieldState.error?.type === 'required' ? 'Required' : ''}
+										required
+										withAsterisk
+									/>
+								)}
+							/>
+							<Controller
+								name="agree"
+								control={control}
+								defaultValue={false}
+								rules={{ required: tab === '1' }}
+								render={({ field, fieldState }) => (
+									<Checkbox
+										sx={{ ...(tab === '0' && { display: 'none' }) }}
+										{...field}
+										value={field.value ? 1 : 0}
+										error={fieldState.error?.type === 'required' ? 'Required' : ''}
+										label={
+											<Text>
+												Agree to our{' '}
+												<Anchor
+													component={Link}
+													to="/terms"
+													sx={{
+														':hover': {
+															textDecoration: 'underline',
+														},
+													}}
+												>
+													Terms of Service
+												</Anchor>{' '}
+												and acknowledge our{' '}
+												<Anchor
+													component={Link}
+													to="/privacy"
+													sx={{
+														':hover': {
+															textDecoration: 'underline',
+														},
+													}}
+												>
+													Privacy Policy
+												</Anchor>
+											</Text>
+										}
+									/>
+								)}
+							/>
+							<Alert sx={{ ...(!error && { display: 'none' }) }} icon={<MdError />} title="Error" color="red">
+								{error}
+							</Alert>
+							<Flex gap="md">
+								<Button type="submit">Submit</Button>
+								<Button onClick={() => reset()}>Clear</Button>
+							</Flex>
+						</Stack>
+					</Box>
 				</Tabs>
 			</Container>
 		),
-		[create, createStatus.isLoading, login, loginStatus.isLoading]
+		[loginStatus.isLoading, createStatus.isLoading, tab, handleSubmit, onSubmit, control, error, reset]
 	);
 };
 

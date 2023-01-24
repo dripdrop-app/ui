@@ -209,7 +209,6 @@ const MusicForm = () => {
 										} else if (fieldState.error?.type === 'required') {
 											error = 'Required';
 										}
-
 										return (
 											<TextInput
 												sx={{ width: '100%' }}
@@ -234,24 +233,18 @@ const MusicForm = () => {
 									control={control}
 									defaultValue={null}
 									rules={{ required: watchFields.fileSwitch }}
-									render={({ field, fieldState }) => {
-										let error = '';
-										if (fieldState.error?.type === 'required') {
-											error = 'Required';
-										}
-										return (
-											<FileInput
-												sx={{ width: '100%' }}
-												{...field}
-												error={error}
-												label="Filename"
-												placeholder="Select File"
-												required={watchFields.fileSwitch}
-												disabled={!watchFields.fileSwitch}
-												accept="audio/mpeg,audio/wav"
-											/>
-										);
-									}}
+									render={({ field, fieldState }) => (
+										<FileInput
+											sx={{ width: '100%' }}
+											{...field}
+											error={fieldState.error?.type === 'required' ? 'Required' : ''}
+											label="Filename"
+											placeholder="Select File"
+											required={watchFields.fileSwitch}
+											disabled={!watchFields.fileSwitch}
+											accept="audio/mpeg,audio/wav"
+										/>
+									)}
 								/>
 							</Flex>
 							<Flex align="center">
@@ -303,72 +296,54 @@ const MusicForm = () => {
 									control={control}
 									defaultValue={''}
 									rules={{ required: true }}
-									render={({ field, fieldState }) => {
-										let error = '';
-										if (fieldState.error?.type === 'required') {
-											error = 'Required';
-										}
-										return (
-											<TextInput
-												sx={{ width: '100%' }}
-												{...field}
-												error={error}
-												label="Title"
-												placeholder="Enter Title"
-												withAsterisk
-												disabled={tagsLoading}
-												rightSection={tagsLoading ? <Loader size="xs" /> : null}
-											/>
-										);
-									}}
+									render={({ field, fieldState }) => (
+										<TextInput
+											sx={{ width: '100%' }}
+											{...field}
+											error={fieldState.error?.type === 'required' ? 'Required' : ''}
+											label="Title"
+											placeholder="Enter Title"
+											withAsterisk
+											disabled={tagsLoading}
+											rightSection={tagsLoading ? <Loader size="xs" /> : null}
+										/>
+									)}
 								/>
 								<Controller
 									name="artist"
 									control={control}
 									defaultValue={''}
 									rules={{ required: true }}
-									render={({ field, fieldState }) => {
-										let error = '';
-										if (fieldState.error?.type === 'required') {
-											error = 'Required';
-										}
-										return (
-											<TextInput
-												sx={{ width: '100%' }}
-												{...field}
-												error={error}
-												label="Artist"
-												placeholder="Enter Artist"
-												withAsterisk
-												disabled={tagsLoading}
-												rightSection={tagsLoading ? <Loader size="xs" /> : null}
-											/>
-										);
-									}}
+									render={({ field, fieldState }) => (
+										<TextInput
+											sx={{ width: '100%' }}
+											{...field}
+											error={fieldState.error?.type === 'required' ? 'Required' : ''}
+											label="Artist"
+											placeholder="Enter Artist"
+											withAsterisk
+											disabled={tagsLoading}
+											rightSection={tagsLoading ? <Loader size="xs" /> : null}
+										/>
+									)}
 								/>
 								<Controller
 									name="album"
 									control={control}
 									defaultValue={''}
 									rules={{ required: true }}
-									render={({ field, fieldState }) => {
-										let error = '';
-										if (fieldState.error?.type === 'required') {
-											error = 'Required';
-										}
-										return (
-											<TextInput
-												sx={{ width: '100%' }}
-												{...field}
-												error={error}
-												label="Album"
-												placeholder="Enter Album"
-												withAsterisk
-												disabled={tagsLoading}
-												rightSection={tagsLoading ? <Loader size="xs" /> : null}
-											/>
-										);
-									}}
+									render={({ field, fieldState }) => (
+										<TextInput
+											sx={{ width: '100%' }}
+											{...field}
+											error={fieldState.error?.type === 'required' ? 'Required' : ''}
+											label="Album"
+											placeholder="Enter Album"
+											withAsterisk
+											disabled={tagsLoading}
+											rightSection={tagsLoading ? <Loader size="xs" /> : null}
+										/>
+									)}
 								/>
 								<Controller
 									name="grouping"
