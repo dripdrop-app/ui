@@ -28,6 +28,74 @@ import YoutubeVideos from './pages/YoutubeVideos';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 
+interface AppNavbarProps {
+	opened: boolean;
+	close: () => void;
+}
+
+const AppNavbar = (props: AppNavbarProps) => {
+	const { opened, close } = props;
+
+	return (
+		<Navbar
+			width={{ sm: 200 }}
+			hiddenBreakpoint="sm"
+			hidden={!opened}
+			p="sm"
+			sx={(theme) => ({
+				'& .mantine-NavLink-icon': {
+					color: theme.colors.blue[8],
+				},
+			})}
+		>
+			<Navbar.Section grow>
+				<NavLink
+					component={Link}
+					to="/music/downloader"
+					label="Music Downloader"
+					onClick={close}
+					icon={<MdCloudDownload />}
+				/>
+				<NavLink component={Link} to="/youtube/videos" label="Videos" onClick={close} icon={<BsYoutube />} />
+				<NavLink
+					component={Link}
+					to="/youtube/subscriptions"
+					label="Subscriptions"
+					onClick={close}
+					icon={<MdSubscriptions />}
+				/>
+				<NavLink component={Link} to="/youtube/videos/queue" label="Queue" onClick={close} icon={<MdQueue />} />
+			</Navbar.Section>
+			<Navbar.Section>
+				<NavLink component={Link} to="/account" label="Account" onClick={close} icon={<MdAccountCircle />} />
+			</Navbar.Section>
+		</Navbar>
+	);
+};
+
+interface AppHeaderProps {
+	showBurger: boolean;
+	toggle: () => void;
+}
+
+const AppHeader = (props: AppHeaderProps) => {
+	const { showBurger, toggle } = props;
+
+	return (
+		<Header sx={(theme) => ({ backgroundColor: theme.colors.blue[8] })} height={{ base: 65 }}>
+			<Flex align="center" direction="row" sx={{ height: '100%' }} mx="lg">
+				<MediaQuery largerThan="sm" styles={{ display: 'none' }}>
+					<Burger opened={showBurger} onClick={toggle} />
+				</MediaQuery>
+				<Avatar alt="dripdrop" src="https://dripdrop-space.nyc3.digitaloceanspaces.com/artwork/dripdrop.png" />
+				<Title color="white" order={3} weight={600}>
+					dripdrop
+				</Title>
+			</Flex>
+		</Header>
+	);
+};
+
 const App = () => {
 	const [openedSideBar, handlers] = useDisclosure(false);
 
@@ -35,8 +103,7 @@ const App = () => {
 
 	useEffect(() => {
 		window.scrollTo({ top: 0 });
-		handlers.close();
-	}, [handlers, location, openedSideBar]);
+	}, [location]);
 
 	return (
 		<MantineProvider
@@ -64,55 +131,8 @@ const App = () => {
 				<NotificationsProvider position="top-center">
 					<AppShell
 						navbarOffsetBreakpoint="sm"
-						navbar={
-							<Navbar
-								width={{ sm: 200 }}
-								hiddenBreakpoint="sm"
-								hidden={!openedSideBar}
-								p="sm"
-								sx={(theme) => ({
-									'& .mantine-NavLink-icon': {
-										color: theme.colors.blue[8],
-									},
-								})}
-							>
-								<Navbar.Section grow>
-									<NavLink
-										component={Link}
-										to="/music/downloader"
-										label="Music Downloader"
-										icon={<MdCloudDownload />}
-									/>
-									<NavLink component={Link} to="/youtube/videos" label="Videos" icon={<BsYoutube />} />
-									<NavLink
-										component={Link}
-										to="/youtube/subscriptions"
-										label="Subscriptions"
-										icon={<MdSubscriptions />}
-									/>
-									<NavLink component={Link} to="/youtube/videos/queue" label="Queue" icon={<MdQueue />} />
-								</Navbar.Section>
-								<Navbar.Section>
-									<NavLink component={Link} to="/account" label="Account" icon={<MdAccountCircle />} />
-								</Navbar.Section>
-							</Navbar>
-						}
-						header={
-							<Header sx={(theme) => ({ backgroundColor: theme.colors.blue[8] })} height={{ base: 65 }}>
-								<Flex align="center" direction="row" sx={{ height: '100%' }} mx="lg">
-									<MediaQuery largerThan="sm" styles={{ display: 'none' }}>
-										<Burger opened={openedSideBar} onClick={handlers.toggle} />
-									</MediaQuery>
-									<Avatar
-										alt="dripdrop"
-										src="https://dripdrop-space.nyc3.digitaloceanspaces.com/artwork/dripdrop.png"
-									/>
-									<Title color="white" order={3} weight={600}>
-										dripdrop
-									</Title>
-								</Flex>
-							</Header>
-						}
+						navbar={<AppNavbar opened={openedSideBar} close={handlers.close} />}
+						header={<AppHeader showBurger={openedSideBar} toggle={handlers.toggle} />}
 					>
 						<Switch>
 							<Route path="/privacy">

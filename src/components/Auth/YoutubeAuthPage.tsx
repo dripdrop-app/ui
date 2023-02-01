@@ -1,13 +1,12 @@
-import React, { useMemo, useEffect, useRef } from 'react';
-import { Button, Center, Modal, Stack, Text } from '@mantine/core';
+import React, { useMemo, useEffect } from 'react';
+import { Button, Center, Flex, Modal, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { openModal } from '@mantine/modals';
+import { openModal, closeModal } from '@mantine/modals';
 
 import { useCheckYoutubeAuthQuery, useLazyGetOauthLinkQuery } from '../../api/youtube';
 
 export const withYoutubeAuthPage = <T extends {}>(Wrapped: React.FC<T>) => {
 	return (props: T) => {
-		const shownRef = useRef(false);
 		const [opened, handlers] = useDisclosure(false);
 
 		const youtubeAuthStatus = useCheckYoutubeAuthQuery();
@@ -21,14 +20,26 @@ export const withYoutubeAuthPage = <T extends {}>(Wrapped: React.FC<T>) => {
 					handlers.close();
 				}
 				const { refresh } = youtubeAuthStatus.data;
-				if (refresh && !shownRef.current) {
-					shownRef.current = true;
+				const shown = sessionStorage.getItem('shown');
+				if (refresh && !shown) {
 					openModal({
+						modalId: 'refresh',
 						title: 'Refresh Tokens',
 						children: (
 							<Stack>
 								<Text>Reconnect Google Account to receive update to date subscriptions</Text>
-								<Button onClick={() => getOAuthLink()}>Reconnect</Button>
+								<Flex justify="space-between">
+									<Button onClick={() => getOAuthLink()}>Reconnect</Button>
+									<Button
+										color="gray"
+										onClick={() => {
+											sessionStorage.setItem('shown', '1');
+											closeModal('refresh');
+										}}
+									>
+										Don't Show Again
+									</Button>
+								</Flex>
 							</Stack>
 						),
 					});
