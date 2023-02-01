@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
 import { Button, Center, Modal, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { openModal } from '@mantine/modals';
@@ -7,6 +7,7 @@ import { useCheckYoutubeAuthQuery, useLazyGetOauthLinkQuery } from '../../api/yo
 
 export const withYoutubeAuthPage = <T extends {}>(Wrapped: React.FC<T>) => {
 	return (props: T) => {
+		const shownRef = useRef(false);
 		const [opened, handlers] = useDisclosure(false);
 
 		const youtubeAuthStatus = useCheckYoutubeAuthQuery();
@@ -20,7 +21,8 @@ export const withYoutubeAuthPage = <T extends {}>(Wrapped: React.FC<T>) => {
 					handlers.close();
 				}
 				const { refresh } = youtubeAuthStatus.data;
-				if (refresh) {
+				if (refresh && !shownRef.current) {
+					shownRef.current = true;
 					openModal({
 						title: 'Refresh Tokens',
 						children: (

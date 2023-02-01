@@ -4,6 +4,7 @@ interface YoutubeVideo {
 	thumbnail: string;
 	channelId: string;
 	channelTitle: string;
+	channelThumbnail: string;
 	publishedAt: string;
 	categoryId: number;
 	createdAt: string;

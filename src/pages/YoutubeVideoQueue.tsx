@@ -33,7 +33,11 @@ const YoutubeVideoQueue = () => {
 					>
 						Previous
 					</Button>
-					<VideoQueueModal currentVideo={currentVideo} queueIndex={params.index} />
+					<VideoQueueModal
+						currentVideo={currentVideo}
+						queueIndex={params.index}
+						changeQueueIndex={(newIndex) => setSearchParams({ index: newIndex })}
+					/>
 					<Button
 						rightIcon={<MdSkipNext />}
 						disabled={!next}

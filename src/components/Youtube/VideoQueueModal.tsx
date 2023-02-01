@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
 import {
 	Avatar,
 	Box,
@@ -22,12 +21,13 @@ import { useYoutubeVideosQuery } from '../../api/youtube';
 import { VideoQueueButton } from './VideoButtons';
 
 interface VideoQueueModalProps {
+	changeQueueIndex: (newIndex: number) => void;
 	currentVideo: YoutubeVideo | null;
 	queueIndex: number;
 }
 
 const VideoQueueModal = (props: VideoQueueModalProps) => {
-	const { currentVideo, queueIndex } = props;
+	const { currentVideo, queueIndex, changeQueueIndex } = props;
 
 	const [filter, setFilter] = useState<YoutubeVideosBody>({
 		page: 1,
@@ -62,48 +62,48 @@ const VideoQueueModal = (props: VideoQueueModalProps) => {
 							<LoadingOverlay visible={videosStatus.isFetching} />
 							<Stack>
 								<ScrollArea style={{ height: '70vh' }}>
-									{videos.map((video, i) => (
-										<React.Fragment key={video.id}>
-											<Flex
-												align="center"
-												p="sm"
-												sx={{
-													borderRadius: 5,
-													'&:hover': {
-														backgroundColor: '#111111',
-													},
-												}}
-											>
-												<Box
-													component={Link}
-													to={`/youtube/videos/queue/${i + 1 + filter.perPage * (filter.page - 1)}`}
+									{videos.map((video, i) => {
+										const videoIndex = i + 1 + filter.perPage * (filter.page - 1);
+										return (
+											<React.Fragment key={video.id}>
+												<Flex
+													align="center"
+													p="sm"
 													sx={{
-														textDecoration: 'none',
-														color: 'inherit',
-														flex: 9,
+														borderRadius: 5,
+														'&:hover': {
+															backgroundColor: '#111111',
+														},
 													}}
-													onClick={handlers.close}
 												>
-													<Flex align="center">
-														<Flex sx={{ flex: 3 }} align="center" wrap="nowrap">
-															<Avatar src={video.thumbnail} />
-															<Stack spacing="xs">
-																<Title order={6}>{video.title}</Title>
-																<Text sx={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-																	{video.channelTitle}
-																</Text>
-															</Stack>
+													<Box
+														sx={{ color: 'inherit', flex: 9, cursor: 'pointer' }}
+														onClick={() => {
+															changeQueueIndex(videoIndex);
+															handlers.close();
+														}}
+													>
+														<Flex align="center">
+															<Flex sx={{ flex: 3 }} align="center" wrap="nowrap">
+																<Avatar src={video.thumbnail} sx={{ borderRadius: 10 }} />
+																<Stack spacing="xs">
+																	<Title order={6}>{video.title}</Title>
+																	<Text sx={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+																		{video.channelTitle}
+																	</Text>
+																</Stack>
+															</Flex>
+															<Box sx={{ flex: 1 }}>{video.id === currentVideo?.id && <Text>Now Playing</Text>}</Box>
 														</Flex>
-														<Box sx={{ flex: 1 }}>{video.id === currentVideo?.id && <Text>Now Playing</Text>}</Box>
-													</Flex>
-												</Box>
-												<Box sx={{ flex: 1, alignItems: 'end' }}>
-													<VideoQueueButton video={video} />
-												</Box>
-											</Flex>
-											<Divider />
-										</React.Fragment>
-									))}
+													</Box>
+													<Box sx={{ flex: 1, alignItems: 'end' }}>
+														<VideoQueueButton video={video} />
+													</Box>
+												</Flex>
+												<Divider />
+											</React.Fragment>
+										);
+									})}
 								</ScrollArea>
 								<Center>
 									<Pagination
@@ -128,6 +128,7 @@ const VideoQueueModal = (props: VideoQueueModalProps) => {
 			filter.page,
 			filter.perPage,
 			currentVideo?.id,
+			changeQueueIndex,
 		]
 	);
 };

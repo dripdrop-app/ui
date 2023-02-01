@@ -2,6 +2,8 @@ import { createApi, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit
 
 import { buildURL } from '../config';
 
+export type TagsArray = (string | { type: string; id?: string })[];
+
 export const Methods = {
 	POST: 'POST',
 	GET: 'GET',
@@ -10,21 +12,22 @@ export const Methods = {
 };
 
 export const Tags = {
-	USER: 'User',
 	MUSIC_JOB: 'MusicJob',
 	MUSIC_GROUPING: 'MusicGrouping',
 	MUSIC_ARTWORK: 'MusicArtwork',
 	MUSIC_TAGS: 'MusicTags',
 	MUSIC_DOWNLOAD: 'MusicDownload',
 	YOUTUBE_AUTH: 'YoutubeAuth',
+	YOUTUBE_CHANNEL: 'YoutubeChannel',
+	YOUTUBE_SUBSCRIPTION: 'YoutubeSubscription',
 	YOUTUBE_VIDEO: 'YoutubeVideo',
 	YOUTUBE_VIDEO_CATEGORY: 'YoutubeVideoCategory',
-	YOUTUBE_SUBSCRIPTION: 'YoutubeSubscription',
-	YOUTUBE_CHANNEL: 'YoutubeChannel',
+	YOUTUBE_VIDEO_LIKE: 'YoutubeVideoLike',
+	YOUTUBE_VIDEO_QUEUE: 'YoutubeVideoQueue',
+	USER: 'User',
 };
 
 export const tags = [
-	Tags.USER,
 	Tags.MUSIC_ARTWORK,
 	Tags.MUSIC_DOWNLOAD,
 	Tags.MUSIC_GROUPING,
@@ -35,6 +38,9 @@ export const tags = [
 	Tags.YOUTUBE_SUBSCRIPTION,
 	Tags.YOUTUBE_VIDEO,
 	Tags.YOUTUBE_VIDEO_CATEGORY,
+	Tags.YOUTUBE_VIDEO_LIKE,
+	Tags.YOUTUBE_VIDEO_QUEUE,
+	Tags.USER,
 ];
 
 const isErrorWithMessage = (error: any): error is { detail: string } =>

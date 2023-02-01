@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Route, Switch, Link, useLocation } from 'react-router-dom';
 import {
 	AppShell,
@@ -12,6 +12,7 @@ import {
 	NavLink,
 	Title,
 } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { ModalsProvider } from '@mantine/modals';
 import { NotificationsProvider } from '@mantine/notifications';
 import { BsYoutube } from 'react-icons/bs';
@@ -28,13 +29,14 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 
 const App = () => {
-	const [showSideBar, setShowSideBar] = useState(false);
+	const [openedSideBar, handlers] = useDisclosure(false);
 
 	const location = useLocation();
 
 	useEffect(() => {
 		window.scrollTo({ top: 0 });
-	}, [location]);
+		handlers.close();
+	}, [handlers, location, openedSideBar]);
 
 	return (
 		<MantineProvider
@@ -66,7 +68,7 @@ const App = () => {
 							<Navbar
 								width={{ sm: 200 }}
 								hiddenBreakpoint="sm"
-								hidden={!showSideBar}
+								hidden={!openedSideBar}
 								p="sm"
 								sx={(theme) => ({
 									'& .mantine-NavLink-icon': {
@@ -99,7 +101,7 @@ const App = () => {
 							<Header sx={(theme) => ({ backgroundColor: theme.colors.blue[8] })} height={{ base: 65 }}>
 								<Flex align="center" direction="row" sx={{ height: '100%' }} mx="lg">
 									<MediaQuery largerThan="sm" styles={{ display: 'none' }}>
-										<Burger opened={showSideBar} onClick={() => setShowSideBar(!showSideBar)} />
+										<Burger opened={openedSideBar} onClick={handlers.toggle} />
 									</MediaQuery>
 									<Avatar
 										alt="dripdrop"

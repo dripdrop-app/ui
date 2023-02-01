@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Card, Flex, Image, Overlay, Stack, Text } from '@mantine/core';
+import { Avatar, Box, Card, Flex, Image, Overlay, Stack, Text } from '@mantine/core';
 import { useHover, useMediaQuery } from '@mantine/hooks';
 
 import { VideoQueueButton, VideoWatchButton } from './VideoButtons';
@@ -62,7 +62,10 @@ const VideoCard = (props: VideoCardProps) => {
 									},
 								}}
 							>
-								{video.channelTitle}
+								<Flex>
+									<Avatar size="sm" src={video.channelThumbnail} sx={{ borderRadius: 10 }} />
+									<Text>{video.channelTitle}</Text>
+								</Flex>
 							</Text>
 							<Text>{publishedAt}</Text>
 						</Flex>

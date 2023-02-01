@@ -27,7 +27,7 @@ const YoutubeChannel = (props: YoutubeChannelProps) => {
 				) : (
 					<>
 						<Flex align="center">
-							<Avatar src={channel.thumbnail} />
+							<Avatar src={channel.thumbnail} sx={{ borderRadius: 10 }} />
 							<Title order={2}>{channel?.title}</Title>
 						</Flex>
 						<Divider />

@@ -1,4 +1,4 @@
-import api, { Tags, Methods } from '.';
+import api, { Tags, Methods, TagsArray } from '.';
 
 const youtubeApi = api.injectEndpoints({
 	endpoints: (build) => ({
@@ -49,10 +49,16 @@ const youtubeApi = api.injectEndpoints({
 				},
 			}),
 			providesTags: (result, error, args) => {
+				const tags = [];
 				if (result) {
-					return result.videos.map((video) => ({ type: Tags.YOUTUBE_VIDEO, id: video.id }));
+					tags.push(...result.videos.map((video) => ({ type: Tags.YOUTUBE_VIDEO, id: video.id })));
 				}
-				return [];
+				if (args.likedOnly) {
+					tags.push(Tags.YOUTUBE_VIDEO_LIKE);
+				} else if (args.queuedOnly) {
+					tags.push(Tags.YOUTUBE_VIDEO_QUEUE);
+				}
+				return tags;
 			},
 		}),
 		youtubeSubscriptions: build.query<YoutubeSubscriptionsResponse, YoutubeSubscriptionBody>({
@@ -72,7 +78,7 @@ const youtubeApi = api.injectEndpoints({
 			query: (videoId) => ({ url: `/youtube/videos/like`, params: { video_id: videoId }, method: Methods.PUT }),
 			invalidatesTags: (result, error, videoId) => {
 				if (!error) {
-					return [{ type: Tags.YOUTUBE_VIDEO, id: videoId }];
+					return [{ type: Tags.YOUTUBE_VIDEO, id: videoId }, Tags.YOUTUBE_VIDEO_LIKE];
 				}
 				return [];
 			},
@@ -98,7 +104,7 @@ const youtubeApi = api.injectEndpoints({
 			}),
 			invalidatesTags: (result, error, videoId) => {
 				if (!error) {
-					return [{ type: Tags.YOUTUBE_VIDEO, id: videoId }];
+					return [{ type: Tags.YOUTUBE_VIDEO, id: videoId }, Tags.YOUTUBE_VIDEO_QUEUE];
 				}
 				return [];
 			},
@@ -132,10 +138,11 @@ const youtubeApi = api.injectEndpoints({
 		youtubeVideoQueue: build.query<YoutubeVideoQueueResponse, number>({
 			query: (index) => ({ url: `/youtube/videos/queue`, params: { index }, method: Methods.GET }),
 			providesTags: (result) => {
+				const tags: TagsArray = [Tags.YOUTUBE_VIDEO_QUEUE];
 				if (result) {
-					return [{ type: Tags.YOUTUBE_VIDEO, id: result.currentVideo.id }];
+					tags.push({ type: Tags.YOUTUBE_VIDEO, id: result.currentVideo.id });
 				}
-				return [];
+				return tags;
 			},
 		}),
 		youtubeChannel: build.query<YoutubeChannel, string>({
