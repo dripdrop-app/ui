@@ -20,11 +20,11 @@ const YoutubeChannel = (props: YoutubeChannelProps) => {
 	return useMemo(
 		() => (
 			<Stack sx={{ position: 'relative' }}>
-				{!channel ? (
+				{channelStatus.isFetching ? (
 					<Center>
 						<Loader />
 					</Center>
-				) : (
+				) : channel ? (
 					<>
 						<Flex align="center">
 							<Avatar src={channel.thumbnail} sx={{ borderRadius: 10 }} />
@@ -33,10 +33,12 @@ const YoutubeChannel = (props: YoutubeChannelProps) => {
 						<Divider />
 						<VideosView channelId={channel.id} />
 					</>
+				) : (
+					<Center>Channel could not be loaded</Center>
 				)}
 			</Stack>
 		),
-		[channel]
+		[channel, channelStatus.isFetching]
 	);
 };
 
