@@ -27,11 +27,19 @@ export const resolveAlbumFromTitle = (title: string) => {
 
 export const isBase64 = (url: string) => RegExp(/^data:(image\/.+)?;base64/).test(url);
 
-export const isValidImage = (url: string) => RegExp(/^http(s?):\/\/(www\.)?.+\.(jpg|jpeg|png)/).test(url);
+export const isValidLink = (url: string) => {
+	try {
+		new URL(url);
+		return true;
+	} catch {
+		return false;
+	}
+};
 
-export const isValidLink = (url: string) => RegExp(/^http(s?):\/\/(www\.)?.*/).test(url);
-
-export const isValidYTLink = (url: string) => RegExp(/^http(s?):\/\/(www\.)?youtube\.com\/watch\?v=.+/).test(url);
+export const isValidImage = (url: string) => {
+	const isLink = isValidLink(url);
+	return isLink && RegExp(/\.(jpg|jpeg|png)$/).test(url);
+};
 
 export const generateTime = (seconds: number) => {
 	const formattedMinutes = Math.floor(seconds / 60)

@@ -1,6 +1,6 @@
 interface Job {
 	id: string;
-	youtubeUrl?: string;
+	videoUrl?: string;
 	filename?: string;
 	originalFilename?: string;
 	artworkUrl?: string;
@@ -19,7 +19,7 @@ interface Job {
 type MusicFormState =
 	| {
 			fileSwitch: true;
-			youtubeUrl: string;
+			videoUrl: string;
 			file: File;
 			artworkUrl: string;
 			resolvedArtworkUrl: string;
@@ -30,7 +30,7 @@ type MusicFormState =
 	  }
 	| {
 			fileSwitch: false;
-			youtubeUrl: string;
+			videoUrl: string;
 			file: null;
 			artworkUrl: string;
 			resolvedArtworkUrl: string;
@@ -62,5 +62,23 @@ interface TagsResponse {
 	title?: string;
 	artist?: string;
 	album?: string;
+	grouping?: string;
+}
+
+interface CreateFileJobBody {
+	file: File;
+	artworkUrl: string;
+	title: string;
+	artist: string;
+	album: string;
+	grouping?: string;
+}
+
+interface CreateVideoJobBody {
+	videoUrl: string;
+	artworkUrl: string;
+	title: string;
+	artist: string;
+	album: string;
 	grouping?: string;
 }

@@ -26,10 +26,8 @@ const JobCard = (props: Job) => {
 							<td>{props.id}</td>
 						</tr>
 						<tr>
-							<td>Youtube URL</td>
-							<td>
-								{props.youtubeUrl ? <Anchor href={props.youtubeUrl}>{props.youtubeUrl}</Anchor> : props.youtubeUrl}
-							</td>
+							<td>Video URL</td>
+							<td>{props.videoUrl ? <Anchor href={props.videoUrl}>{props.videoUrl}</Anchor> : props.videoUrl}</td>
 						</tr>
 						<tr>
 							<td>Filename</td>

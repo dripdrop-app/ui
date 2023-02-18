@@ -93,21 +93,3 @@ interface YoutubeVideoQueueResponse {
 	next: boolean;
 	currentVideo: YoutubeVideo;
 }
-
-interface CreateFileJobBody {
-	file: File;
-	artworkUrl: string;
-	title: string;
-	artist: string;
-	album: string;
-	grouping?: string;
-}
-
-interface CreateYoutubeJobBody {
-	youtubeUrl: string;
-	artworkUrl: string;
-	title: string;
-	artist: string;
-	album: string;
-	grouping?: string;
-}

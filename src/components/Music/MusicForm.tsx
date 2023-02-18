@@ -19,12 +19,12 @@ import { useForm, Controller, useWatch } from 'react-hook-form';
 
 import {
 	useLazyCreateFileJobQuery,
-	useLazyCreateYoutubeJobQuery,
+	useLazyCreateVideoJobQuery,
 	useLazyArtworkQuery,
 	useLazyTagsQuery,
 	useLazyGroupingQuery,
 } from '../../api/music';
-import { isBase64, isValidImage, isValidLink, isValidYTLink, resolveAlbumFromTitle } from '../../utils/helpers';
+import { isBase64, isValidImage, isValidLink, resolveAlbumFromTitle } from '../../utils/helpers';
 
 const MusicForm = () => {
 	const { reset, handleSubmit, control, trigger, setValue } = useForm<MusicFormState>({
@@ -33,10 +33,10 @@ const MusicForm = () => {
 	const watchFields = useWatch({ control });
 
 	const [debouncedArtworkUrl] = useDebouncedValue(watchFields.artworkUrl, 500);
-	const [debouncedYoutubeUrl] = useDebouncedValue(watchFields.youtubeUrl, 500);
+	const [debouncedVideoUrl] = useDebouncedValue(watchFields.videoUrl, 500);
 
 	const [createFileJob, createFileJobStatus] = useLazyCreateFileJobQuery();
-	const [createYoutubeJob, createYoutubeJobStatus] = useLazyCreateYoutubeJobQuery();
+	const [createVideoJob, createVideoJobStatus] = useLazyCreateVideoJobQuery();
 	const [getArtwork, getArtworkStatus] = useLazyArtworkQuery();
 	const [getTags, getTagsStatus] = useLazyTagsQuery();
 	const [getGrouping, getGroupingStatus] = useLazyGroupingQuery();
@@ -55,13 +55,13 @@ const MusicForm = () => {
 		() =>
 			createFileJobStatus.isLoading ||
 			createFileJobStatus.isFetching ||
-			createYoutubeJobStatus.isLoading ||
-			createYoutubeJobStatus.isFetching,
+			createVideoJobStatus.isLoading ||
+			createVideoJobStatus.isFetching,
 		[
 			createFileJobStatus.isFetching,
 			createFileJobStatus.isLoading,
-			createYoutubeJobStatus.isFetching,
-			createYoutubeJobStatus.isLoading,
+			createVideoJobStatus.isFetching,
+			createVideoJobStatus.isLoading,
 		]
 	);
 
@@ -94,7 +94,7 @@ const MusicForm = () => {
 					errorNotification();
 				}
 			} else {
-				const status = await createYoutubeJob(data);
+				const status = await createVideoJob(data);
 				if (status.isSuccess) {
 					reset();
 					successNotification();
@@ -103,7 +103,7 @@ const MusicForm = () => {
 				}
 			}
 		},
-		[createFileJob, createYoutubeJob, reset]
+		[createFileJob, createVideoJob, reset]
 	);
 
 	const resolveArtworkUrl = useCallback(
@@ -167,10 +167,10 @@ const MusicForm = () => {
 	}, [setValue, watchFields.title]);
 
 	const resolveGrouping = useCallback(
-		async (youtubeUrl: string) => {
-			if (youtubeUrl) {
-				if (isValidYTLink(youtubeUrl)) {
-					const status = await getGrouping(youtubeUrl);
+		async (videoUrl: string) => {
+			if (videoUrl) {
+				if (isValidLink(videoUrl)) {
+					const status = await getGrouping(videoUrl);
 					if (status.isSuccess) {
 						const { grouping } = status.data;
 						setValue('grouping', grouping);
@@ -182,8 +182,8 @@ const MusicForm = () => {
 	);
 
 	useEffect(() => {
-		resolveGrouping(debouncedYoutubeUrl || '');
-	}, [debouncedYoutubeUrl, resolveGrouping]);
+		resolveGrouping(debouncedVideoUrl || '');
+	}, [debouncedVideoUrl, resolveGrouping]);
 
 	return useMemo(
 		() => (
@@ -195,17 +195,17 @@ const MusicForm = () => {
 						<Stack>
 							<Flex align="center">
 								<Controller
-									name="youtubeUrl"
+									name="videoUrl"
 									control={control}
 									defaultValue={''}
 									rules={{
 										required: !watchFields.fileSwitch,
-										pattern: /^http(s?):\/\/(www\.)?youtube\.com\/watch\?v=.+/,
+										validate: (v) => isValidLink(v),
 									}}
 									render={({ field, fieldState }) => {
 										let error = '';
-										if (fieldState.error?.type === 'pattern') {
-											error = 'Invalid YouTube Link';
+										if (fieldState.error?.type === 'validate') {
+											error = 'Invalid Link';
 										} else if (fieldState.error?.type === 'required') {
 											error = 'Required';
 										}
@@ -214,8 +214,8 @@ const MusicForm = () => {
 												sx={{ width: '100%' }}
 												{...field}
 												error={error}
-												label="Youtube URL"
-												placeholder="Enter Youtube URL"
+												label="Video URL"
+												placeholder="Enter Video URL"
 												disabled={watchFields.fileSwitch}
 												required={!watchFields.fileSwitch}
 											/>

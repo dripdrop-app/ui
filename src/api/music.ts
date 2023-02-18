@@ -4,7 +4,7 @@ import { buildWebsocketURL } from '../config';
 const musicApi = api.injectEndpoints({
 	endpoints: (build) => ({
 		grouping: build.query<GroupingResponse, string>({
-			query: (youtubeUrl) => ({ url: `/music/grouping`, method: Methods.GET, params: { youtube_url: youtubeUrl } }),
+			query: (videoUrl) => ({ url: `/music/grouping`, method: Methods.GET, params: { video_url: videoUrl } }),
 			providesTags: [Tags.MUSIC_GROUPING],
 		}),
 		artwork: build.query<Artwork, string>({
@@ -76,10 +76,10 @@ const musicApi = api.injectEndpoints({
 				return { url: '/music/jobs/create', method: Methods.POST, body: formData };
 			},
 		}),
-		createYoutubeJob: build.query<undefined, CreateYoutubeJobBody>({
+		createVideoJob: build.query<undefined, CreateVideoJobBody>({
 			query: (args) => {
 				const formData = new FormData();
-				formData.append('youtube_url', args.youtubeUrl);
+				formData.append('video_url', args.videoUrl);
 				formData.append('artwork_url', args.artworkUrl);
 				formData.append('title', args.title);
 				formData.append('artist', args.artist);
@@ -99,7 +99,7 @@ export const {
 	useLazyGroupingQuery,
 	useLazyTagsQuery,
 	useLazyCreateFileJobQuery,
-	useLazyCreateYoutubeJobQuery,
+	useLazyCreateVideoJobQuery,
 	useJobsQuery,
 	useRemoveJobMutation,
 } = musicApi;
