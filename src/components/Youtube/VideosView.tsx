@@ -61,7 +61,7 @@ const VideosView = (props: VideosViewProps) => {
 						/>
 						<Grid>
 							{videos.map((video) => (
-								<Grid.Col key={video.id} xs={12} sm={6} md={3} xl={2}>
+								<Grid.Col key={video.id} xs={12} sm={6} md={4} xl={3}>
 									<YoutubeVideoCard video={video} />
 								</Grid.Col>
 							))}
