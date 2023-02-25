@@ -35,7 +35,7 @@ const YoutubeSubscriptions = () => {
 						<>
 							<Grid>
 								{subscriptions.map((subscription) => (
-									<Grid.Col key={subscription.channelId} xs={12} sm={6} md={4} xl={3}>
+									<Grid.Col key={subscription.channelId} xs={12} sm={6} md={4} lg={3} xl={2}>
 										<SubscriptionCard subscription={subscription} />
 									</Grid.Col>
 								))}

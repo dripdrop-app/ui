@@ -111,6 +111,9 @@ const App = () => {
 			withNormalizeCSS
 			theme={{
 				colorScheme: 'dark',
+				breakpoints: {
+					xl: 2000,
+				},
 				components: {
 					Anchor: {
 						defaultProps: {
@@ -124,6 +127,11 @@ const App = () => {
 							gap: 'md',
 						},
 					},
+					Tooltip: {
+						defaultProps: {
+							events: { hover: true, focus: false, touch: true }
+						}
+					}
 				},
 			}}
 		>
@@ -165,7 +173,7 @@ const App = () => {
 					</AppShell>
 				</NotificationsProvider>
 			</ModalsProvider>
-		</MantineProvider>
+		</MantineProvider >
 	);
 };
 

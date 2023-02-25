@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Avatar, Box, Card, Flex, Image, Overlay, Stack, Text } from '@mantine/core';
-import { useHover, useMediaQuery } from '@mantine/hooks';
+import { useHover, useOs } from '@mantine/hooks';
 
 import { VideoQueueButton, VideoWatchButton } from './VideoButtons';
 
@@ -14,9 +14,9 @@ const VideoCard = (props: VideoCardProps) => {
 
 	const { hovered, ref } = useHover();
 
-	const isSmall = useMediaQuery('(max-width: 768px)');
+	const os = useOs();
 
-	const showOverlay = useMemo(() => isSmall || hovered, [hovered, isSmall]);
+	const showOverlay = useMemo(() => os === 'android' || os === 'ios' || hovered, [hovered, os]);
 
 	return useMemo(() => {
 		const publishedAt = new Date(video.publishedAt).toLocaleDateString();
@@ -54,6 +54,8 @@ const VideoCard = (props: VideoCardProps) => {
 						</Text>
 						<Flex justify="space-between">
 							<Text
+								variant="link"
+								c="dimmed"
 								component={Link}
 								to={channelLink}
 								sx={{
@@ -64,10 +66,10 @@ const VideoCard = (props: VideoCardProps) => {
 							>
 								<Flex>
 									<Avatar size="sm" src={video.channelThumbnail} sx={{ borderRadius: 10 }} />
-									<Text>{video.channelTitle}</Text>
+									<Text >{video.channelTitle}</Text>
 								</Flex>
 							</Text>
-							<Text>{publishedAt}</Text>
+							<Text c="dimmed">{publishedAt}</Text>
 						</Flex>
 					</Stack>
 				</Card>

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { AspectRatio, Box, Divider, Flex, Stack, Title } from '@mantine/core';
+import { AspectRatio, Box, Divider, Grid, Stack, Title } from '@mantine/core';
 
 import { useYoutubeVideoQuery } from '../api/youtube';
 import VideoCard from '../components/Youtube/VideoCard';
@@ -27,13 +27,13 @@ const YoutubeVideo = (props: YoutubeVideoProps) => {
 				{video && <VideoInformation video={video} />}
 				<Divider />
 				<Title order={3}>Related Videos</Title>
-				<Flex justify="space-between">
+				<Grid>
 					{relatedVideos?.map((video) => (
-						<Box sx={{ flex: 1 }} key={video.id}>
+						<Grid.Col key={video.id} xs={12} sm={6} md={4} lg={3} xl={2}>
 							<VideoCard video={video} />
-						</Box>
+						</Grid.Col>
 					))}
-				</Flex>
+				</Grid>
 			</Stack>
 		),
 		[relatedVideos, video]

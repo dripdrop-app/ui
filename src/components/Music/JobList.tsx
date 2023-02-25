@@ -42,7 +42,7 @@ const JobList = () => {
 				) : (
 					<Grid>
 						{jobs.map((job) => (
-							<Grid.Col key={job.id} xs={12} sm={6} md={4} xl={3}>
+							<Grid.Col key={job.id} xs={12} sm={6} md={4} lg={3} xl={2}>
 								<JobCard {...job} />
 							</Grid.Col>
 						))}
