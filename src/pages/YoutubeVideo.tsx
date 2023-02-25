@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { AspectRatio, Box, Divider, Grid, Stack, Title } from '@mantine/core';
+import { AspectRatio, Divider, Grid, Stack, Title } from '@mantine/core';
 
 import { useYoutubeVideoQuery } from '../api/youtube';
 import VideoCard from '../components/Youtube/VideoCard';
