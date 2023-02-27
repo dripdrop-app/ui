@@ -85,7 +85,7 @@ const MusicForm = () => {
 					color: 'red',
 				});
 
-			if (data.fileSwitch) {
+			if (data.isFile) {
 				const status = await createFileJob(data);
 				if (status.isSuccess) {
 					reset();
@@ -114,8 +114,8 @@ const MusicForm = () => {
 				} else if (isValidLink(artworkUrl)) {
 					const status = await getArtwork(artworkUrl);
 					if (status.isSuccess) {
-						const { artworkUrl } = status.data;
-						return setValue('resolvedArtworkUrl', artworkUrl);
+						const { resolvedArtworkUrl } = status.data;
+						return setValue('resolvedArtworkUrl', resolvedArtworkUrl);
 					}
 				}
 			}
@@ -199,8 +199,8 @@ const MusicForm = () => {
 									control={control}
 									defaultValue={''}
 									rules={{
-										required: !watchFields.fileSwitch,
-										validate: (v) => isValidLink(v),
+										required: !watchFields.isFile,
+										validate: (v) => !watchFields.isFile ? isValidLink(v) : true,
 									}}
 									render={({ field, fieldState }) => {
 										let error = '';
@@ -216,14 +216,14 @@ const MusicForm = () => {
 												error={error}
 												label="Video URL"
 												placeholder="Enter Video URL"
-												disabled={watchFields.fileSwitch}
-												required={!watchFields.fileSwitch}
+												disabled={watchFields.isFile}
+												required={!watchFields.isFile}
 											/>
 										);
 									}}
 								/>
 								<Controller
-									name="fileSwitch"
+									name="isFile"
 									control={control}
 									defaultValue={false}
 									render={({ field }) => <Switch {...field} value="" checked={field.value} />}
@@ -232,7 +232,7 @@ const MusicForm = () => {
 									name="file"
 									control={control}
 									defaultValue={null}
-									rules={{ required: watchFields.fileSwitch }}
+									rules={{ required: watchFields.isFile }}
 									render={({ field, fieldState }) => (
 										<FileInput
 											sx={{ width: '100%' }}
@@ -240,8 +240,8 @@ const MusicForm = () => {
 											error={fieldState.error?.type === 'required' ? 'Required' : ''}
 											label="Filename"
 											placeholder="Select File"
-											required={watchFields.fileSwitch}
-											disabled={!watchFields.fileSwitch}
+											required={watchFields.isFile}
+											disabled={!watchFields.isFile}
 											accept="audio/mpeg,audio/wav"
 										/>
 									)}
@@ -376,7 +376,7 @@ const MusicForm = () => {
 			handleSubmit,
 			onSubmit,
 			control,
-			watchFields.fileSwitch,
+			watchFields.isFile,
 			watchFields.resolvedArtworkUrl,
 			artworkLoading,
 			tagsLoading,

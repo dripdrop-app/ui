@@ -18,7 +18,7 @@ interface Job {
 
 type MusicFormState =
 	| {
-			fileSwitch: true;
+			isFile: true;
 			videoUrl: string;
 			file: File;
 			artworkUrl: string;
@@ -29,7 +29,7 @@ type MusicFormState =
 			grouping: string;
 	  }
 	| {
-			fileSwitch: false;
+			isFile: false;
 			videoUrl: string;
 			file: null;
 			artworkUrl: string;
@@ -53,8 +53,8 @@ interface GroupingResponse {
 	grouping: string;
 }
 
-interface Artwork {
-	artworkUrl: string;
+interface ResolvedArtworkResponse {
+	resolvedArtworkUrl: string;
 }
 
 interface TagsResponse {

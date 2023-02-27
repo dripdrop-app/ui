@@ -7,7 +7,7 @@ const musicApi = api.injectEndpoints({
 			query: (videoUrl) => ({ url: `/music/grouping`, method: Methods.GET, params: { video_url: videoUrl } }),
 			providesTags: [Tags.MUSIC_GROUPING],
 		}),
-		artwork: build.query<Artwork, string>({
+		artwork: build.query<ResolvedArtworkResponse, string>({
 			query: (artworkUrl) => ({ url: `/music/artwork`, method: Methods.GET, params: { artwork_url: artworkUrl } }),
 			providesTags: [Tags.MUSIC_ARTWORK],
 		}),
