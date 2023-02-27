@@ -87,7 +87,7 @@ const MusicForm = () => {
 				});
 
 			if (data.isFile) {
-				const status = await createFileJob(data);
+				const status = await createFileJob({ ...data, artworkUrl: data.resolvedArtworkUrl });
 				if (status.isSuccess) {
 					reset();
 					successNotification();
@@ -95,7 +95,7 @@ const MusicForm = () => {
 					errorNotification();
 				}
 			} else {
-				const status = await createVideoJob(data);
+				const status = await createVideoJob({ ...data, artworkUrl: data.resolvedArtworkUrl });
 				if (status.isSuccess) {
 					reset();
 					successNotification();
