@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { AspectRatio, Button, Flex, Stack } from '@mantine/core';
 import { MdSkipNext, MdSkipPrevious } from 'react-icons/md';
 
@@ -25,6 +26,9 @@ const YoutubeVideoQueue = () => {
 	return useMemo(
 		() => (
 			<Stack p="md">
+				<Helmet>
+					<title>Video Queue</title>
+				</Helmet>
 				<Flex justify="space-between">
 					<Button
 						leftIcon={<MdSkipPrevious />}

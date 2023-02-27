@@ -1,6 +1,11 @@
+import { Helmet } from "react-helmet-async";
+
 const TermsOfService = () => {
 	return (
 		<>
+			<Helmet>
+				<title>Terms of Service</title>
+			</Helmet>
 			<h2 style={{ textAlign: 'center' }}>
 				<b>TERMS AND CONDITIONS</b>
 			</h2>

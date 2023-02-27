@@ -1,6 +1,11 @@
+import { Helmet } from "react-helmet-async";
+
 const PrivacyPolicy = () => {
 	return (
 		<>
+			<Helmet>
+				<title>Privacy Policy</title>
+			</Helmet>
 			<h1>Privacy Policy</h1>
 			<p>Last updated: January 21, 2023</p>
 			<p>

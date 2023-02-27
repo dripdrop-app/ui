@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Avatar, Center, Divider, Flex, Loader, Stack, Title } from '@mantine/core';
 
 import { useYoutubeChannelQuery } from '../api/youtube';
@@ -26,9 +27,12 @@ const YoutubeChannel = (props: YoutubeChannelProps) => {
 					</Center>
 				) : channel ? (
 					<>
+						<Helmet>
+							<title>{channel.title}</title>
+						</Helmet>
 						<Flex align="center">
 							<Avatar src={channel.thumbnail} sx={{ borderRadius: 10 }} />
-							<Title order={2}>{channel?.title}</Title>
+							<Title order={2}>{channel.title}</Title>
 						</Flex>
 						<Divider />
 						<VideosView channelId={channel.id} />

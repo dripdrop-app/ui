@@ -174,6 +174,7 @@ const App = () => {
 				</NotificationsProvider>
 			</ModalsProvider>
 		</MantineProvider >
+
 	);
 };
 

@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Center, Divider, Grid, Loader, Pagination, Stack, Title } from '@mantine/core';
 
 import { useYoutubeSubscriptionsQuery } from '../api/youtube';
@@ -24,6 +25,9 @@ const YoutubeSubscriptions = () => {
 	return useMemo(
 		() => (
 			<Stack>
+				<Helmet>
+					<title>Subscriptions</title>
+				</Helmet>
 				<Title order={2}>Subscriptions</Title>
 				<Divider />
 				<Stack sx={{ position: 'relative' }}>

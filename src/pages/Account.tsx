@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Button, Checkbox, Container, Stack, TextInput } from '@mantine/core';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 import { useCheckSessionQuery, useLogoutMutation } from '../api/auth';
 import withAuthPage from '../components/Auth/AuthPage';
@@ -20,9 +21,12 @@ const Account = () => {
 		if (user) {
 			return (
 				<Container>
+					<Helmet>
+						<title>Account</title>
+					</Helmet>
 					<Stack spacing="md">
-						<TextInput label="Email" value={user.email} onChange={() => {}} />
-						<Checkbox label="Admin" checked={user.admin} onChange={() => {}} />
+						<TextInput label="Email" value={user.email} readOnly />
+						<Checkbox label="Admin" checked={user.admin} readOnly />
 						<Button component={Link} to="/terms">
 							Terms of Service
 						</Button>
