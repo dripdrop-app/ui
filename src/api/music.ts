@@ -30,10 +30,10 @@ const musicApi = api.injectEndpoints({
 				} finally {
 					ws.onmessage = (event) => {
 						const json = JSON.parse(event.data);
-						const type = json.type;
-						if (type === 'STARTED') {
+						const status = json.status;
+						if (status === 'STARTED') {
 							dispatch(musicApi.util.invalidateTags([Tags.MUSIC_JOB]));
-						} else if (type === 'COMPLETED') {
+						} else if (status === 'COMPLETED') {
 							dispatch(musicApi.util.invalidateTags([{ type: Tags.MUSIC_JOB, id: json.job.id }]));
 						}
 					};
