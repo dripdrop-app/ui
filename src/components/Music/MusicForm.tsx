@@ -201,7 +201,7 @@ const MusicForm = () => {
 									defaultValue={''}
 									rules={{
 										required: !watchFields.isFile,
-										validate: (v) => !watchFields.isFile ? isValidLink(v) : true,
+										validate: (v) => (!watchFields.isFile ? isValidLink(v) : true),
 									}}
 									render={({ field, fieldState }) => {
 										let error = '';

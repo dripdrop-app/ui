@@ -129,9 +129,9 @@ const App = () => {
 					},
 					Tooltip: {
 						defaultProps: {
-							events: { hover: true, focus: false, touch: true }
-						}
-					}
+							events: { hover: true, focus: false, touch: true },
+						},
+					},
 				},
 			}}
 		>
@@ -157,8 +157,7 @@ const App = () => {
 					</AppShell>
 				</NotificationsProvider>
 			</ModalsProvider>
-		</MantineProvider >
-
+		</MantineProvider>
 	);
 };
 

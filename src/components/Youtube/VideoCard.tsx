@@ -66,7 +66,7 @@ const VideoCard = (props: VideoCardProps) => {
 							>
 								<Flex>
 									<Avatar size="sm" src={video.channelThumbnail} sx={{ borderRadius: 10 }} />
-									<Text >{video.channelTitle}</Text>
+									<Text>{video.channelTitle}</Text>
 								</Flex>
 							</Text>
 							<Text color="dimmed">{publishedAt}</Text>

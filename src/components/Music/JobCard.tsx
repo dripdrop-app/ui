@@ -74,7 +74,15 @@ const JobCard = (props: Job) => {
 					<Button display={props.failed ? 'initial' : 'none'} color="red" leftIcon={<MdError />}>
 						Failed
 					</Button>
-					<Button component='a' display={props.completed ? 'initial' : 'none'} color="green" href={props.downloadUrl} leftIcon={<MdDownload />} download>
+					<Button
+						component="a"
+						display={props.completed ? 'initial' : 'none'}
+						color="green"
+						href={props.downloadUrl}
+						target="_blank"
+						rel="noopener noreferrer"
+						leftIcon={<MdDownload />}
+					>
 						Download
 					</Button>
 					<Button

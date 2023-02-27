@@ -8,7 +8,6 @@ import VideosView from '../components/Youtube/VideosView';
 import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
 import withAuthPage from '../components/Auth/AuthPage';
 
-
 const YoutubeChannel = () => {
 	const { id } = useParams();
 
