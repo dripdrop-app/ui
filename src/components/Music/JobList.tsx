@@ -24,14 +24,7 @@ const JobList = () => {
 	return useMemo(
 		() => (
 			<Stack>
-				<Flex justify="space-between">
-					<Title order={3}>Jobs</Title>
-					<Pagination
-						page={args.page}
-						total={totalPages}
-						onChange={(newPage) => setArgs((prevState) => ({ ...prevState, page: newPage }))}
-					/>
-				</Flex>
+				<Title order={3}>Jobs</Title>
 				<Divider />
 				{jobsStatus.isLoading ? (
 					<Center>
@@ -40,13 +33,22 @@ const JobList = () => {
 				) : jobs.length === 0 ? (
 					<Center>No Jobs</Center>
 				) : (
-					<Grid>
-						{jobs.map((job) => (
-							<Grid.Col key={job.id} xs={12} sm={6} md={4} lg={3} xl={2}>
-								<JobCard {...job} />
-							</Grid.Col>
-						))}
-					</Grid>
+					<Stack>
+						<Grid>
+							{jobs.map((job) => (
+								<Grid.Col key={job.id} xs={12} sm={6} md={4} lg={3} xl={2}>
+									<JobCard {...job} />
+								</Grid.Col>
+							))}
+						</Grid>
+						<Center>
+							<Pagination
+								page={args.page}
+								total={totalPages}
+								onChange={(newPage) => setArgs((prevState) => ({ ...prevState, page: newPage }))}
+							/>
+						</Center>
+					</Stack>
 				)}
 			</Stack>
 		),
