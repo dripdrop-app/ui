@@ -14,7 +14,7 @@ jobs:
           command: ssh -o StrictHostKeyChecking=no -v $SSH_USER@$SSH_HOST "mkdir -p ~/dist"
       - run:
           name: Copy Client to VM Build Directory
-          command: scp -o StrictHostKeyChecking=no -vr ./dist $SSH_USER@$SSH_HOST:~/build
+          command: scp -o StrictHostKeyChecking=no -vr ./dist $SSH_USER@$SSH_HOST:~
 
 workflows:
   version: 2
