@@ -147,9 +147,7 @@ const App = () => {
 							<Route path="/terms" element={<TermsOfService />} />
 							<Route path="/youtube/channel/:id" element={<YoutubeChannel />} />
 							<Route path="/youtube/subscriptions" element={<YoutubeSubscriptions />} />
-
 							<Route path="/youtube/videos/queue" element={<YoutubeVideoQueue />} />
-
 							<Route path="/youtube/videos" element={<YoutubeVideos />} />
 							<Route path="/youtube/video/:id" element={<YoutubeVideo />} />
 							<Route path="/music/downloader" element={<MusicDownloader />} />
