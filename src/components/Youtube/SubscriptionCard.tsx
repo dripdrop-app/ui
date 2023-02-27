@@ -25,7 +25,7 @@ const SubscriptionCard = (props: SubscriptionCardProps) => {
 					</Card.Section>
 					<Stack py={10}>
 						<Text>{subscription.channelTitle}</Text>
-						<Text>Subscribed on {publishedAt}</Text>
+						<Text color="dimmed">Subscribed on {publishedAt}</Text>
 					</Stack>
 				</Card>
 			</Box>

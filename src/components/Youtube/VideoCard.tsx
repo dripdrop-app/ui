@@ -55,7 +55,7 @@ const VideoCard = (props: VideoCardProps) => {
 						<Flex justify="space-between">
 							<Text
 								variant="link"
-								c="dimmed"
+								color="dimmed"
 								component={Link}
 								to={channelLink}
 								sx={{
@@ -69,7 +69,7 @@ const VideoCard = (props: VideoCardProps) => {
 									<Text >{video.channelTitle}</Text>
 								</Flex>
 							</Text>
-							<Text c="dimmed">{publishedAt}</Text>
+							<Text color="dimmed">{publishedAt}</Text>
 						</Flex>
 					</Stack>
 				</Card>
