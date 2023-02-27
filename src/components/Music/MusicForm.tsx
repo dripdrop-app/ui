@@ -10,6 +10,7 @@ import {
 	Loader,
 	Stack,
 	Switch,
+	Text,
 	TextInput,
 	Title,
 } from '@mantine/core';
@@ -266,7 +267,7 @@ const MusicForm = () => {
 										render={({ field, fieldState }) => (
 											<TextInput
 												{...field}
-												error={fieldState.error}
+												error={fieldState.error?.message}
 												label="Artwork URL"
 												placeholder="Enter Artwork URL"
 												disabled={tagsLoading}
@@ -280,7 +281,7 @@ const MusicForm = () => {
 										render={({ field, fieldState }) => (
 											<TextInput
 												{...field}
-												error={fieldState.error}
+												error={fieldState.error?.message}
 												label="Resolved Artwork URL"
 												disabled
 												rightSection={artworkLoading || tagsLoading ? <Loader size="xs" /> : null}

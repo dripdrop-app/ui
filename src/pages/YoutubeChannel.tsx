@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Avatar, Center, Divider, Flex, Loader, Stack, Title } from '@mantine/core';
 
@@ -7,14 +8,11 @@ import VideosView from '../components/Youtube/VideosView';
 import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
 import withAuthPage from '../components/Auth/AuthPage';
 
-interface YoutubeChannelProps {
-	id: string;
-}
 
-const YoutubeChannel = (props: YoutubeChannelProps) => {
-	const { id } = props;
+const YoutubeChannel = () => {
+	const { id } = useParams();
 
-	const channelStatus = useYoutubeChannelQuery(id);
+	const channelStatus = useYoutubeChannelQuery(id || '', { skip: !id });
 
 	const channel = useMemo(() => channelStatus.data, [channelStatus.data]);
 

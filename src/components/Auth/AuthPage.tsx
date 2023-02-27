@@ -156,7 +156,7 @@ export const AuthPage = () => {
 								)}
 							/>
 							<Alert sx={{ ...(!error && { display: 'none' }) }} icon={<MdError />} title="Error" color="red">
-								{error}
+								{error ? String(error) : ''}
 							</Alert>
 							<Flex gap="md">
 								<Button type="submit">Submit</Button>

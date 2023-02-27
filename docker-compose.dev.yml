@@ -6,9 +6,8 @@ services:
     restart: always
     volumes:
       - ./:/src
-    env_file: .env
     build:
       dockerfile: dockerfiles/Dockerfile.dev.web
-    entrypoint: npm start
+    entrypoint: npm run dev -- --port $PORT --host 0.0.0.0
     ports:
       - $PORT:$PORT

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Route, Switch, Link, useLocation } from 'react-router-dom';
+import { Route, Routes, Link, useLocation } from 'react-router-dom';
 import {
 	AppShell,
 	Avatar,
@@ -142,34 +142,20 @@ const App = () => {
 						navbar={<AppNavbar opened={openedSideBar} close={handlers.close} />}
 						header={<AppHeader showBurger={openedSideBar} toggle={handlers.toggle} />}
 					>
-						<Switch>
-							<Route path="/privacy">
-								<PrivacyPolicy />
-							</Route>
-							<Route path="/terms">
-								<TermsOfService />
-							</Route>
-							<Route path="/youtube/channel/:id" render={(props) => <YoutubeChannel id={props.match.params.id} />} />
-							<Route path="/youtube/subscriptions">
-								<YoutubeSubscriptions />
-							</Route>
-							<Route path="/youtube/videos/queue">
-								<YoutubeVideoQueue />
-							</Route>
-							<Route path="/youtube/videos">
-								<YoutubeVideos />
-							</Route>
-							<Route path="/youtube/video/:id" render={(props) => <YoutubeVideo id={props.match.params.id} />} />
-							<Route path="/music/downloader">
-								<MusicDownloader />
-							</Route>
-							<Route path="/account">
-								<Account />
-							</Route>
-							<Route path="/">
-								<MusicDownloader />
-							</Route>
-						</Switch>
+						<Routes>
+							<Route path="/privacy" element={<PrivacyPolicy />} />
+							<Route path="/terms" element={<TermsOfService />} />
+							<Route path="/youtube/channel/:id" element={<YoutubeChannel />} />
+							<Route path="/youtube/subscriptions" element={<YoutubeSubscriptions />} />
+
+							<Route path="/youtube/videos/queue" element={<YoutubeVideoQueue />} />
+
+							<Route path="/youtube/videos" element={<YoutubeVideos />} />
+							<Route path="/youtube/video/:id" element={<YoutubeVideo />} />
+							<Route path="/music/downloader" element={<MusicDownloader />} />
+							<Route path="/account" element={<Account />} />
+							<Route path="/" element={<MusicDownloader />} />
+						</Routes>
 					</AppShell>
 				</NotificationsProvider>
 			</ModalsProvider>

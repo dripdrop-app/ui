@@ -1,86 +1,73 @@
-import { useCallback, useEffect, useRef } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
-import { useSetState } from '@mantine/hooks';
+import { useCallback } from 'react';
+import { useSearchParams as useRouterSearchParams } from 'react-router-dom';
 import { isEqual } from 'lodash';
 
 type ParamValue = string | number | string[] | boolean;
 
-const useSearchParams = <T extends Record<string, ParamValue>>(initial: T) => {
-	const initialRef = useRef(initial);
-	const [state, setState] = useSetState(initial);
+type SearchParams = Record<string, ParamValue>;
 
-	const history = useHistory();
-	const location = useLocation();
+const convertToSearchParams = <T>(object: Partial<T>) => {
+	const searchParams = {} as Record<string, string>;
+	for (const key in object) {
+		const value = object[key];
+		if (typeof value === 'string') {
+			searchParams[key] = value;
+		} else if (typeof value === 'number') {
+			searchParams[key] = value.toString();
+		} else if (typeof value === 'boolean') {
+			searchParams[key] = value ? '1' : '0';
+		} else if (Array.isArray(value)) {
+			searchParams[key] = value.join(',');
+		}
+	}
+	return searchParams;
+};
 
-	// Syncs state from search params
-	useEffect(() => {
-		const currentSearchParams = new URLSearchParams(location.search);
-		const initial = state;
-		const update = {} as Partial<T>;
-		for (const key in initial) {
-			const param = currentSearchParams.get(key);
-			const initialValue = initial[key];
-			if (param) {
-				if (typeof initialValue === 'string') {
-					if (initialValue !== param) {
-						(update[key] as string) = param;
-					}
-				} else if (typeof initialValue === 'number') {
-					const parsedParam = parseInt(param);
-					if (initialValue !== parsedParam) {
-						(update[key] as number) = parsedParam;
-					}
-				} else if (typeof initialValue === 'boolean') {
-					const parsedParam = parseInt(param) === 1;
-					if (initialValue !== parsedParam) {
-						(update[key] as boolean) = parsedParam;
-					}
-				} else if (Array.isArray(initialValue)) {
-					const parsedParam = param.split(',');
-					if (!isEqual(initialValue, parsedParam)) {
-						(update[key] as string[]) = parsedParam;
-					}
+const revertSearchParams = <T>(initial: T, params: URLSearchParams) => {
+	const object = { ...initial } as T;
+	for (const key in initial) {
+		const param = params.get(key);
+		const initialValue = initial[key];
+		if (param) {
+			if (typeof initialValue === 'string') {
+				if (initialValue !== param) {
+					(object[key] as string) = param;
 				}
-			} else {
-				if (!isEqual(initial[key], initialRef.current[key])) {
-					update[key] = initialRef.current[key];
+			} else if (typeof initialValue === 'number') {
+				const parsedParam = parseInt(param);
+				if (initialValue !== parsedParam) {
+					(object[key] as number) = parsedParam;
+				}
+			} else if (typeof initialValue === 'boolean') {
+				const parsedParam = parseInt(param) === 1;
+				if (initialValue !== parsedParam) {
+					(object[key] as boolean) = parsedParam;
+				}
+			} else if (Array.isArray(initialValue)) {
+				const parsedParam = param.split(',');
+				if (!isEqual(initialValue, parsedParam)) {
+					(object[key] as string[]) = parsedParam;
 				}
 			}
 		}
-		if (Object.keys(update).length !== 0) {
-			setState(update);
-		}
-	}, [location.search, setState, state]);
+	}
+	return object;
+};
 
-	const setSearchParams = useCallback(
-		(newSearchParams: Partial<T>) => {
-			const currentSearchParams = new URLSearchParams(window.location.search);
-			const initial = state;
-			for (const key in newSearchParams) {
-				const currentValue = initial[key];
-				const newValue = newSearchParams[key];
-				if (!isEqual(currentValue, newValue)) {
-					if (typeof newValue === 'string') {
-						currentSearchParams.set(key, newValue);
-					} else if (typeof newValue === 'number') {
-						currentSearchParams.set(key, newValue.toString());
-					} else if (typeof newValue === 'boolean') {
-						currentSearchParams.set(key, newValue ? '1' : '0');
-					} else if (Array.isArray(newValue)) {
-						if (newValue.length === 0) {
-							currentSearchParams.delete(key);
-						} else {
-							currentSearchParams.set(key, newValue.join(','));
-						}
-					}
-				}
+const useSearchParams = <T extends SearchParams>(initial: T) => {
+	const [routerSearchParams, setRouterSearchParams] = useRouterSearchParams(convertToSearchParams(initial));
+
+	const setSearchParams = useCallback((update: Partial<T>) => {
+		setRouterSearchParams((prevSearchParams) => {
+			const convertedParams = convertToSearchParams(update);
+			for (const key in convertedParams) {
+				prevSearchParams.set(key, convertedParams[key]);
 			}
-			history.push({ ...location, search: currentSearchParams.toString() });
-		},
-		[history, location, state]
-	);
+			return prevSearchParams;
+		});
+	}, []);
 
-	return { params: state, setSearchParams };
+	return { params: revertSearchParams(initial, routerSearchParams), setSearchParams };
 };
 
 export default useSearchParams;

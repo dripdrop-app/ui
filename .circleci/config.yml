@@ -11,10 +11,10 @@ jobs:
           command: npm install && npm run build
       - run:
           name: Create Build Directory on VM
-          command: ssh -o StrictHostKeyChecking=no -v $SSH_USER@$SSH_HOST "mkdir -p ~/build"
+          command: ssh -o StrictHostKeyChecking=no -v $SSH_USER@$SSH_HOST "mkdir -p ~/dist"
       - run:
           name: Copy Client to VM Build Directory
-          command: scp -o StrictHostKeyChecking=no -vr ./build $SSH_USER@$SSH_HOST:~
+          command: scp -o StrictHostKeyChecking=no -vr ./dist $SSH_USER@$SSH_HOST:~/build
 
 workflows:
   version: 2

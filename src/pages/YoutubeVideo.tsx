@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { AspectRatio, Center, Divider, Grid, Loader, Stack, Title } from '@mantine/core';
 
@@ -9,12 +10,11 @@ import VideoPlayer from '../components/Youtube/VideoPlayer';
 import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
 import withAuthPage from '../components/Auth/AuthPage';
 
-interface YoutubeVideoProps {
-	id: string;
-}
 
-const YoutubeVideo = (props: YoutubeVideoProps) => {
-	const videoStatus = useYoutubeVideoQuery({ videoId: props.id, relatedLength: 4 });
+const YoutubeVideo = () => {
+	const { id } = useParams();
+
+	const videoStatus = useYoutubeVideoQuery({ videoId: id || '', relatedLength: 4 }, { skip: !id });
 
 	const video = useMemo(() => videoStatus.data?.video, [videoStatus.data?.video]);
 	const relatedVideos = useMemo(() => videoStatus.data?.relatedVideos, [videoStatus.data?.relatedVideos]);
