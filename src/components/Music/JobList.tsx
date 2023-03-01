@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Center, Divider, Flex, Grid, Loader, Pagination, Stack, Title } from '@mantine/core';
 
-import { useJobsQuery } from '../../api/music';
+import { useJobsQuery, useListenJobsQuery } from '../../api/music';
 import JobCard from './JobCard';
 
 const JobList = () => {
@@ -11,6 +11,7 @@ const JobList = () => {
 	});
 
 	const jobsStatus = useJobsQuery(args);
+	useListenJobsQuery();
 
 	const { jobs, totalPages } = useMemo(() => {
 		if (jobsStatus.isSuccess && jobsStatus.currentData) {

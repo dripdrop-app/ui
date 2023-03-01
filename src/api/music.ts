@@ -21,13 +21,23 @@ const musicApi = api.injectEndpoints({
 		}),
 		jobs: build.query<JobsResponse, PageBody>({
 			query: ({ page, perPage }) => ({ url: `/music/jobs/${page}/${perPage}`, method: Methods.GET }),
-			onQueryStarted: async (args, { queryFulfilled, dispatch }) => {
+			providesTags: (result) => {
+				if (result) {
+					const { jobs } = result;
+					if (jobs.length > 0) {
+						return jobs.map((job) => ({ type: Tags.MUSIC_JOB, id: job.id }));
+					}
+				}
+				return [Tags.MUSIC_JOB];
+			},
+		}),
+		listenJobs: build.query<null, void>({
+			queryFn: () => ({ data: null }),
+			onCacheEntryAdded: async (args, { cacheDataLoaded, cacheEntryRemoved, dispatch }) => {
 				const url = buildWebsocketURL('music/jobs/listen');
 				const ws = new WebSocket(url);
 				try {
-					await queryFulfilled;
-				} catch (e) {
-				} finally {
+					await cacheDataLoaded;
 					ws.onmessage = (event) => {
 						const json = JSON.parse(event.data);
 						const status = json.status;
@@ -37,16 +47,11 @@ const musicApi = api.injectEndpoints({
 							dispatch(musicApi.util.invalidateTags([{ type: Tags.MUSIC_JOB, id: json.job.id }]));
 						}
 					};
+				} catch (e) {
+					console.error(e);
 				}
-			},
-			providesTags: (result) => {
-				if (result) {
-					const { jobs } = result;
-					if (jobs.length > 0) {
-						return jobs.map((job) => ({ type: Tags.MUSIC_JOB, id: job.id }));
-					}
-				}
-				return [Tags.MUSIC_JOB];
+				await cacheEntryRemoved;
+				ws.close();
 			},
 		}),
 		removeJob: build.mutation<undefined, string>({
@@ -101,5 +106,6 @@ export const {
 	useLazyCreateFileJobQuery,
 	useLazyCreateVideoJobQuery,
 	useJobsQuery,
+	useListenJobsQuery,
 	useRemoveJobMutation,
 } = musicApi;
