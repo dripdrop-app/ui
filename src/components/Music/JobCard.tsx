@@ -86,7 +86,6 @@ const JobCard = (props: Job) => {
 						Download
 					</Button>
 					<Button
-						display={props.completed || props.failed ? 'initial' : 'none'}
 						color="red"
 						leftIcon={<MdDelete />}
 						loading={removeJobStatus.isLoading}
