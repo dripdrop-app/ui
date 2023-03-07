@@ -10,7 +10,6 @@ import {
 	Loader,
 	Stack,
 	Switch,
-	Text,
 	TextInput,
 	Title,
 } from '@mantine/core';

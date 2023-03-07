@@ -1,15 +1,14 @@
 import { useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { AspectRatio, Button, Flex, Stack } from '@mantine/core';
+import { AspectRatio, Button, Divider, Flex, Stack, Title } from '@mantine/core';
 import { MdSkipNext, MdSkipPrevious } from 'react-icons/md';
 
-import { useYoutubeVideoQueueQuery } from '../api/youtube';
 import VideoPlayer from '../components/Youtube/VideoPlayer';
 import VideoQueueModal from '../components/Youtube/VideoQueueModal';
 import VideoInformation from '../components/Youtube/VideoInformation';
+
+import { useYoutubeVideoQueueQuery } from '../api/youtube';
 import useSearchParams from '../utils/useSearchParams';
-import withAuthPage from '../components/Auth/AuthPage';
-import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
 
 const YoutubeVideoQueue = () => {
 	const { params, setSearchParams } = useSearchParams({ index: 1 });
@@ -25,10 +24,12 @@ const YoutubeVideoQueue = () => {
 
 	return useMemo(
 		() => (
-			<Stack p="md">
+			<Stack>
 				<Helmet>
 					<title>Video Queue</title>
 				</Helmet>
+				<Title order={2}>Video Queue</Title>
+				<Divider />
 				<Flex justify="space-between">
 					<Button
 						leftIcon={<MdSkipPrevious />}
@@ -68,4 +69,4 @@ const YoutubeVideoQueue = () => {
 	);
 };
 
-export default withAuthPage(withYoutubeAuthPage(YoutubeVideoQueue));
+export default YoutubeVideoQueue;

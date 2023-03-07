@@ -1,14 +1,7 @@
-import api, { Tags, Methods, TagsArray } from '.';
+import api, { Tags, Methods, TagsArray, transformErrorResponse } from '.';
 
 const youtubeApi = api.injectEndpoints({
 	endpoints: (build) => ({
-		checkYoutubeAuth: build.query<YoutubeAuthState, void>({
-			query: () => ({ url: '/youtube/account', method: Methods.GET }),
-			providesTags: [Tags.YOUTUBE_AUTH],
-		}),
-		getOauthLink: build.query<string, void>({
-			query: () => ({ url: '/youtube/oauth', method: Methods.GET, responseHandler: (response) => response.text() }),
-		}),
 		youtubeVideoCategories: build.query<YoutubeVideoCategoriesResponse, ChannelBody>({
 			query: ({ channelId }) => ({
 				url: '/youtube/videos/categories',
@@ -48,7 +41,7 @@ const youtubeApi = api.injectEndpoints({
 					queued_only: queuedOnly,
 				},
 			}),
-			providesTags: (result, error, args) => {
+			providesTags: (result, _, args) => {
 				const tags = [];
 				if (result) {
 					tags.push(...result.videos.map((video) => ({ type: Tags.YOUTUBE_VIDEO, id: video.id })));
@@ -62,10 +55,9 @@ const youtubeApi = api.injectEndpoints({
 			},
 		}),
 		youtubeSubscriptions: build.query<YoutubeSubscriptionsResponse, YoutubeSubscriptionBody>({
-			query: ({ perPage, page, channelId }) => ({
+			query: ({ perPage, page }) => ({
 				url: `/youtube/subscriptions/${page}/${perPage}`,
 				method: Methods.GET,
-				params: { channel_id: channelId },
 			}),
 			providesTags: (result) => {
 				if (result) {
@@ -74,9 +66,35 @@ const youtubeApi = api.injectEndpoints({
 				return [];
 			},
 		}),
+		addYoutubeSubscription: build.mutation<YoutubeSubscriptionResponse, string>({
+			query: (channelId) => ({
+				url: '/youtube/subscriptions/user',
+				params: { channel_id: channelId },
+				method: Methods.PUT,
+			}),
+			invalidatesTags: (result) => {
+				if (result) {
+					return [Tags.YOUTUBE_SUBSCRIPTION, { type: Tags.YOUTUBE_CHANNEL, id: result.channelId }];
+				}
+				return [];
+			},
+		}),
+		removeSubscription: build.mutation<undefined, string>({
+			query: (subscriptionId) => ({
+				url: '/youtube/subscriptions/user',
+				params: { subscription_id: subscriptionId },
+				method: Methods.DELETE,
+			}),
+			invalidatesTags: (_, error, subscriptionId) => {
+				if (!error) {
+					return [{ type: Tags.YOUTUBE_SUBSCRIPTION, id: subscriptionId }];
+				}
+				return [];
+			},
+		}),
 		addYoutubeVideoLike: build.mutation<undefined, string>({
-			query: (videoId) => ({ url: `/youtube/videos/like`, params: { video_id: videoId }, method: Methods.PUT }),
-			invalidatesTags: (result, error, videoId) => {
+			query: (videoId) => ({ url: '/youtube/videos/like', params: { video_id: videoId }, method: Methods.PUT }),
+			invalidatesTags: (_, error, videoId) => {
 				if (!error) {
 					return [{ type: Tags.YOUTUBE_VIDEO, id: videoId }, Tags.YOUTUBE_VIDEO_LIKE];
 				}
@@ -85,11 +103,11 @@ const youtubeApi = api.injectEndpoints({
 		}),
 		deleteYoutubeVideoLike: build.mutation<undefined, string>({
 			query: (videoId) => ({
-				url: `/youtube/videos/like`,
+				url: '/youtube/videos/like',
 				params: { video_id: videoId },
 				method: Methods.DELETE,
 			}),
-			invalidatesTags: (result, error, videoId) => {
+			invalidatesTags: (_, error, videoId) => {
 				if (!error) {
 					return [{ type: Tags.YOUTUBE_VIDEO, id: videoId }];
 				}
@@ -98,11 +116,11 @@ const youtubeApi = api.injectEndpoints({
 		}),
 		addYoutubeVideoQueue: build.mutation<undefined, string>({
 			query: (videoId) => ({
-				url: `/youtube/videos/queue`,
+				url: '/youtube/videos/queue',
 				params: { video_id: videoId },
 				method: Methods.PUT,
 			}),
-			invalidatesTags: (result, error, videoId) => {
+			invalidatesTags: (_, error, videoId) => {
 				if (!error) {
 					return [{ type: Tags.YOUTUBE_VIDEO, id: videoId }, Tags.YOUTUBE_VIDEO_QUEUE];
 				}
@@ -111,11 +129,11 @@ const youtubeApi = api.injectEndpoints({
 		}),
 		deleteYoutubeVideoQueue: build.mutation<undefined, string>({
 			query: (videoId) => ({
-				url: `/youtube/videos/queue`,
+				url: '/youtube/videos/queue',
 				params: { video_id: videoId },
 				method: Methods.DELETE,
 			}),
-			invalidatesTags: (result, error, videoId) => {
+			invalidatesTags: (_, error, videoId) => {
 				if (!error) {
 					return [{ type: Tags.YOUTUBE_VIDEO, id: videoId }];
 				}
@@ -124,11 +142,11 @@ const youtubeApi = api.injectEndpoints({
 		}),
 		addYoutubeVideoWatch: build.mutation<undefined, string>({
 			query: (videoId) => ({
-				url: `/youtube/videos/watch`,
+				url: '/youtube/videos/watch',
 				params: { video_id: videoId },
 				method: Methods.PUT,
 			}),
-			invalidatesTags: (result, error, videoId) => {
+			invalidatesTags: (_, error, videoId) => {
 				if (!error) {
 					return [{ type: Tags.YOUTUBE_VIDEO, id: videoId }];
 				}
@@ -136,7 +154,7 @@ const youtubeApi = api.injectEndpoints({
 			},
 		}),
 		youtubeVideoQueue: build.query<YoutubeVideoQueueResponse, number>({
-			query: (index) => ({ url: `/youtube/videos/queue`, params: { index }, method: Methods.GET }),
+			query: (index) => ({ url: '/youtube/videos/queue', params: { index }, method: Methods.GET }),
 			providesTags: (result) => {
 				const tags: TagsArray = [Tags.YOUTUBE_VIDEO_QUEUE];
 				if (result) {
@@ -145,22 +163,38 @@ const youtubeApi = api.injectEndpoints({
 				return tags;
 			},
 		}),
-		youtubeChannel: build.query<YoutubeChannel, string>({
-			query: (channelID) => ({ url: '/youtube/channels', params: { channel_id: channelID }, method: Methods.GET }),
+		youtubeChannel: build.query<YoutubeChannelResponse, string>({
+			query: (channelId) => ({ url: '/youtube/channels', params: { channel_id: channelId }, method: Methods.GET }),
 			providesTags: (result) => {
 				if (result) {
-					return [{ type: Tags.YOUTUBE_CHANNEL, id: result.id }];
+					const tags = [{ type: Tags.YOUTUBE_CHANNEL, id: result.id }];
+					if (result.subscriptionId) {
+						tags.push({ type: Tags.YOUTUBE_SUBSCRIPTION, id: result.subscriptionId });
+					}
+					return tags;
 				}
 				return [];
 			},
+		}),
+		userYoutubeChannel: build.query<YoutubeUserChannel, void>({
+			query: () => ({ url: '/youtube/channels/user', method: Methods.GET }),
+			providesTags: () => [Tags.YOUTUBE_USER_CHANNEL],
+		}),
+		updateUserYoutubeChannel: build.mutation<undefined, string>({
+			query: (channelId) => ({ url: '/youtube/channels/user', body: { channel_id: channelId }, method: Methods.POST }),
+			invalidatesTags: (_, error) => {
+				if (!error) {
+					return [Tags.YOUTUBE_USER_CHANNEL];
+				}
+				return [];
+			},
+			transformErrorResponse,
 		}),
 	}),
 });
 
 export default youtubeApi;
 export const {
-	useCheckYoutubeAuthQuery,
-	useLazyGetOauthLinkQuery,
 	useYoutubeVideoCategoriesQuery,
 	useYoutubeVideoQuery,
 	useYoutubeVideosQuery,
@@ -172,4 +206,8 @@ export const {
 	useDeleteYoutubeVideoQueueMutation,
 	useYoutubeChannelQuery,
 	useAddYoutubeVideoWatchMutation,
+	useUpdateUserYoutubeChannelMutation,
+	useUserYoutubeChannelQuery,
+	useAddYoutubeSubscriptionMutation,
+	useRemoveSubscriptionMutation,
 } = youtubeApi;

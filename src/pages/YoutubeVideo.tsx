@@ -3,20 +3,21 @@ import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { AspectRatio, Center, Divider, Grid, Loader, Stack, Title } from '@mantine/core';
 
-import { useYoutubeVideoQuery } from '../api/youtube';
 import VideoCard from '../components/Youtube/VideoCard';
 import VideoInformation from '../components/Youtube/VideoInformation';
 import VideoPlayer from '../components/Youtube/VideoPlayer';
-import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
-import withAuthPage from '../components/Auth/AuthPage';
+
+import { useYoutubeVideoQuery } from '../api/youtube';
 
 const YoutubeVideo = () => {
 	const { id } = useParams();
 
 	const videoStatus = useYoutubeVideoQuery({ videoId: id || '', relatedLength: 4 }, { skip: !id });
 
-	const video = useMemo(() => videoStatus.data?.video, [videoStatus.data?.video]);
-	const relatedVideos = useMemo(() => videoStatus.data?.relatedVideos, [videoStatus.data?.relatedVideos]);
+	const { video, relatedVideos } = useMemo(
+		() => (videoStatus.data ? videoStatus.data : { video: null, relatedVideos: null }),
+		[videoStatus.data]
+	);
 
 	return useMemo(
 		() => (
@@ -53,4 +54,4 @@ const YoutubeVideo = () => {
 	);
 };
 
-export default withAuthPage(withYoutubeAuthPage(YoutubeVideo));
+export default YoutubeVideo;

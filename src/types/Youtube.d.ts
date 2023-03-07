@@ -20,6 +20,13 @@ interface YoutubeChannel {
 	uploadPlaylistId?: string;
 	createdAt: string;
 	lastUpdated: string;
+	subscriptionId: string | undefined;
+}
+
+type YoutubeChannelResponse = YoutubeChannel;
+
+interface YoutubeUserChannel {
+	id: string;
 }
 
 interface YoutubeSubscription {
@@ -40,11 +47,6 @@ interface YoutubeVideoCategory {
 
 interface DownloadResponse {
 	url: string;
-}
-
-interface YoutubeAuthState {
-	email: string;
-	refresh: boolean;
 }
 
 interface YoutubeVideoCategoriesResponse {
@@ -82,6 +84,8 @@ interface YoutubeVideoResponse {
 }
 
 type YoutubeSubscriptionBody = ChannelBody & PageBody;
+
+type YoutubeSubscriptionResponse = YoutubeSubscription;
 
 interface YoutubeSubscriptionsResponse {
 	subscriptions: YoutubeSubscription[];

@@ -28,7 +28,7 @@ export const VideoLikeButton = (props: VideoButtonsProps) => {
 
 	return useMemo(
 		() => (
-			<Tooltip label={video.liked ? `Liked on ${likedDate}` : 'Like Video'}>
+			<Tooltip label={video.liked ? `Liked on ${likedDate}` : 'Like'}>
 				<ActionIcon onClick={() => (video.liked ? unLikeVideo(video.id) : likeVideo(video.id))} loading={loading}>
 					<MdThumbUp size={25} color={video.liked ? 'green' : ''} />
 				</ActionIcon>
@@ -51,7 +51,7 @@ export const VideoQueueButton = (props: VideoButtonsProps) => {
 
 	return useMemo(
 		() => (
-			<Tooltip label={video.queued ? 'Unqueue Video' : 'Queue Video'}>
+			<Tooltip label={video.queued ? 'Unqueue' : 'Queue'}>
 				<ActionIcon loading={loading} onClick={() => (video.queued ? unQueueVideo(video.id) : queueVideo(video.id))}>
 					{video.queued ? <MdRemoveFromQueue size={25} color="red" /> : <MdAddToQueue size={25} />}
 				</ActionIcon>

@@ -4,8 +4,10 @@ import {
 	AppShell,
 	Avatar,
 	Burger,
+	Center,
 	Flex,
 	Header,
+	Loader,
 	MantineProvider,
 	MediaQuery,
 	Navbar,
@@ -27,6 +29,31 @@ import YoutubeVideo from './pages/YoutubeVideo';
 import YoutubeVideos from './pages/YoutubeVideos';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
+import AuthPage from './pages/AuthPage';
+
+import { useCheckSessionQuery } from './api/auth';
+
+interface AuthenticatedRouteProps {
+	children: JSX.Element;
+}
+
+const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
+	const { children } = props;
+
+	const sessionStatus = useCheckSessionQuery();
+
+	return (
+		<>
+			{sessionStatus.isFetching && (
+				<Center>
+					<Loader />
+				</Center>
+			)}
+			{sessionStatus.isSuccess && children}
+			{sessionStatus.isError && <AuthPage />}
+		</>
+	);
+};
 
 interface AppNavbarProps {
 	opened: boolean;
@@ -99,6 +126,8 @@ const AppHeader = (props: AppHeaderProps) => {
 const App = () => {
 	const [openedSideBar, handlers] = useDisclosure(false);
 
+	const sessionStatus = useCheckSessionQuery();
+
 	const location = useLocation();
 
 	useEffect(() => {
@@ -139,20 +168,76 @@ const App = () => {
 				<NotificationsProvider position="top-center">
 					<AppShell
 						navbarOffsetBreakpoint="sm"
-						navbar={<AppNavbar opened={openedSideBar} close={handlers.close} />}
-						header={<AppHeader showBurger={openedSideBar} toggle={handlers.toggle} />}
+						navbar={sessionStatus.isSuccess ? <AppNavbar opened={openedSideBar} close={handlers.close} /> : undefined}
+						header={<AppHeader showBurger={sessionStatus.isSuccess && openedSideBar} toggle={handlers.toggle} />}
 					>
 						<Routes>
 							<Route path="/privacy" element={<PrivacyPolicy />} />
 							<Route path="/terms" element={<TermsOfService />} />
-							<Route path="/youtube/channel/:id" element={<YoutubeChannel />} />
-							<Route path="/youtube/subscriptions" element={<YoutubeSubscriptions />} />
-							<Route path="/youtube/videos/queue" element={<YoutubeVideoQueue />} />
-							<Route path="/youtube/videos" element={<YoutubeVideos />} />
-							<Route path="/youtube/video/:id" element={<YoutubeVideo />} />
-							<Route path="/music/downloader" element={<MusicDownloader />} />
-							<Route path="/account" element={<Account />} />
-							<Route path="/" element={<MusicDownloader />} />
+							<Route
+								path="/youtube/channel/:id"
+								element={
+									<AuthenticatedRoute>
+										<YoutubeChannel />
+									</AuthenticatedRoute>
+								}
+							/>
+							<Route
+								path="/youtube/subscriptions"
+								element={
+									<AuthenticatedRoute>
+										<YoutubeSubscriptions />
+									</AuthenticatedRoute>
+								}
+							/>
+							<Route
+								path="/youtube/videos/queue"
+								element={
+									<AuthenticatedRoute>
+										<YoutubeVideoQueue />
+									</AuthenticatedRoute>
+								}
+							/>
+							<Route
+								path="/youtube/videos"
+								element={
+									<AuthenticatedRoute>
+										<YoutubeVideos />
+									</AuthenticatedRoute>
+								}
+							/>
+							<Route
+								path="/youtube/video/:id"
+								element={
+									<AuthenticatedRoute>
+										<YoutubeVideo />
+									</AuthenticatedRoute>
+								}
+							/>
+							<Route
+								path="/music/downloader"
+								element={
+									<AuthenticatedRoute>
+										<MusicDownloader />
+									</AuthenticatedRoute>
+								}
+							/>
+							<Route
+								path="/account"
+								element={
+									<AuthenticatedRoute>
+										<Account />
+									</AuthenticatedRoute>
+								}
+							/>
+							<Route
+								path="/"
+								element={
+									<AuthenticatedRoute>
+										<MusicDownloader />
+									</AuthenticatedRoute>
+								}
+							/>
 						</Routes>
 					</AppShell>
 				</NotificationsProvider>

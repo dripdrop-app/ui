@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 import { Center, Checkbox, Grid, Loader, MultiSelect, Pagination, Stack } from '@mantine/core';
 
-import { useYoutubeVideoCategoriesQuery, useYoutubeVideosQuery } from '../../api/youtube';
 import YoutubeVideoCard from './VideoCard';
+
+import { useYoutubeVideoCategoriesQuery, useYoutubeVideosQuery } from '../../api/youtube';
 import useSearchParams from '../../utils/useSearchParams';
 
 interface VideosViewProps {
@@ -37,7 +38,7 @@ const VideosView = (props: VideosViewProps) => {
 
 	return useMemo(
 		() => (
-			<Stack sx={{ position: 'relative' }}>
+			<Stack>
 				{videoCategoriesStatus.isLoading || videosStatus.isLoading ? (
 					<Center>
 						<Loader />

@@ -1,24 +1,26 @@
 import { useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Center, Divider, Grid, Loader, Pagination, Stack, Title } from '@mantine/core';
+import { Center, Divider, Flex, Grid, Loader, Pagination, Stack, Text, Title } from '@mantine/core';
 
-import { useYoutubeSubscriptionsQuery } from '../api/youtube';
 import SubscriptionCard from '../components/Youtube/SubscriptionCard';
+
+import { useUserYoutubeChannelQuery, useYoutubeSubscriptionsQuery } from '../api/youtube';
 import useSearchParams from '../utils/useSearchParams';
-import withAuthPage from '../components/Auth/AuthPage';
-import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
+import UpdateUserChannelModal from '../components/Youtube/UpdateUserChannelModal';
 
 const YoutubeSubscriptions = () => {
 	const { params, setSearchParams } = useSearchParams({ perPage: 48, page: 1 });
 
 	const subscriptionsStatus = useYoutubeSubscriptionsQuery(params);
+	const userChannelStatus = useUserYoutubeChannelQuery();
 
-	const subscriptions = useMemo(
-		() => (subscriptionsStatus.data ? subscriptionsStatus.data.subscriptions : []),
-		[subscriptionsStatus.data]
+	const { id: userChannelId } = useMemo(
+		() => (userChannelStatus.data ? userChannelStatus.data : { id: null }),
+		[userChannelStatus.data]
 	);
-	const totalPages = useMemo(
-		() => (subscriptionsStatus.data ? subscriptionsStatus.data.totalPages : 1),
+
+	const { subscriptions, totalPages } = useMemo(
+		() => (subscriptionsStatus.data ? subscriptionsStatus.data : { subscriptions: [], totalPages: 1 }),
 		[subscriptionsStatus.data]
 	);
 
@@ -37,6 +39,10 @@ const YoutubeSubscriptions = () => {
 						</Center>
 					) : (
 						<>
+							<Flex align="center" justify="space-between">
+								{userChannelId ? <Text>User Channel currently connected to: {userChannelId}</Text> : null}
+								<UpdateUserChannelModal />
+							</Flex>
 							<Grid>
 								{subscriptions.map((subscription) => (
 									<Grid.Col key={subscription.channelId} xs={12} sm={6} md={4} lg={3} xl={2}>
@@ -56,8 +62,8 @@ const YoutubeSubscriptions = () => {
 				</Stack>
 			</Stack>
 		),
-		[params.page, setSearchParams, subscriptions, subscriptionsStatus.isLoading, totalPages]
+		[params.page, setSearchParams, subscriptions, subscriptionsStatus.isLoading, totalPages, userChannelId]
 	);
 };
 
-export default withAuthPage(withYoutubeAuthPage(YoutubeSubscriptions));
+export default YoutubeSubscriptions;

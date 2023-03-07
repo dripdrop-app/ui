@@ -65,7 +65,7 @@ const useSearchParams = <T extends SearchParams>(initial: T) => {
 			}
 			return prevSearchParams;
 		});
-	}, []);
+	}, [setRouterSearchParams]);
 
 	return { params: revertSearchParams(initial, routerSearchParams), setSearchParams };
 };
