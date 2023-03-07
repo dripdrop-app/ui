@@ -59,8 +59,13 @@ const UpdateSubscriptionsModal = () => {
 										</Anchor>{' '}
 										and{' '}
 										<Anchor href="https://support.google.com/youtube/answer/7280190?hl=en">
-											change the setting on your subscriptions to be public
-										</Anchor>
+											change the setting on your subscriptions to be public.
+										</Anchor>{' '}
+										Get the{' '}
+										<Anchor href="https://support.google.com/youtube/answer/6180214">
+											channel id of your personal account
+										</Anchor>{' '}
+										and paste it below
 									</Alert>
 									<TextInput label="Current User Channel ID" value={userChannelId || ''} disabled />
 									<TextInput
