@@ -28,29 +28,31 @@ const YoutubeVideoQueue = () => {
 				<Helmet>
 					<title>Video Queue</title>
 				</Helmet>
-				<Title order={2}>Video Queue</Title>
-				<Divider />
 				<Flex justify="space-between">
-					<Button
-						leftIcon={<MdSkipPrevious />}
-						disabled={!prev}
-						onClick={() => setSearchParams({ index: params.index - 1 })}
-					>
-						Previous
-					</Button>
-					<VideoQueueModal
-						currentVideo={currentVideo}
-						queueIndex={params.index}
-						changeQueueIndex={(newIndex) => setSearchParams({ index: newIndex })}
-					/>
-					<Button
-						rightIcon={<MdSkipNext />}
-						disabled={!next}
-						onClick={() => setSearchParams({ index: params.index + 1 })}
-					>
-						Next
-					</Button>
+					<Title order={2}>Video Queue</Title>
+					<Flex>
+						<Button
+							leftIcon={<MdSkipPrevious />}
+							disabled={!prev}
+							onClick={() => setSearchParams({ index: params.index - 1 })}
+						>
+							Previous
+						</Button>
+						<VideoQueueModal
+							currentVideo={currentVideo}
+							queueIndex={params.index}
+							changeQueueIndex={(newIndex) => setSearchParams({ index: newIndex })}
+						/>
+						<Button
+							rightIcon={<MdSkipNext />}
+							disabled={!next}
+							onClick={() => setSearchParams({ index: params.index + 1 })}
+						>
+							Next
+						</Button>
+					</Flex>
 				</Flex>
+				<Divider />
 				<AspectRatio ratio={16 / 9} sx={{ maxHeight: '75vh' }}>
 					<VideoPlayer
 						video={currentVideo}

@@ -13,7 +13,6 @@ const VideoCard = (props: VideoCardProps) => {
 	const { video } = props;
 
 	const { hovered, ref } = useHover();
-
 	const os = useOs();
 
 	const showOverlay = useMemo(() => os === 'android' || os === 'ios' || hovered, [hovered, os]);

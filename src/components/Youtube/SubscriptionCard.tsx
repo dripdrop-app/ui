@@ -12,7 +12,6 @@ const SubscriptionCard = (props: SubscriptionCardProps) => {
 	const { subscription } = props;
 
 	const { hovered, ref } = useHover();
-
 	const os = useOs();
 
 	const showOverlay = useMemo(() => os === 'android' || os === 'ios' || hovered, [hovered, os]);
@@ -23,18 +22,24 @@ const SubscriptionCard = (props: SubscriptionCardProps) => {
 
 		return (
 			<Box ref={ref}>
-				<Card component={Link} to={channelLink}>
+				<Card>
 					<Card.Section sx={{ position: 'relative' }}>
 						<Image src={subscription.channelThumbnail} alt={subscription.channelTitle} withPlaceholder height={200} />
 						<Overlay sx={{ ...(!showOverlay && { display: 'none' }) }} opacity={0.5} color="black" zIndex={1} />
 						<Box
 							sx={{ ...(!showOverlay && { display: 'none' }), position: 'absolute', right: '5%', top: '5%', zIndex: 2 }}
 						>
-							<SubscribeButton channelId={subscription.channelId} subscriptionId={subscription.id} />
+							<SubscribeButton
+								channelTitle={subscription.channelTitle}
+								channelId={subscription.channelId}
+								subscriptionId={subscription.id}
+							/>
 						</Box>
 					</Card.Section>
 					<Stack py={10}>
-						<Text>{subscription.channelTitle}</Text>
+						<Text component={Link} to={channelLink}>
+							{subscription.channelTitle}
+						</Text>
 						<Text color="dimmed">Subscribed on {publishedAt}</Text>
 					</Stack>
 				</Card>

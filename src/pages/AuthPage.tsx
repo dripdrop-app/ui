@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-	Alert,
 	Anchor,
 	Box,
 	Button,
@@ -16,9 +15,9 @@ import {
 	TextInput,
 } from '@mantine/core';
 import { Controller, useForm } from 'react-hook-form';
-import { MdError } from 'react-icons/md';
 
 import { useLoginMutation, useCreateMutation } from '../api/auth';
+import AlertConfirmation from '../components/AlertConfirmation';
 
 interface AuthForm {
 	email: string;
@@ -27,7 +26,8 @@ interface AuthForm {
 }
 
 export const AuthPage = () => {
-	const [tab, setTab] = useState<string | null>('0');
+	const [tab, setTab] = useState('0');
+
 	const { reset, handleSubmit, control } = useForm<AuthForm>({ reValidateMode: 'onSubmit' });
 
 	const [login, loginStatus] = useLoginMutation();
@@ -72,7 +72,7 @@ export const AuthPage = () => {
 		() => (
 			<Container sx={{ position: 'relative' }}>
 				<LoadingOverlay visible={loginStatus.isLoading || createStatus.isLoading} />
-				<Tabs value={tab} onTabChange={setTab}>
+				<Tabs value={tab} onTabChange={(newTab) => (newTab ? setTab(newTab) : null)}>
 					<Tabs.List>
 						<Tabs.Tab value="0">Login</Tabs.Tab>
 						<Tabs.Tab value="1">Sign up</Tabs.Tab>
@@ -153,9 +153,7 @@ export const AuthPage = () => {
 									/>
 								)}
 							/>
-							<Alert sx={{ ...(!error && { display: 'none' }) }} icon={<MdError />} title="Error" color="red">
-								{error ? String(error) : ''}
-							</Alert>
+							<AlertConfirmation showError={!!error} errorMessage={String(error)} />
 							<Flex gap="md">
 								<Button type="submit">Submit</Button>
 								<Button onClick={() => reset()}>Clear</Button>

@@ -1,16 +1,18 @@
 import { useMemo } from 'react';
-import { ActionIcon, Tooltip } from '@mantine/core';
-
-import { useAddYoutubeSubscriptionMutation, useRemoveSubscriptionMutation } from '../../api/youtube';
+import { ActionIcon, Text, Tooltip } from '@mantine/core';
+import { openConfirmModal } from '@mantine/modals';
 import { MdAddCircle, MdRemoveCircle } from 'react-icons/md';
 
+import { useAddYoutubeSubscriptionMutation, useRemoveSubscriptionMutation } from '../../api/youtube';
+
 interface SubscribeButtonProps {
+	channelTitle: string;
 	channelId: string;
 	subscriptionId?: string;
 }
 
 export const SubscribeButton = (props: SubscribeButtonProps) => {
-	const { channelId, subscriptionId } = props;
+	const { channelTitle, channelId, subscriptionId } = props;
 
 	const [addYoutubeSubscription, addYoutubeSubscriptionStatus] = useAddYoutubeSubscriptionMutation();
 	const [removeYoutubeSubscription, removeYoutubeSubscriptionStatus] = useRemoveSubscriptionMutation();
@@ -31,7 +33,21 @@ export const SubscribeButton = (props: SubscribeButtonProps) => {
 			return (
 				<Tooltip label="Unsubscribe">
 					<ActionIcon
-						onClick={() => removeYoutubeSubscription(subscriptionId)}
+						onClick={() =>
+							openConfirmModal({
+								title: 'Confirm Remove Subscription',
+								children: (
+									<Text>
+										Remove subscription from channel:{' '}
+										<Text display="inline-block" weight="bold">
+											{channelTitle}
+										</Text>
+									</Text>
+								),
+								labels: { confirm: 'Confirm', cancel: 'Cancel' },
+								onConfirm: () => removeYoutubeSubscription(subscriptionId),
+							})
+						}
 						loading={removeYoutubeSubscriptionStatus.isLoading}
 					>
 						<MdRemoveCircle size={25} color="red" />
@@ -42,9 +58,10 @@ export const SubscribeButton = (props: SubscribeButtonProps) => {
 		return null;
 	}, [
 		subscriptionId,
+		channelId,
+		channelTitle,
 		addYoutubeSubscriptionStatus.isLoading,
 		addYoutubeSubscription,
-		channelId,
 		removeYoutubeSubscriptionStatus.isLoading,
 		removeYoutubeSubscription,
 	]);

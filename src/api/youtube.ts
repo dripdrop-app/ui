@@ -78,6 +78,7 @@ const youtubeApi = api.injectEndpoints({
 				}
 				return [];
 			},
+			transformErrorResponse,
 		}),
 		removeSubscription: build.mutation<undefined, string>({
 			query: (subscriptionId) => ({

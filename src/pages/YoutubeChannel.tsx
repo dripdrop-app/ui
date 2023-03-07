@@ -30,7 +30,11 @@ const YoutubeChannel = () => {
 						<Flex align="center">
 							<Avatar src={channel.thumbnail} sx={{ borderRadius: 10 }} />
 							<Title order={2}>{channel.title}</Title>
-							<SubscribeButton channelId={channel.id} subscriptionId={channel.subscriptionId} />
+							<SubscribeButton
+								channelTitle={channel.title}
+								channelId={channel.id}
+								subscriptionId={channel.subscriptionId}
+							/>
 						</Flex>
 						<Divider />
 						<VideosView channelId={channel.id} />
