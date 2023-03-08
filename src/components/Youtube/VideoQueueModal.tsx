@@ -40,8 +40,10 @@ const VideoQueueModal = (props: VideoQueueModalProps) => {
 
 	const videosStatus = useYoutubeVideosQuery(filter);
 
-	const videos = useMemo(() => (videosStatus.data ? videosStatus.data.videos : []), [videosStatus.data]);
-	const totalPages = useMemo(() => (videosStatus.data ? videosStatus.data.totalPages : 1), [videosStatus.data]);
+	const { videos, totalPages } = useMemo(
+		() => (videosStatus.data ? videosStatus.data : { videos: [], totalPages: 1 }),
+		[videosStatus.data]
+	);
 
 	useEffect(() => {
 		const currentVideoPage = Math.ceil(queueIndex / filter.perPage);

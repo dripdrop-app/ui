@@ -17,8 +17,8 @@ export const Tags = {
 	MUSIC_ARTWORK: 'MusicArtwork',
 	MUSIC_TAGS: 'MusicTags',
 	MUSIC_DOWNLOAD: 'MusicDownload',
-	YOUTUBE_AUTH: 'YoutubeAuth',
 	YOUTUBE_CHANNEL: 'YoutubeChannel',
+	YOUTUBE_USER_CHANNEL: 'YoutubeUserChannel',
 	YOUTUBE_SUBSCRIPTION: 'YoutubeSubscription',
 	YOUTUBE_VIDEO: 'YoutubeVideo',
 	YOUTUBE_VIDEO_CATEGORY: 'YoutubeVideoCategory',
@@ -33,8 +33,8 @@ export const tags = [
 	Tags.MUSIC_GROUPING,
 	Tags.MUSIC_JOB,
 	Tags.MUSIC_TAGS,
-	Tags.YOUTUBE_AUTH,
 	Tags.YOUTUBE_CHANNEL,
+	Tags.YOUTUBE_USER_CHANNEL,
 	Tags.YOUTUBE_SUBSCRIPTION,
 	Tags.YOUTUBE_VIDEO,
 	Tags.YOUTUBE_VIDEO_CATEGORY,
@@ -56,7 +56,7 @@ export const transformErrorResponse = (response: FetchBaseQueryError) => {
 const api = createApi({
 	baseQuery: fetchBaseQuery({ baseUrl: buildURL('api'), credentials: 'include' }),
 	tagTypes: tags,
-	endpoints: (build) => ({}),
+	endpoints: (_) => ({}),
 });
 
 export default api;

@@ -1,24 +1,20 @@
 import { useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Center, Divider, Grid, Loader, Pagination, Stack, Title } from '@mantine/core';
+import { Center, Divider, Flex, Grid, Loader, Pagination, Stack, Title } from '@mantine/core';
+
+import SubscriptionCard from '../components/Youtube/SubscriptionCard';
 
 import { useYoutubeSubscriptionsQuery } from '../api/youtube';
-import SubscriptionCard from '../components/Youtube/SubscriptionCard';
 import useSearchParams from '../utils/useSearchParams';
-import withAuthPage from '../components/Auth/AuthPage';
-import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
+import UpdateSubscriptionsModal from '../components/Youtube/UpdateSubscriptionsModal';
 
 const YoutubeSubscriptions = () => {
 	const { params, setSearchParams } = useSearchParams({ perPage: 48, page: 1 });
 
 	const subscriptionsStatus = useYoutubeSubscriptionsQuery(params);
 
-	const subscriptions = useMemo(
-		() => (subscriptionsStatus.data ? subscriptionsStatus.data.subscriptions : []),
-		[subscriptionsStatus.data]
-	);
-	const totalPages = useMemo(
-		() => (subscriptionsStatus.data ? subscriptionsStatus.data.totalPages : 1),
+	const { subscriptions, totalPages } = useMemo(
+		() => (subscriptionsStatus.data ? subscriptionsStatus.data : { subscriptions: [], totalPages: 1 }),
 		[subscriptionsStatus.data]
 	);
 
@@ -37,6 +33,9 @@ const YoutubeSubscriptions = () => {
 						</Center>
 					) : (
 						<>
+							<Flex>
+								<UpdateSubscriptionsModal />
+							</Flex>
 							<Grid>
 								{subscriptions.map((subscription) => (
 									<Grid.Col key={subscription.channelId} xs={12} sm={6} md={4} lg={3} xl={2}>
@@ -60,4 +59,4 @@ const YoutubeSubscriptions = () => {
 	);
 };
 
-export default withAuthPage(withYoutubeAuthPage(YoutubeSubscriptions));
+export default YoutubeSubscriptions;

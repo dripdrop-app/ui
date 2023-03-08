@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Center, Divider, Flex, Grid, Loader, Pagination, Stack, Title } from '@mantine/core';
+import { Center, Divider, Grid, Loader, Pagination, Stack, Title } from '@mantine/core';
 
 import { useJobsQuery, useListenJobsQuery } from '../../api/music';
 import JobCard from './JobCard';

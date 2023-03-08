@@ -4,11 +4,11 @@ import { buildWebsocketURL } from '../config';
 const musicApi = api.injectEndpoints({
 	endpoints: (build) => ({
 		grouping: build.query<GroupingResponse, string>({
-			query: (videoUrl) => ({ url: `/music/grouping`, method: Methods.GET, params: { video_url: videoUrl } }),
+			query: (videoUrl) => ({ url: '/music/grouping', method: Methods.GET, params: { video_url: videoUrl } }),
 			providesTags: [Tags.MUSIC_GROUPING],
 		}),
 		artwork: build.query<ResolvedArtworkResponse, string>({
-			query: (artworkUrl) => ({ url: `/music/artwork`, method: Methods.GET, params: { artwork_url: artworkUrl } }),
+			query: (artworkUrl) => ({ url: '/music/artwork', method: Methods.GET, params: { artwork_url: artworkUrl } }),
 			providesTags: [Tags.MUSIC_ARTWORK],
 		}),
 		tags: build.query<TagsResponse, File>({
@@ -33,7 +33,7 @@ const musicApi = api.injectEndpoints({
 		}),
 		listenJobs: build.query<null, void>({
 			queryFn: () => ({ data: null }),
-			onCacheEntryAdded: async (args, { cacheDataLoaded, cacheEntryRemoved, dispatch }) => {
+			onCacheEntryAdded: async (_, { cacheDataLoaded, cacheEntryRemoved, dispatch }) => {
 				const url = buildWebsocketURL('music/jobs/listen');
 				const ws = new WebSocket(url);
 				try {
@@ -56,11 +56,11 @@ const musicApi = api.injectEndpoints({
 		}),
 		removeJob: build.mutation<undefined, string>({
 			query: (jobId) => ({
-				url: `/music/jobs/delete`,
+				url: '/music/jobs/delete',
 				params: { job_id: jobId },
 				method: Methods.DELETE,
 			}),
-			invalidatesTags: (result, error, jobId) => {
+			invalidatesTags: (_, error, jobId) => {
 				if (!error) {
 					return [{ type: Tags.MUSIC_JOB, id: jobId }];
 				}

@@ -2,9 +2,6 @@ import { useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Divider, Stack, Title } from '@mantine/core';
 
-import withAuthPage from '../components/Auth/AuthPage';
-import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
-
 import VideosView from '../components/Youtube/VideosView';
 
 const YoutubeVideos = () => {
@@ -23,4 +20,4 @@ const YoutubeVideos = () => {
 	);
 };
 
-export default withAuthPage(withYoutubeAuthPage(YoutubeVideos));
+export default YoutubeVideos;

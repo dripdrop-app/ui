@@ -32,7 +32,7 @@ const authApi = api.injectEndpoints({
 				url: '/auth/logout',
 				method: Methods.GET,
 			}),
-			invalidatesTags: (result, error) => (!error ? tags : []),
+			invalidatesTags: (_, error) => (!error ? tags : []),
 		}),
 	}),
 });

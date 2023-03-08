@@ -3,10 +3,10 @@ import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Avatar, Center, Divider, Flex, Loader, Stack, Title } from '@mantine/core';
 
-import { useYoutubeChannelQuery } from '../api/youtube';
 import VideosView from '../components/Youtube/VideosView';
-import withYoutubeAuthPage from '../components/Auth/YoutubeAuthPage';
-import withAuthPage from '../components/Auth/AuthPage';
+
+import { useYoutubeChannelQuery } from '../api/youtube';
+import { SubscribeButton } from '../components/Youtube/ChannelButtons';
 
 const YoutubeChannel = () => {
 	const { id } = useParams();
@@ -18,7 +18,7 @@ const YoutubeChannel = () => {
 	return useMemo(
 		() => (
 			<Stack sx={{ position: 'relative' }}>
-				{channelStatus.isFetching ? (
+				{channelStatus.isLoading ? (
 					<Center>
 						<Loader />
 					</Center>
@@ -30,6 +30,11 @@ const YoutubeChannel = () => {
 						<Flex align="center">
 							<Avatar src={channel.thumbnail} sx={{ borderRadius: 10 }} />
 							<Title order={2}>{channel.title}</Title>
+							<SubscribeButton
+								channelTitle={channel.title}
+								channelId={channel.id}
+								subscriptionId={channel.subscriptionId}
+							/>
 						</Flex>
 						<Divider />
 						<VideosView channelId={channel.id} />
@@ -39,8 +44,8 @@ const YoutubeChannel = () => {
 				)}
 			</Stack>
 		),
-		[channel, channelStatus.isFetching]
+		[channel, channelStatus.isLoading]
 	);
 };
 
-export default withAuthPage(withYoutubeAuthPage(YoutubeChannel));
+export default YoutubeChannel;

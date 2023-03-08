@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
 import { useCheckSessionQuery, useLogoutMutation } from '../api/auth';
-import withAuthPage from '../components/Auth/AuthPage';
 
 const Account = () => {
 	const sessionStatus = useCheckSessionQuery();
@@ -44,4 +43,4 @@ const Account = () => {
 	}, [logout, logoutStatus.isLoading, user]);
 };
 
-export default withAuthPage(Account);
+export default Account;
