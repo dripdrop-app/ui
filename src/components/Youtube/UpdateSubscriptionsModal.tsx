@@ -63,13 +63,13 @@ const UpdateSubscriptionsModal = () => {
 										</Anchor>{' '}
 										Get the{' '}
 										<Anchor href="https://support.google.com/youtube/answer/6180214">
-											channel id of your personal account
+											channel id or handle of your personal account
 										</Anchor>{' '}
 										and paste it below
 									</Alert>
 									<TextInput label="Current User Channel ID" value={userChannelId || ''} disabled />
 									<TextInput
-										label="New Channel ID"
+										label="New Channel ID or Handle"
 										placeholder="Enter New Channel ID"
 										onChange={(e) => setNewUserChannelId(e.target.value)}
 										value={newUserChannelId}
@@ -91,8 +91,8 @@ const UpdateSubscriptionsModal = () => {
 							<Tabs.Panel value="0">
 								<Stack sx={{ padding: 10 }} spacing="md">
 									<TextInput
-										label="New Subscription Channel ID"
-										placeholder="Enter New Subscription Channel ID"
+										label="New Subscription Channel ID or Handle"
+										placeholder="Enter New Subscription Channel ID or Handle"
 										onChange={(e) => setNewSubscriptionChannelId(e.target.value)}
 										value={newSubscriptionChannelId}
 									/>
