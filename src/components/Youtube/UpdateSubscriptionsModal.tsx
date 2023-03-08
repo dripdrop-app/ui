@@ -67,7 +67,7 @@ const UpdateSubscriptionsModal = () => {
 										</Anchor>{' '}
 										and paste it below
 									</Alert>
-									<TextInput label="Current User Channel ID" value={userChannelId || ''} disabled />
+									<TextInput label="Current User Channel ID" value={userChannelId || ''} readOnly />
 									<TextInput
 										label="New Channel ID or Handle"
 										placeholder="Enter New Channel ID"
