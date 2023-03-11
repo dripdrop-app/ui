@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { AspectRatio, Button, Divider, Flex, Stack, Title } from '@mantine/core';
+import { Button, Divider, Flex, Stack, Title } from '@mantine/core';
 import { MdSkipNext, MdSkipPrevious } from 'react-icons/md';
 
 import VideoPlayer from '../components/Youtube/VideoPlayer';
@@ -53,17 +53,16 @@ const YoutubeVideoQueue = () => {
 					</Flex>
 				</Flex>
 				<Divider />
-				<AspectRatio ratio={16 / 9} sx={{ maxHeight: '75vh' }}>
-					<VideoPlayer
-						video={currentVideo}
-						playing={true}
-						onEnd={() => {
-							if (next) {
-								setSearchParams({ index: params.index + 1 });
-							}
-						}}
-					/>
-				</AspectRatio>
+				<VideoPlayer
+					height="80vh"
+					video={currentVideo}
+					playing={true}
+					onEnd={() => {
+						if (next) {
+							setSearchParams({ index: params.index + 1 });
+						}
+					}}
+				/>
 				{currentVideo && <VideoInformation video={currentVideo} />}
 			</Stack>
 		),

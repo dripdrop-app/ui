@@ -8,17 +8,18 @@ interface VideoPlayerProps {
 	playing?: boolean;
 	onEnd?: Function;
 	onProgress?: Function;
+	height?: string;
 }
 
 const VideoPlayer = (props: VideoPlayerProps) => {
-	const { video, onProgress, onEnd, playing } = props;
+	const { video, onProgress, onEnd, playing, height } = props;
 
 	const [watchVideo] = useAddYoutubeVideoWatchMutation();
 
 	return useMemo(
 		() => (
 			<ReactPlayer
-				height="100%"
+				height={height || '100%'}
 				width="100%"
 				playing={playing}
 				controls={true}
@@ -40,7 +41,7 @@ const VideoPlayer = (props: VideoPlayerProps) => {
 				}}
 			/>
 		),
-		[onEnd, onProgress, playing, video, watchVideo]
+		[height, onEnd, onProgress, playing, video, watchVideo]
 	);
 };
 

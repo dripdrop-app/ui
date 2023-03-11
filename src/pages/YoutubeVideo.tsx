@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { AspectRatio, Center, Divider, Grid, Loader, Stack, Title } from '@mantine/core';
+import { Center, Divider, Grid, Loader, Stack, Title } from '@mantine/core';
 
 import VideoCard from '../components/Youtube/VideoCard';
 import VideoInformation from '../components/Youtube/VideoInformation';
@@ -31,9 +31,7 @@ const YoutubeVideo = () => {
 						<Helmet>
 							<title>{video.title}</title>
 						</Helmet>
-						<AspectRatio ratio={16 / 9} sx={{ maxHeight: '75vh' }}>
-							<VideoPlayer video={video} playing={true} />
-						</AspectRatio>
+						<VideoPlayer height="80vh" video={video} playing={true} />
 						<VideoInformation video={video} />
 						<Divider />
 						<Title order={3}>Related Videos</Title>
