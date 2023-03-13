@@ -48,7 +48,7 @@ const VideosView = (props: VideosViewProps) => {
 						<Checkbox
 							label="Show Liked Only"
 							checked={params.likedOnly}
-							onChange={(e) => setSearchParams({ likedOnly: e.target.checked })}
+							onChange={(e) => setSearchParams({ likedOnly: e.target.checked, page: 1 })}
 						/>
 						<MultiSelect
 							label="Categories"
@@ -58,7 +58,7 @@ const VideosView = (props: VideosViewProps) => {
 								label: category.name,
 							}))}
 							value={params.selectedCategories}
-							onChange={(newCategories) => setSearchParams({ selectedCategories: newCategories })}
+							onChange={(newCategories) => setSearchParams({ selectedCategories: newCategories, page: 1 })}
 						/>
 						<Grid>
 							{videos.map((video) => (
