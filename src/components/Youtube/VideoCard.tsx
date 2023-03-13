@@ -15,7 +15,9 @@ const VideoCard = (props: VideoCardProps) => {
 	const { hovered, ref } = useHover();
 	const os = useOs();
 
-	const showOverlay = useMemo(() => os === 'android' || os === 'ios' || hovered, [hovered, os]);
+	const showQueue = useMemo(() => os === 'android' || os === 'ios' || hovered, [hovered, os]);
+
+	const hideOverlay = !showQueue && !video.watched;
 
 	return useMemo(() => {
 		const publishedAt = new Date(video.publishedAt).toLocaleDateString();
@@ -27,15 +29,20 @@ const VideoCard = (props: VideoCardProps) => {
 				<Card>
 					<Card.Section ref={ref} sx={{ position: 'relative' }}>
 						<Image src={video.thumbnail} withPlaceholder />
-						<Overlay sx={{ ...(!showOverlay && { display: 'none' }) }} opacity={0.5} color="black" zIndex={1} />
+						<Overlay
+							sx={{ ...(hideOverlay && { display: 'none' }) }}
+							opacity={0.5}
+							color="black"
+							zIndex={1}
+							component={Link}
+							to={videoLink}
+						/>
 						<Box
-							sx={{ ...(!showOverlay && { display: 'none' }), position: 'absolute', right: '5%', top: '5%', zIndex: 2 }}
+							sx={{ ...(!showQueue && { display: 'none' }), position: 'absolute', right: '5%', top: '5%', zIndex: 2 }}
 						>
 							<VideoQueueButton video={video} />
 						</Box>
-						<Box
-							sx={{ ...(!showOverlay && { display: 'none' }), position: 'absolute', left: '5%', top: '5%', zIndex: 2 }}
-						>
+						<Box sx={{ position: 'absolute', left: '5%', top: '5%', zIndex: 2 }}>
 							<VideoWatchButton video={video} />
 						</Box>
 					</Card.Section>
@@ -76,7 +83,7 @@ const VideoCard = (props: VideoCardProps) => {
 				</Card>
 			</Box>
 		);
-	}, [ref, showOverlay, video]);
+	}, [hideOverlay, ref, showQueue, video]);
 };
 
 export default VideoCard;

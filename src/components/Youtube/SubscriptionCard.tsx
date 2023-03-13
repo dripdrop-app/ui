@@ -25,7 +25,14 @@ const SubscriptionCard = (props: SubscriptionCardProps) => {
 				<Card>
 					<Card.Section sx={{ position: 'relative' }}>
 						<Image src={subscription.channelThumbnail} alt={subscription.channelTitle} withPlaceholder height={200} />
-						<Overlay sx={{ ...(!showOverlay && { display: 'none' }) }} opacity={0.5} color="black" zIndex={1} />
+						<Overlay
+							sx={{ ...(!showOverlay && { display: 'none' }) }}
+							opacity={0.5}
+							color="black"
+							zIndex={1}
+							component={Link}
+							to={channelLink}
+						/>
 						<Box
 							sx={{ ...(!showOverlay && { display: 'none' }), position: 'absolute', right: '5%', top: '5%', zIndex: 2 }}
 						>
