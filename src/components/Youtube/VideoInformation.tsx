@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Avatar, Flex, Stack, Text, Title } from '@mantine/core';
+import { Avatar, Flex, Spoiler, Stack, Text, Title } from '@mantine/core';
 
 import { VideoWatchButton, VideoLikeButton, VideoQueueButton } from './VideoButtons';
 
@@ -42,6 +42,11 @@ const VideoInformation = (props: VideoInformationProps) => {
 					</Text>
 					<Text>{publishedAt}</Text>
 				</Flex>
+				{video.description && (
+					<Spoiler sx={{ whiteSpace: 'pre-line' }} maxHeight={80} showLabel="Show more" hideLabel="Hide">
+						{video.description}
+					</Spoiler>
+				)}
 			</Stack>
 		),
 		[channelLink, publishedAt, video]
