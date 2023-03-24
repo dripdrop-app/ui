@@ -2,13 +2,12 @@ interface YoutubeVideo {
 	id: string;
 	title: string;
 	thumbnail: string;
+	categoryId: number;
+	publishedAt: string;
+	description: string | null;
 	channelId: string;
 	channelTitle: string;
 	channelThumbnail: string;
-	description: string | null;
-	publishedAt: string;
-	categoryId: number;
-	createdAt: string;
 	liked: string | null;
 	queued: string | null;
 	watched: string | null;
@@ -18,10 +17,7 @@ interface YoutubeChannel {
 	id: string;
 	title: string;
 	thumbnail?: string;
-	uploadPlaylistId?: string;
-	createdAt: string;
-	lastUpdated: string;
-	subscriptionId: string | undefined;
+	subscribed: boolean;
 }
 
 type YoutubeChannelResponse = YoutubeChannel;
@@ -31,13 +27,9 @@ interface YoutubeUserChannel {
 }
 
 interface YoutubeSubscription {
-	id: string;
 	channelId: string;
 	channelTitle: string;
 	channelThumbnail: string;
-	email: string;
-	publishedAt: string;
-	createdAt: string;
 }
 
 interface YoutubeVideoCategory {

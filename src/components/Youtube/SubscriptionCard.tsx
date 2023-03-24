@@ -17,7 +17,6 @@ const SubscriptionCard = (props: SubscriptionCardProps) => {
 	const showOverlay = useMemo(() => os === 'android' || os === 'ios' || hovered, [hovered, os]);
 
 	return useMemo(() => {
-		const publishedAt = new Date(subscription.publishedAt).toLocaleDateString();
 		const channelLink = `/youtube/channel/${subscription.channelId}`;
 
 		return (
@@ -39,7 +38,7 @@ const SubscriptionCard = (props: SubscriptionCardProps) => {
 							<SubscribeButton
 								channelTitle={subscription.channelTitle}
 								channelId={subscription.channelId}
-								subscriptionId={subscription.id}
+								subscribed={true}
 							/>
 						</Box>
 					</Card.Section>
@@ -47,20 +46,11 @@ const SubscriptionCard = (props: SubscriptionCardProps) => {
 						<Text component={Link} to={channelLink}>
 							{subscription.channelTitle}
 						</Text>
-						<Text color="dimmed">Subscribed on {publishedAt}</Text>
 					</Stack>
 				</Card>
 			</Box>
 		);
-	}, [
-		ref,
-		showOverlay,
-		subscription.channelId,
-		subscription.channelThumbnail,
-		subscription.channelTitle,
-		subscription.id,
-		subscription.publishedAt,
-	]);
+	}, [ref, showOverlay, subscription.channelId, subscription.channelThumbnail, subscription.channelTitle]);
 };
 
 export default SubscriptionCard;

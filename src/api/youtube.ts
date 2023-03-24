@@ -61,7 +61,10 @@ const youtubeApi = api.injectEndpoints({
 			}),
 			providesTags: (result) => {
 				if (result) {
-					return result.subscriptions.map((subscription) => ({ type: Tags.YOUTUBE_SUBSCRIPTION, id: subscription.id }));
+					return result.subscriptions.map((subscription) => ({
+						type: Tags.YOUTUBE_SUBSCRIPTION,
+						id: subscription.channelId,
+					}));
 				}
 				return [];
 			},
@@ -81,14 +84,14 @@ const youtubeApi = api.injectEndpoints({
 			transformErrorResponse,
 		}),
 		removeSubscription: build.mutation<undefined, string>({
-			query: (subscriptionId) => ({
+			query: (channelId) => ({
 				url: '/youtube/subscriptions/user',
-				params: { subscription_id: subscriptionId },
+				params: { channel_id: channelId },
 				method: Methods.DELETE,
 			}),
-			invalidatesTags: (_, error, subscriptionId) => {
+			invalidatesTags: (_, error, channelId) => {
 				if (!error) {
-					return [{ type: Tags.YOUTUBE_SUBSCRIPTION, id: subscriptionId }];
+					return [{ type: Tags.YOUTUBE_SUBSCRIPTION, id: channelId }];
 				}
 				return [];
 			},
@@ -169,8 +172,8 @@ const youtubeApi = api.injectEndpoints({
 			providesTags: (result) => {
 				if (result) {
 					const tags = [{ type: Tags.YOUTUBE_CHANNEL, id: result.id }];
-					if (result.subscriptionId) {
-						tags.push({ type: Tags.YOUTUBE_SUBSCRIPTION, id: result.subscriptionId });
+					if (result.subscribed) {
+						tags.push({ type: Tags.YOUTUBE_SUBSCRIPTION, id: result.id });
 					}
 					return tags;
 				}
