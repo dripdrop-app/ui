@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { setupListeners } from '@reduxjs/toolkit/query';
 
 import baseApi from './api';
 
@@ -15,3 +16,5 @@ export const store = configureStore({
 			serializableCheck: false,
 		}).concat(baseApi.middleware),
 });
+
+setupListeners(store.dispatch);

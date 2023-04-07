@@ -56,7 +56,9 @@ export const transformErrorResponse = (response: FetchBaseQueryError) => {
 const api = createApi({
 	baseQuery: fetchBaseQuery({ baseUrl: buildURL('api'), credentials: 'include' }),
 	tagTypes: tags,
-	endpoints: (_) => ({}),
+	refetchOnMountOrArgChange: 60,
+	refetchOnReconnect: true,
+	endpoints: () => ({}),
 });
 
 export default api;
