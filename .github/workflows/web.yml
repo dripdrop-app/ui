@@ -16,6 +16,7 @@ jobs:
         with:
           name: dist
           path: dist
+          retention-days: 1
   deploy:
     if: ${{ github.ref }} == '/refs/heads/main'
     runs-on: ubuntu-latest
