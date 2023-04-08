@@ -11,6 +11,7 @@ jobs:
       - name: Install Client Dependencies and build
         run: npm install --production=false && npm run build
       - name: Upload Build artifact
+        if: ${{ github.ref }} == '/refs/heads/main'
         uses: actions/upload-artifact@v3
         with:
           name: dist
