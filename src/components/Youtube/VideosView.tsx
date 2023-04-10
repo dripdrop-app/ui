@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
-import { Center, Checkbox, Grid, Loader, MultiSelect, Pagination, Stack } from '@mantine/core';
+import React, { useMemo } from 'react';
+import { Center, Checkbox, CloseButton, Flex, Grid, Loader, MultiSelect, Pagination, Stack } from '@mantine/core';
 
 import YoutubeVideoCard from './VideoCard';
+import VideoCategoryIcon from './VideoCategoryIcon';
 
 import { useYoutubeVideoCategoriesQuery, useYoutubeVideosQuery } from '../../api/youtube';
 import useSearchParams from '../../utils/useSearchParams';
@@ -36,6 +37,15 @@ const VideosView = (props: VideosViewProps) => {
 		[videosStatus.data]
 	);
 
+	const Item = React.forwardRef<HTMLDivElement, { value: number; label: string }>(({ value, label, ...props }, ref) => (
+		<div ref={ref} {...props}>
+			<Flex gap="xs" align="center">
+				<VideoCategoryIcon categoryId={value} />
+				{label}
+			</Flex>
+		</div>
+	));
+
 	return useMemo(
 		() => (
 			<Stack>
@@ -57,7 +67,27 @@ const VideosView = (props: VideosViewProps) => {
 								value: category.id.toString(),
 								label: category.name,
 							}))}
+							itemComponent={Item}
 							value={params.selectedCategories}
+							valueComponent={({ value, label, onRemove, classNames, ...props }) => (
+								<div {...props}>
+									<Flex
+										sx={(theme) => ({
+											backgroundColor: theme.colors.dark[7],
+											border: `1px solid ${theme.colors.dark[7]}`,
+											borderRadius: theme.radius.sm,
+											paddingLeft: 5,
+										})}
+										gap="xs"
+										align="center"
+										onMouseDown={(e) => e.stopPropagation()}
+									>
+										<VideoCategoryIcon categoryId={value} />
+										{label}
+										<CloseButton onClick={onRemove} />
+									</Flex>
+								</div>
+							)}
 							onChange={(newCategories) => setSearchParams({ selectedCategories: newCategories, page: 1 })}
 						/>
 						<Grid>
@@ -85,6 +115,7 @@ const VideosView = (props: VideosViewProps) => {
 			params.selectedCategories,
 			params.page,
 			categories,
+			Item,
 			videos,
 			totalPages,
 			setSearchParams,

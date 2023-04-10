@@ -3,6 +3,7 @@ interface YoutubeVideo {
 	title: string;
 	thumbnail: string;
 	categoryId: number;
+	categoryName: string;
 	publishedAt: string;
 	description: string | null;
 	channelId: string;

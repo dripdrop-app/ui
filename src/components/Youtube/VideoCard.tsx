@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Avatar, Box, Card, Flex, Image, Overlay, Stack, Text } from '@mantine/core';
+import { Avatar, Box, Card, Flex, Image, Overlay, Stack, Text, Tooltip } from '@mantine/core';
 import { useHover, useOs } from '@mantine/hooks';
 
 import { VideoQueueButton, VideoWatchButton } from './VideoButtons';
+import VideoCategoryIcon from './VideoCategoryIcon';
 
 interface VideoCardProps {
 	video: YoutubeVideo;
@@ -45,6 +46,22 @@ const VideoCard = (props: VideoCardProps) => {
 						<Box sx={{ position: 'absolute', left: '5%', top: '5%', zIndex: 2 }}>
 							<VideoWatchButton video={video} />
 						</Box>
+						<Tooltip label={video.categoryName}>
+							<Box
+								sx={(theme) => ({
+									position: 'absolute',
+									right: '5%',
+									bottom: '5%',
+									zIndex: 2,
+									backgroundColor: theme.colors.dark[7],
+									borderRadius: theme.spacing.xs,
+								})}
+								px={6}
+								py={2}
+							>
+								<VideoCategoryIcon categoryId={video.categoryId} color="white" />
+							</Box>
+						</Tooltip>
 					</Card.Section>
 					<Stack py={10}>
 						<Text
