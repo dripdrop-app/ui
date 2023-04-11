@@ -1,4 +1,5 @@
 import api, { Tags, Methods, TagsArray, transformErrorResponse } from '.';
+import { buildWebsocketURL } from '../config';
 
 const youtubeApi = api.injectEndpoints({
 	endpoints: (build) => ({
@@ -47,9 +48,12 @@ const youtubeApi = api.injectEndpoints({
 					tags.push(...result.videos.map((video) => ({ type: Tags.YOUTUBE_VIDEO, id: video.id })));
 				}
 				if (args.likedOnly) {
-					tags.push(Tags.YOUTUBE_VIDEO_LIKE);
+					tags.push(Tags.YOUTUBE_LIKE_VIDEOS);
 				} else if (args.queuedOnly) {
-					tags.push(Tags.YOUTUBE_VIDEO_QUEUE);
+					tags.push(Tags.YOUTUBE_QUEUE_VIDEOS);
+				}
+				if (args.channelId) {
+					tags.push({ type: Tags.YOUTUBE_CHANNEL_VIDEOS, id: args.channelId });
 				}
 				return tags;
 			},
@@ -91,7 +95,10 @@ const youtubeApi = api.injectEndpoints({
 			}),
 			invalidatesTags: (_, error, channelId) => {
 				if (!error) {
-					return [{ type: Tags.YOUTUBE_SUBSCRIPTION, id: channelId }];
+					return [
+						{ type: Tags.YOUTUBE_SUBSCRIPTION, id: channelId },
+						{ type: Tags.YOUTUBE_CHANNEL, id: channelId },
+					];
 				}
 				return [];
 			},
@@ -100,7 +107,7 @@ const youtubeApi = api.injectEndpoints({
 			query: (videoId) => ({ url: '/youtube/videos/like', params: { video_id: videoId }, method: Methods.PUT }),
 			invalidatesTags: (_, error, videoId) => {
 				if (!error) {
-					return [{ type: Tags.YOUTUBE_VIDEO, id: videoId }, Tags.YOUTUBE_VIDEO_LIKE];
+					return [{ type: Tags.YOUTUBE_VIDEO, id: videoId }, Tags.YOUTUBE_LIKE_VIDEOS];
 				}
 				return [];
 			},
@@ -126,7 +133,7 @@ const youtubeApi = api.injectEndpoints({
 			}),
 			invalidatesTags: (_, error, videoId) => {
 				if (!error) {
-					return [{ type: Tags.YOUTUBE_VIDEO, id: videoId }, Tags.YOUTUBE_VIDEO_QUEUE];
+					return [{ type: Tags.YOUTUBE_VIDEO, id: videoId }, Tags.YOUTUBE_QUEUE_VIDEOS];
 				}
 				return [];
 			},
@@ -160,7 +167,7 @@ const youtubeApi = api.injectEndpoints({
 		youtubeVideoQueue: build.query<YoutubeVideoQueueResponse, number>({
 			query: (index) => ({ url: '/youtube/videos/queue', params: { index }, method: Methods.GET }),
 			providesTags: (result) => {
-				const tags: TagsArray = [Tags.YOUTUBE_VIDEO_QUEUE];
+				const tags: TagsArray = [Tags.YOUTUBE_QUEUE_VIDEOS];
 				if (result) {
 					tags.push({ type: Tags.YOUTUBE_VIDEO, id: result.currentVideo.id });
 				}
@@ -178,6 +185,33 @@ const youtubeApi = api.injectEndpoints({
 					return tags;
 				}
 				return [];
+			},
+		}),
+		listenYoutubeChannels: build.query<null, void>({
+			queryFn: () => ({ data: null }),
+			onCacheEntryAdded: async (_, { cacheDataLoaded, cacheEntryRemoved, dispatch }) => {
+				const url = buildWebsocketURL('youtube/channels/listen');
+				const ws = new WebSocket(url);
+				try {
+					await cacheDataLoaded;
+					ws.onmessage = (event) => {
+						const json = JSON.parse(event.data);
+						const status = json.status;
+						if (status === 'PING') {
+							return;
+						}
+						const id = json.id;
+						const updating = json.updating;
+						dispatch(youtubeApi.util.invalidateTags([{ type: Tags.YOUTUBE_CHANNEL, id }]));
+						if (!updating) {
+							dispatch(youtubeApi.util.invalidateTags([{ type: Tags.YOUTUBE_CHANNEL_VIDEOS, id }]));
+						}
+					};
+				} catch (e) {
+					console.error(e);
+				}
+				await cacheEntryRemoved;
+				ws.close();
 			},
 		}),
 		userYoutubeChannel: build.query<YoutubeUserChannel, void>({
@@ -209,6 +243,7 @@ export const {
 	useAddYoutubeVideoQueueMutation,
 	useDeleteYoutubeVideoQueueMutation,
 	useYoutubeChannelQuery,
+	useListenYoutubeChannelsQuery,
 	useAddYoutubeVideoWatchMutation,
 	useUpdateUserYoutubeChannelMutation,
 	useUserYoutubeChannelQuery,

@@ -19,6 +19,7 @@ interface YoutubeChannel {
 	title: string;
 	thumbnail?: string;
 	subscribed: boolean;
+	updating: boolean;
 }
 
 type YoutubeChannelResponse = YoutubeChannel;

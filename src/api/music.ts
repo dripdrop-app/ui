@@ -41,10 +41,12 @@ const musicApi = api.injectEndpoints({
 					ws.onmessage = (event) => {
 						const json = JSON.parse(event.data);
 						const status = json.status;
-						if (status === 'STARTED') {
+						if (status === 'PING') {
+							return;
+						} else if (status === 'STARTED') {
 							dispatch(musicApi.util.invalidateTags([Tags.MUSIC_JOB]));
 						} else if (status === 'COMPLETED') {
-							dispatch(musicApi.util.invalidateTags([{ type: Tags.MUSIC_JOB, id: json.job.id }]));
+							dispatch(musicApi.util.invalidateTags([{ type: Tags.MUSIC_JOB, id: json.id }]));
 						}
 					};
 				} catch (e) {

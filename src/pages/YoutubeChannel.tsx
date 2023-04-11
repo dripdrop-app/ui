@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { Avatar, Center, Divider, Flex, Loader, Stack, Title } from '@mantine/core';
+import { Avatar, Box, Center, Divider, Flex, Loader, Stack, Title } from '@mantine/core';
+
+import { useYoutubeChannelQuery, useListenYoutubeChannelsQuery } from '../api/youtube';
 
 import VideosView from '../components/Youtube/VideosView';
-
-import { useYoutubeChannelQuery } from '../api/youtube';
 import { SubscribeButton } from '../components/Youtube/ChannelButtons';
 
 const YoutubeChannel = () => {
@@ -14,6 +14,8 @@ const YoutubeChannel = () => {
 	const channelStatus = useYoutubeChannelQuery(id || '', { skip: !id });
 
 	const channel = useMemo(() => channelStatus.data, [channelStatus.data]);
+
+	useListenYoutubeChannelsQuery();
 
 	return useMemo(
 		() => (
@@ -33,6 +35,14 @@ const YoutubeChannel = () => {
 							<SubscribeButton channelTitle={channel.title} channelId={channel.id} subscribed={channel.subscribed} />
 						</Flex>
 						<Divider />
+						<Box sx={{ display: channel.updating ? 'initial' : 'none' }}>
+							<Center>
+								<Flex align="center">
+									<Loader />
+									Retrieving latest videos...
+								</Flex>
+							</Center>
+						</Box>
 						<VideosView channelId={channel.id} />
 					</>
 				) : (

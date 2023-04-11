@@ -19,11 +19,12 @@ export const Tags = {
 	MUSIC_DOWNLOAD: 'MusicDownload',
 	YOUTUBE_CHANNEL: 'YoutubeChannel',
 	YOUTUBE_USER_CHANNEL: 'YoutubeUserChannel',
+	YOUTUBE_CHANNEL_VIDEOS: 'YoutubeChannelVideos',
 	YOUTUBE_SUBSCRIPTION: 'YoutubeSubscription',
 	YOUTUBE_VIDEO: 'YoutubeVideo',
 	YOUTUBE_VIDEO_CATEGORY: 'YoutubeVideoCategory',
-	YOUTUBE_VIDEO_LIKE: 'YoutubeVideoLike',
-	YOUTUBE_VIDEO_QUEUE: 'YoutubeVideoQueue',
+	YOUTUBE_LIKE_VIDEOS: 'YoutubeLikeVideos',
+	YOUTUBE_QUEUE_VIDEOS: 'YoutubeQueueVideos',
 	USER: 'User',
 };
 
@@ -35,11 +36,12 @@ export const tags = [
 	Tags.MUSIC_TAGS,
 	Tags.YOUTUBE_CHANNEL,
 	Tags.YOUTUBE_USER_CHANNEL,
+	Tags.YOUTUBE_CHANNEL_VIDEOS,
 	Tags.YOUTUBE_SUBSCRIPTION,
 	Tags.YOUTUBE_VIDEO,
 	Tags.YOUTUBE_VIDEO_CATEGORY,
-	Tags.YOUTUBE_VIDEO_LIKE,
-	Tags.YOUTUBE_VIDEO_QUEUE,
+	Tags.YOUTUBE_LIKE_VIDEOS,
+	Tags.YOUTUBE_QUEUE_VIDEOS,
 	Tags.USER,
 ];
 
