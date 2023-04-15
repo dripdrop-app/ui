@@ -1,12 +1,12 @@
 import { Anchor, Button, Card, Flex, Image, Stack, Table } from '@mantine/core';
 import { MdDelete, MdDownload, MdError } from 'react-icons/md';
 
-import { useRemoveJobMutation } from '../../api/music';
+import { useRemoveMusicJobMutation } from '../../api/music';
 
-const JobCard = (props: Job) => {
+const MusicJobCard = (props: MusicJob) => {
 	const createdAt = new Date(props.createdAt).toLocaleDateString();
 
-	const [removeJob, removeJobStatus] = useRemoveJobMutation();
+	const [removeMusicJob, removeMusicJobStatus] = useRemoveMusicJobMutation();
 
 	return (
 		<Card>
@@ -88,8 +88,8 @@ const JobCard = (props: Job) => {
 					<Button
 						color="red"
 						leftIcon={<MdDelete />}
-						loading={removeJobStatus.isLoading}
-						onClick={() => removeJob(props.id)}
+						loading={removeMusicJobStatus.isLoading}
+						onClick={() => removeMusicJob(props.id)}
 					>
 						Delete
 					</Button>
@@ -99,4 +99,4 @@ const JobCard = (props: Job) => {
 	);
 };
 
-export default JobCard;
+export default MusicJobCard;

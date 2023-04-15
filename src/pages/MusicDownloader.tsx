@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Stack } from '@mantine/core';
 
-import JobList from '../components/Music/JobList';
+import MusicJobList from '../components/Music/MusicJobList';
 import MusicForm from '../components/Music/MusicForm';
 
 const MusicDownloader = () => {
@@ -11,7 +11,7 @@ const MusicDownloader = () => {
 				<title>Music Downloader</title>
 			</Helmet>
 			<MusicForm />
-			<JobList />
+			<MusicJobList />
 		</Stack>
 	);
 };

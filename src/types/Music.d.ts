@@ -1,4 +1,4 @@
-interface Job {
+interface MusicJob {
 	id: string;
 	videoUrl?: string;
 	filename?: string;
@@ -40,12 +40,12 @@ type MusicFormState =
 			grouping: string;
 	  };
 
-type JobsState = JobsResponse;
+type MusicJobsState = MusicJobsResponse;
 
 type PageState = PageBody;
 
-interface JobsResponse {
-	jobs: Job[];
+interface MusicJobsResponse {
+	musicJobs: MusicJob[];
 	totalPages: number;
 }
 

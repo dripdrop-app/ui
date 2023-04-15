@@ -19,19 +19,19 @@ const musicApi = api.injectEndpoints({
 			},
 			providesTags: [Tags.MUSIC_TAGS],
 		}),
-		jobs: build.query<JobsResponse, PageBody>({
+		musicJobs: build.query<MusicJobsResponse, PageBody>({
 			query: ({ page, perPage }) => ({ url: `/music/jobs/${page}/${perPage}`, method: Methods.GET }),
 			providesTags: (result) => {
 				if (result) {
-					const { jobs } = result;
-					if (jobs.length > 0) {
-						return jobs.map((job) => ({ type: Tags.MUSIC_JOB, id: job.id }));
+					const { musicJobs } = result;
+					if (musicJobs.length > 0) {
+						return musicJobs.map((musicJob) => ({ type: Tags.MUSIC_JOB, id: musicJob.id }));
 					}
 				}
 				return [Tags.MUSIC_JOB];
 			},
 		}),
-		listenJobs: build.query<null, void>({
+		listenMusicJobs: build.query<null, void>({
 			queryFn: () => ({ data: null }),
 			onCacheEntryAdded: async (_, { cacheDataLoaded, cacheEntryRemoved, dispatch }) => {
 				const url = buildWebsocketURL('music/jobs/listen');
@@ -56,7 +56,7 @@ const musicApi = api.injectEndpoints({
 				ws.close();
 			},
 		}),
-		removeJob: build.mutation<undefined, string>({
+		removeMusicJob: build.mutation<undefined, string>({
 			query: (jobId) => ({
 				url: '/music/jobs/delete',
 				params: { job_id: jobId },
@@ -69,7 +69,7 @@ const musicApi = api.injectEndpoints({
 				return [];
 			},
 		}),
-		createFileJob: build.query<undefined, CreateFileJobBody>({
+		createFileMusicJob: build.query<undefined, CreateFileJobBody>({
 			query: (args) => {
 				const formData = new FormData();
 				formData.append('file', args.file);
@@ -83,7 +83,7 @@ const musicApi = api.injectEndpoints({
 				return { url: '/music/jobs/create', method: Methods.POST, body: formData };
 			},
 		}),
-		createVideoJob: build.query<undefined, CreateVideoJobBody>({
+		createVideoMusicJob: build.query<undefined, CreateVideoJobBody>({
 			query: (args) => {
 				const formData = new FormData();
 				formData.append('video_url', args.videoUrl);
@@ -105,9 +105,9 @@ export const {
 	useLazyArtworkQuery,
 	useLazyGroupingQuery,
 	useLazyTagsQuery,
-	useLazyCreateFileJobQuery,
-	useLazyCreateVideoJobQuery,
-	useJobsQuery,
-	useListenJobsQuery,
-	useRemoveJobMutation,
+	useLazyCreateFileMusicJobQuery,
+	useLazyCreateVideoMusicJobQuery,
+	useMusicJobsQuery,
+	useListenMusicJobsQuery,
+	useRemoveMusicJobMutation,
 } = musicApi;

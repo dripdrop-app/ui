@@ -18,8 +18,8 @@ import { showNotification } from '@mantine/notifications';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 
 import {
-	useLazyCreateFileJobQuery,
-	useLazyCreateVideoJobQuery,
+	useLazyCreateFileMusicJobQuery,
+	useLazyCreateVideoMusicJobQuery,
 	useLazyArtworkQuery,
 	useLazyTagsQuery,
 	useLazyGroupingQuery,
@@ -35,8 +35,8 @@ const MusicForm = () => {
 	const [debouncedArtworkUrl] = useDebouncedValue(watchFields.artworkUrl, 500);
 	const [debouncedVideoUrl] = useDebouncedValue(watchFields.videoUrl, 500);
 
-	const [createFileJob, createFileJobStatus] = useLazyCreateFileJobQuery();
-	const [createVideoJob, createVideoJobStatus] = useLazyCreateVideoJobQuery();
+	const [createFileMusicJob, createFileJobStatus] = useLazyCreateFileMusicJobQuery();
+	const [createVideoMusicJob, createVideoJobStatus] = useLazyCreateVideoMusicJobQuery();
 	const [getArtwork, getArtworkStatus] = useLazyArtworkQuery();
 	const [getTags, getTagsStatus] = useLazyTagsQuery();
 	const [getGrouping, getGroupingStatus] = useLazyGroupingQuery();
@@ -86,7 +86,7 @@ const MusicForm = () => {
 				});
 
 			if (data.isFile) {
-				const status = await createFileJob({ ...data, artworkUrl: data.resolvedArtworkUrl });
+				const status = await createFileMusicJob({ ...data, artworkUrl: data.resolvedArtworkUrl });
 				if (status.isSuccess) {
 					reset();
 					successNotification();
@@ -94,7 +94,7 @@ const MusicForm = () => {
 					errorNotification();
 				}
 			} else {
-				const status = await createVideoJob({ ...data, artworkUrl: data.resolvedArtworkUrl });
+				const status = await createVideoMusicJob({ ...data, artworkUrl: data.resolvedArtworkUrl });
 				if (status.isSuccess) {
 					reset();
 					successNotification();
@@ -103,7 +103,7 @@ const MusicForm = () => {
 				}
 			}
 		},
-		[createFileJob, createVideoJob, reset]
+		[createFileMusicJob, createVideoMusicJob, reset]
 	);
 
 	const resolveArtworkUrl = useCallback(
