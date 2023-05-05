@@ -49,47 +49,50 @@ const VideosView = (props: VideosViewProps) => {
 	return useMemo(
 		() => (
 			<Stack>
-				{videoCategoriesStatus.isLoading || videosStatus.isLoading ? (
+				<Checkbox
+					label="Show Liked Only"
+					checked={params.likedOnly}
+					onChange={(e) => setSearchParams({ likedOnly: e.target.checked, page: 1 })}
+				/>
+				{videoCategoriesStatus.data && (
+					<MultiSelect
+						label="Categories"
+						placeholder="Select Categories"
+						data={categories.map((category) => ({
+							value: category.id.toString(),
+							label: category.name,
+						}))}
+						itemComponent={Item}
+						value={params.selectedCategories}
+						valueComponent={({ value, label, onRemove, classNames, ...props }) => (
+							<div {...props}>
+								<Flex
+									sx={(theme) => ({
+										backgroundColor: theme.colors.dark[7],
+										border: `1px solid ${theme.colors.dark[7]}`,
+										borderRadius: theme.radius.sm,
+										paddingLeft: 5,
+									})}
+									gap="xs"
+									align="center"
+									onMouseDown={(e) => e.stopPropagation()}
+								>
+									<VideoCategoryIcon categoryId={value} />
+									{label}
+									<CloseButton onClick={onRemove} />
+								</Flex>
+							</div>
+						)}
+						onChange={(newCategories) => setSearchParams({ selectedCategories: newCategories, page: 1 })}
+					/>
+				)}
+				{videosStatus.isFetching && !videosStatus.currentData && (
 					<Center>
 						<Loader />
 					</Center>
-				) : (
+				)}
+				{videosStatus.data && (
 					<>
-						<Checkbox
-							label="Show Liked Only"
-							checked={params.likedOnly}
-							onChange={(e) => setSearchParams({ likedOnly: e.target.checked, page: 1 })}
-						/>
-						<MultiSelect
-							label="Categories"
-							placeholder="Select Categories"
-							data={categories.map((category) => ({
-								value: category.id.toString(),
-								label: category.name,
-							}))}
-							itemComponent={Item}
-							value={params.selectedCategories}
-							valueComponent={({ value, label, onRemove, classNames, ...props }) => (
-								<div {...props}>
-									<Flex
-										sx={(theme) => ({
-											backgroundColor: theme.colors.dark[7],
-											border: `1px solid ${theme.colors.dark[7]}`,
-											borderRadius: theme.radius.sm,
-											paddingLeft: 5,
-										})}
-										gap="xs"
-										align="center"
-										onMouseDown={(e) => e.stopPropagation()}
-									>
-										<VideoCategoryIcon categoryId={value} />
-										{label}
-										<CloseButton onClick={onRemove} />
-									</Flex>
-								</div>
-							)}
-							onChange={(newCategories) => setSearchParams({ selectedCategories: newCategories, page: 1 })}
-						/>
 						<Grid>
 							{videos.map((video) => (
 								<Grid.Col key={video.id} xs={12} sm={6} md={4} lg={3} xl={2}>
@@ -109,13 +112,15 @@ const VideosView = (props: VideosViewProps) => {
 			</Stack>
 		),
 		[
-			videoCategoriesStatus.isLoading,
-			videosStatus.isLoading,
 			params.likedOnly,
 			params.selectedCategories,
 			params.page,
+			videoCategoriesStatus.data,
 			categories,
 			Item,
+			videosStatus.isFetching,
+			videosStatus.currentData,
+			videosStatus.data,
 			videos,
 			totalPages,
 			setSearchParams,
