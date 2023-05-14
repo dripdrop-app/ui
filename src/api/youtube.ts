@@ -18,9 +18,9 @@ const youtubeApi = api.injectEndpoints({
 		}),
 		youtubeVideo: build.query<YoutubeVideoResponse, YoutubeVideoBody>({
 			query: ({ videoId, relatedLength }) => ({
-				url: '/youtube/videos',
+				url: `/youtube/video/${videoId}`,
 				method: Methods.GET,
-				params: { video_id: videoId, related_videos_length: relatedLength },
+				params: { related_videos_length: relatedLength },
 			}),
 			providesTags: (result) => {
 				if (result) {
@@ -104,7 +104,22 @@ const youtubeApi = api.injectEndpoints({
 			},
 		}),
 		addYoutubeVideoLike: build.mutation<undefined, string>({
-			query: (videoId) => ({ url: '/youtube/videos/like', params: { video_id: videoId }, method: Methods.PUT }),
+			query: (videoId) => ({
+				url: `/youtube/video/${videoId}/like`,
+				method: Methods.PUT,
+			}),
+			onQueryStarted: async (videoId, { dispatch, getState, queryFulfilled }) => {
+				const queries = youtubeApi.util.selectInvalidatedBy(getState(), [{ type: Tags.YOUTUBE_VIDEO, id: videoId }]);
+				console.log(queries);
+
+				// const patchResult = dispatch(
+				// );
+				// try {
+				// 	await queryFulfilled;
+				// } catch {
+				// 	patchResult.undo();
+				// }
+			},
 			invalidatesTags: (_, error, videoId) => {
 				if (!error) {
 					return [{ type: Tags.YOUTUBE_VIDEO, id: videoId }, Tags.YOUTUBE_LIKE_VIDEOS];
@@ -114,8 +129,7 @@ const youtubeApi = api.injectEndpoints({
 		}),
 		deleteYoutubeVideoLike: build.mutation<undefined, string>({
 			query: (videoId) => ({
-				url: '/youtube/videos/like',
-				params: { video_id: videoId },
+				url: `/youtube/video/${videoId}/like`,
 				method: Methods.DELETE,
 			}),
 			invalidatesTags: (_, error, videoId) => {
@@ -127,8 +141,7 @@ const youtubeApi = api.injectEndpoints({
 		}),
 		addYoutubeVideoQueue: build.mutation<undefined, string>({
 			query: (videoId) => ({
-				url: '/youtube/videos/queue',
-				params: { video_id: videoId },
+				url: `/youtube/video/${videoId}/queue`,
 				method: Methods.PUT,
 			}),
 			invalidatesTags: (_, error, videoId) => {
@@ -140,8 +153,7 @@ const youtubeApi = api.injectEndpoints({
 		}),
 		deleteYoutubeVideoQueue: build.mutation<undefined, string>({
 			query: (videoId) => ({
-				url: '/youtube/videos/queue',
-				params: { video_id: videoId },
+				url: `/youtube/video/${videoId}/queue`,
 				method: Methods.DELETE,
 			}),
 			invalidatesTags: (_, error, videoId) => {
@@ -153,8 +165,7 @@ const youtubeApi = api.injectEndpoints({
 		}),
 		addYoutubeVideoWatch: build.mutation<undefined, string>({
 			query: (videoId) => ({
-				url: '/youtube/videos/watch',
-				params: { video_id: videoId },
+				url: `/youtube/video/${videoId}/watch`,
 				method: Methods.PUT,
 			}),
 			invalidatesTags: (_, error, videoId) => {
@@ -175,7 +186,7 @@ const youtubeApi = api.injectEndpoints({
 			},
 		}),
 		youtubeChannel: build.query<YoutubeChannelResponse, string>({
-			query: (channelId) => ({ url: '/youtube/channels', params: { channel_id: channelId }, method: Methods.GET }),
+			query: (channelId) => ({ url: `/youtube/channel/${channelId}`, method: Methods.GET }),
 			providesTags: (result) => {
 				if (result) {
 					const tags = [{ type: Tags.YOUTUBE_CHANNEL, id: result.id }];
@@ -190,7 +201,7 @@ const youtubeApi = api.injectEndpoints({
 		listenYoutubeChannels: build.query<null, void>({
 			queryFn: () => ({ data: null }),
 			onCacheEntryAdded: async (_, { cacheDataLoaded, cacheEntryRemoved, dispatch }) => {
-				const url = buildWebsocketURL('youtube/channels/listen');
+				const url = buildWebsocketURL('youtube/channel/listen');
 				const ws = new WebSocket(url);
 				try {
 					await cacheDataLoaded;
@@ -215,11 +226,11 @@ const youtubeApi = api.injectEndpoints({
 			},
 		}),
 		userYoutubeChannel: build.query<YoutubeUserChannel, void>({
-			query: () => ({ url: '/youtube/channels/user', method: Methods.GET }),
+			query: () => ({ url: '/youtube/channel/user', method: Methods.GET }),
 			providesTags: () => [Tags.YOUTUBE_USER_CHANNEL],
 		}),
 		updateUserYoutubeChannel: build.mutation<undefined, string>({
-			query: (channelId) => ({ url: '/youtube/channels/user', body: { channel_id: channelId }, method: Methods.POST }),
+			query: (channelId) => ({ url: '/youtube/channel/user', body: { channel_id: channelId }, method: Methods.POST }),
 			invalidatesTags: (_, error) => {
 				if (!error) {
 					return [Tags.YOUTUBE_USER_CHANNEL];
