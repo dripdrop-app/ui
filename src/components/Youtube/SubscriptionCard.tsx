@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Card, Image, Overlay, Stack, Text } from '@mantine/core';
 import { useHover, useOs } from '@mantine/hooks';
+
 import { SubscribeButton } from './ChannelButtons';
 
 interface SubscriptionCardProps {

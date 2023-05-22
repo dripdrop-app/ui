@@ -3,11 +3,11 @@ import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { AspectRatio, Center, Divider, Grid, Loader, Stack, Title } from '@mantine/core';
 
-import VideoCard from '../components/Youtube/VideoCard';
-import VideoInformation from '../components/Youtube/VideoInformation';
-import VideoPlayer from '../components/Youtube/VideoPlayer';
+import VideoCard from '../../components/Youtube/VideoCard';
+import VideoInformation from '../../components/Youtube/VideoInformation';
+import VideoPlayer from '../../components/Youtube/VideoPlayer';
 
-import { useYoutubeVideoQuery } from '../api/youtube';
+import { useYoutubeVideoQuery } from '../../api/youtube';
 
 const YoutubeVideo = () => {
 	const { id } = useParams();

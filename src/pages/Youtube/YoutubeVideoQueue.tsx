@@ -3,12 +3,12 @@ import { Helmet } from 'react-helmet-async';
 import { AspectRatio, Button, Divider, Flex, Stack, Title } from '@mantine/core';
 import { MdSkipNext, MdSkipPrevious } from 'react-icons/md';
 
-import VideoPlayer from '../components/Youtube/VideoPlayer';
-import VideoQueueModal from '../components/Youtube/VideoQueueModal';
-import VideoInformation from '../components/Youtube/VideoInformation';
+import VideoPlayer from '../../components/Youtube/VideoPlayer';
+import VideoQueueModal from '../../components/Youtube/VideoQueueModal';
+import VideoInformation from '../../components/Youtube/VideoInformation';
 
-import { useYoutubeVideoQueueQuery } from '../api/youtube';
-import useSearchParams from '../utils/useSearchParams';
+import { useYoutubeVideoQueueQuery } from '../../api/youtube';
+import useSearchParams from '../../utils/useSearchParams';
 
 const YoutubeVideoQueue = () => {
 	const { params, setSearchParams } = useSearchParams({ index: 1 });

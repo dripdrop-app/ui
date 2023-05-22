@@ -34,8 +34,40 @@ const authApi = api.injectEndpoints({
 			}),
 			invalidatesTags: (_, error) => (!error ? tags : []),
 		}),
+		sendResetEmail: build.mutation<void, string>({
+			query: (email) => ({
+				url: '/auth/sendreset',
+				method: Methods.POST,
+				body: { email },
+			}),
+			transformErrorResponse,
+		}),
+		resetPassword: build.mutation<void, ResetPasswordBody>({
+			query: ({ token, password }) => ({
+				url: '/auth/reset',
+				method: Methods.POST,
+				body: { token, password },
+			}),
+			transformErrorResponse,
+		}),
+		verifyAccount: build.query<void, string>({
+			query: (token) => ({
+				url: '/auth/verify',
+				method: Methods.GET,
+				params: { token },
+			}),
+			transformErrorResponse,
+		}),
 	}),
 });
 
 export default authApi;
-export const { useCheckSessionQuery, useCreateMutation, useLoginMutation, useLogoutMutation } = authApi;
+export const {
+	useCheckSessionQuery,
+	useCreateMutation,
+	useLoginMutation,
+	useLogoutMutation,
+	useSendResetEmailMutation,
+	useVerifyAccountQuery,
+	useResetPasswordMutation,
+} = authApi;

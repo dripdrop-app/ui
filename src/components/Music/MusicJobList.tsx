@@ -1,8 +1,9 @@
 import { useState, useMemo } from 'react';
 import { Center, Divider, Grid, Loader, Pagination, Stack, Title } from '@mantine/core';
 
-import { useMusicJobsQuery, useListenMusicJobsQuery } from '../../api/music';
 import MusicJobCard from './MusicJobCard';
+
+import { useMusicJobsQuery, useListenMusicJobsQuery } from '../../api/music';
 
 const MusicJobList = () => {
 	const [args, setArgs] = useState<PageBody>({

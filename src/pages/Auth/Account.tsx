@@ -3,7 +3,7 @@ import { Button, Checkbox, Container, Stack, TextInput } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
-import { useCheckSessionQuery, useLogoutMutation } from '../api/auth';
+import { useCheckSessionQuery, useLogoutMutation } from '../../api/auth';
 
 const Account = () => {
 	const sessionStatus = useCheckSessionQuery();

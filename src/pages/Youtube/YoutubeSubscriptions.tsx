@@ -2,11 +2,11 @@ import { useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Center, Divider, Flex, Grid, Loader, Pagination, Stack, Title } from '@mantine/core';
 
-import SubscriptionCard from '../components/Youtube/SubscriptionCard';
+import SubscriptionCard from '../../components/Youtube/SubscriptionCard';
+import UpdateSubscriptionsModal from '../../components/Youtube/UpdateSubscriptionsModal';
 
-import { useYoutubeSubscriptionsQuery } from '../api/youtube';
-import useSearchParams from '../utils/useSearchParams';
-import UpdateSubscriptionsModal from '../components/Youtube/UpdateSubscriptionsModal';
+import { useYoutubeSubscriptionsQuery } from '../../api/youtube';
+import useSearchParams from '../../utils/useSearchParams';
 
 const YoutubeSubscriptions = () => {
 	const { params, setSearchParams } = useSearchParams({ perPage: 48, page: 1 });

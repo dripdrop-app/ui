@@ -13,3 +13,8 @@ interface LoginBody {
 	email: string;
 	password: string;
 }
+
+interface ResetPasswordBody {
+	token: string;
+	password: string;
+}

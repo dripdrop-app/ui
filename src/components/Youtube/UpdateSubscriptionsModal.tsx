@@ -3,12 +3,13 @@ import { Alert, Anchor, Button, Modal, Stack, Tabs, TextInput } from '@mantine/c
 import { useDisclosure } from '@mantine/hooks';
 import { MdInfo } from 'react-icons/md';
 
+import AlertConfirmation from '../AlertConfirmation';
+
 import {
 	useAddYoutubeSubscriptionMutation,
 	useUpdateUserYoutubeChannelMutation,
 	useUserYoutubeChannelQuery,
 } from '../../api/youtube';
-import AlertConfirmation from '../AlertConfirmation';
 
 const UpdateSubscriptionsModal = () => {
 	const [newUserChannelId, setNewUserChannelId] = useState('');

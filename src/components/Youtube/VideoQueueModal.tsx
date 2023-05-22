@@ -17,8 +17,9 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
-import { useYoutubeVideosQuery } from '../../api/youtube';
 import { VideoQueueButton } from './VideoButtons';
+
+import { useYoutubeVideosQuery } from '../../api/youtube';
 
 interface VideoQueueModalProps {
 	changeQueueIndex: (newIndex: number) => void;

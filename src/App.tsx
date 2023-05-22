@@ -20,16 +20,9 @@ import { NotificationsProvider } from '@mantine/notifications';
 import { BsYoutube } from 'react-icons/bs';
 import { MdAccountCircle, MdCloudDownload, MdQueue, MdSubscriptions } from 'react-icons/md';
 
-import YoutubeChannel from './pages/YoutubeChannel';
-import Account from './pages/Account';
-import MusicDownloader from './pages/MusicDownloader';
-import YoutubeSubscriptions from './pages/YoutubeSubscriptions';
-import YoutubeVideoQueue from './pages/YoutubeVideoQueue';
-import YoutubeVideo from './pages/YoutubeVideo';
-import YoutubeVideos from './pages/YoutubeVideos';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import TermsOfService from './pages/TermsOfService';
-import AuthPage from './pages/AuthPage';
+import { Account, CreateAccount, Login, PrivacyPolicy, TermsOfService, VerifyAccount } from './pages/Auth';
+import { MusicDownloader } from './pages/Music';
+import { YoutubeChannel, YoutubeSubscriptions, YoutubeVideo, YoutubeVideoQueue, YoutubeVideos } from './pages/Youtube';
 
 import { useCheckSessionQuery } from './api/auth';
 
@@ -50,7 +43,7 @@ const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
 				</Center>
 			)}
 			{sessionStatus.isSuccess && children}
-			{sessionStatus.isError && <AuthPage />}
+			{sessionStatus.isError && <Login />}
 		</>
 	);
 };
@@ -174,6 +167,8 @@ const App = () => {
 						<Routes>
 							<Route path="/privacy" element={<PrivacyPolicy />} />
 							<Route path="/terms" element={<TermsOfService />} />
+							<Route path="/create" element={<CreateAccount />} />
+							<Route path="/verify" element={<VerifyAccount />} />
 							<Route
 								path="/youtube/channel/:id"
 								element={

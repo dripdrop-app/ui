@@ -3,10 +3,10 @@ import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Avatar, Box, Center, Divider, Flex, Loader, Stack, Title } from '@mantine/core';
 
-import { useYoutubeChannelQuery, useListenYoutubeChannelsQuery } from '../api/youtube';
+import { useYoutubeChannelQuery, useListenYoutubeChannelsQuery } from '../../api/youtube';
 
-import VideosView from '../components/Youtube/VideosView';
-import { SubscribeButton } from '../components/Youtube/ChannelButtons';
+import VideosView from '../../components/Youtube/VideosView';
+import { SubscribeButton } from '../../components/Youtube/ChannelButtons';
 
 const YoutubeChannel = () => {
 	const { id } = useParams();
