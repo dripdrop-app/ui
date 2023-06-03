@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Avatar, Box, Card, Flex, Image, Overlay, Stack, Text, Tooltip } from '@mantine/core';
+import { useHover, useOs } from '@mantine/hooks';
 
 import { VideoQueueButton, VideoWatchButton } from './VideoButtons';
 import VideoCategoryIcon from './VideoCategoryIcon';
@@ -12,7 +13,14 @@ interface VideoCardProps {
 const VideoCard = (props: VideoCardProps) => {
 	const { video } = props;
 
-	const hideOverlay = !video.queued && !video.watched;
+	const { hovered, ref } = useHover();
+	const os = useOs();
+
+	const isMobile = os === 'android' || os === 'ios';
+
+	const hideOverlay = !isMobile && !hovered && !video.queued && !video.watched;
+
+	const hideQueueButton = !isMobile && !hovered && !video.queued;
 
 	return useMemo(() => {
 		const publishedAt = new Date(video.publishedAt).toLocaleDateString();
@@ -22,7 +30,7 @@ const VideoCard = (props: VideoCardProps) => {
 		return (
 			<Box>
 				<Card>
-					<Card.Section sx={{ position: 'relative' }}>
+					<Card.Section ref={ref} sx={{ position: 'relative' }}>
 						<Image src={video.thumbnail} withPlaceholder />
 						<Overlay
 							sx={{ ...(hideOverlay && { display: 'none' }) }}
@@ -32,7 +40,15 @@ const VideoCard = (props: VideoCardProps) => {
 							component={Link}
 							to={videoLink}
 						/>
-						<Box sx={{ position: 'absolute', right: '5%', top: '5%', zIndex: 2 }}>
+						<Box
+							sx={{
+								...(hideQueueButton && { display: 'none' }),
+								position: 'absolute',
+								right: '5%',
+								top: '5%',
+								zIndex: 2,
+							}}
+						>
 							<VideoQueueButton video={video} />
 						</Box>
 						<Box sx={{ position: 'absolute', left: '5%', top: '5%', zIndex: 2 }}>
@@ -92,7 +108,7 @@ const VideoCard = (props: VideoCardProps) => {
 				</Card>
 			</Box>
 		);
-	}, [hideOverlay, video]);
+	}, [hideOverlay, hideQueueButton, ref, video]);
 };
 
 export default VideoCard;
