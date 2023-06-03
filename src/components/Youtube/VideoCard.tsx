@@ -22,7 +22,7 @@ const VideoCard = (props: VideoCardProps) => {
 		return (
 			<Box>
 				<Card>
-					<Card.Section ref={ref} sx={{ position: 'relative' }}>
+					<Card.Section sx={{ position: 'relative' }}>
 						<Image src={video.thumbnail} withPlaceholder />
 						<Overlay
 							sx={{ ...(hideOverlay && { display: 'none' }) }}
@@ -32,9 +32,7 @@ const VideoCard = (props: VideoCardProps) => {
 							component={Link}
 							to={videoLink}
 						/>
-						<Box
-							sx={{ ...(!showQueue && { display: 'none' }), position: 'absolute', right: '5%', top: '5%', zIndex: 2 }}
-						>
+						<Box sx={{ position: 'absolute', right: '5%', top: '5%', zIndex: 2 }}>
 							<VideoQueueButton video={video} />
 						</Box>
 						<Box sx={{ position: 'absolute', left: '5%', top: '5%', zIndex: 2 }}>
