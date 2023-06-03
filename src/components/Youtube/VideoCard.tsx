@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Avatar, Box, Card, Flex, Image, Overlay, Stack, Text, Tooltip } from '@mantine/core';
-import { useHover, useOs } from '@mantine/hooks';
 
 import { VideoQueueButton, VideoWatchButton } from './VideoButtons';
 import VideoCategoryIcon from './VideoCategoryIcon';
@@ -13,12 +12,7 @@ interface VideoCardProps {
 const VideoCard = (props: VideoCardProps) => {
 	const { video } = props;
 
-	const { hovered, ref } = useHover();
-	const os = useOs();
-
-	const showQueue = useMemo(() => os === 'android' || os === 'ios' || hovered, [hovered, os]);
-
-	const hideOverlay = !showQueue && !video.watched;
+	const hideOverlay = !video.queued && !video.watched;
 
 	return useMemo(() => {
 		const publishedAt = new Date(video.publishedAt).toLocaleDateString();
@@ -100,7 +94,7 @@ const VideoCard = (props: VideoCardProps) => {
 				</Card>
 			</Box>
 		);
-	}, [hideOverlay, ref, showQueue, video]);
+	}, [hideOverlay, video]);
 };
 
 export default VideoCard;
