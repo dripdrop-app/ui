@@ -107,7 +107,10 @@ const AppHeader = (props: AppHeaderProps) => {
 				<MediaQuery largerThan="sm" styles={{ display: 'none' }}>
 					<Burger opened={showBurger} onClick={toggle} />
 				</MediaQuery>
-				<Avatar alt="dripdrop" src="https://dripdrop-space.nyc3.digitaloceanspaces.com/artwork/dripdrop.png" />
+				<Avatar
+					alt="dripdrop"
+					src="https://usc1.contabostorage.com/19b52af42e554105863370e19f11eae4:assets/dripdrop.png"
+				/>
 				<Title color="white" order={3} weight={600}>
 					dripdrop
 				</Title>

@@ -253,7 +253,7 @@ const MusicForm = () => {
 										alt="blank"
 										src={
 											watchFields.resolvedArtworkUrl ||
-											'https://dripdrop-space.nyc3.digitaloceanspaces.com/artwork/blank_image.jpeg'
+											'https://usc1.contabostorage.com/19b52af42e554105863370e19f11eae4:assets/blank_image.jpeg'
 										}
 										withPlaceholder
 									/>

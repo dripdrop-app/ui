@@ -12,7 +12,10 @@ const MusicJobCard = (props: MusicJob) => {
 		<Card>
 			<Card.Section>
 				<Image
-					src={props.artworkUrl || 'https://dripdrop-space.nyc3.digitaloceanspaces.com/artwork/blank_image.jpeg'}
+					src={
+						props.artworkUrl ||
+						'https://usc1.contabostorage.com/19b52af42e554105863370e19f11eae4:assets/blank_image.jpeg'
+					}
 					alt="Artwork"
 					withPlaceholder
 					height={150}
