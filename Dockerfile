@@ -6,3 +6,5 @@ COPY ./package.json ./package.json
 COPY ./package-lock.json ./package-lock.json 
 RUN npm install
 VOLUME [ "/src/node_modules" ]
+COPY . .
+RUN npm run build

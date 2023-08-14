@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "serve": "http-server ./dist -p 80 --proxy http://localhost?",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -16,6 +17,7 @@
     "@mantine/modals": "^5.10.5",
     "@mantine/notifications": "^5.10.5",
     "@reduxjs/toolkit": "^1.9.3",
+    "http-server": "^14.1.1",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
