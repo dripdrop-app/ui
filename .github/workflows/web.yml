@@ -31,12 +31,12 @@ jobs:
         run: |
           echo "${{ secrets.SSH_KEY }}" >> ssh_key && sudo chmod 400 ssh_key
       - name: Create Build Directory on VM
-        run: ssh -o StrictHostKeyChecking=no -i ./ssh_key -v $SSH_USER@$SSH_HOST "mkdir -p $HOME/swag/www/dripdrop.icu"
+        run: ssh -o StrictHostKeyChecking=no -i ./ssh_key -v $SSH_USER@$SSH_HOST -p $SSH_PORT "mkdir -p $HOME/swag/www/dripdrop.icu"
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
       - name: Copy Client to VM Build Directory
-        run: scp -o StrictHostKeyChecking=no -i ./ssh_key -vr ./dist $SSH_USER@$SSH_HOST:~/swag/www/dripdrop.icu
+        run: scp -o StrictHostKeyChecking=no -i ./ssh_key -vr ./dist -P $SSH_PORT $SSH_USER@$SSH_HOST:~/swag/www/dripdrop.icu
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
