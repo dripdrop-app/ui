@@ -31,7 +31,7 @@ jobs:
         run: |
           echo "${{ secrets.SSH_KEY }}" >> ssh_key && sudo chmod 400 ssh_key
       - name: Create Build Directory on VM
-        run: ssh -o StrictHostKeyChecking=no -i ./ssh_key -v $SSH_USER@$SSH_HOST -p $SSH_PORT "mkdir -p $HOME/swag/www/dripdrop.icu"
+        run: ssh -o StrictHostKeyChecking=no -i ./ssh_key -v $SSH_USER@$SSH_HOST -p $SSH_PORT "mkdir -p ~/swag/www/dripdrop.icu"
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
