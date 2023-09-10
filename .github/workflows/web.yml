@@ -36,8 +36,12 @@ jobs:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_PORT: ${{ secrets.SSH_PORT }}
+      - name: Install rsync
+        run: |
+          sudo apt-get -y update
+          sudo apt-get -y install rsync
       - name: Copy Client to VM Build Directory
-        run: scp -o StrictHostKeyChecking=no -i ./ssh_key -vr ./dist -P $SSH_PORT $SSH_USER@$SSH_HOST:~/swag/www/dripdrop.icu
+        run: rsync --verbose --recursive --delete -e "ssh -o StrictHostKeyChecking=no -i ./ssh_key -p $SSH_HOST" ./dist $SSH_USER@$SSH_HOST:~/swag/www/dripdrop.icu
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
