@@ -81,7 +81,7 @@ const MusicJobCard = (props: MusicJob) => {
 						component="a"
 						display={props.completed ? 'initial' : 'none'}
 						color="green"
-						href={props.downloadUrl}
+						href={`/api/music/job/${props.id}/download`}
 						target="_blank"
 						rel="noopener noreferrer"
 						leftIcon={<MdDownload />}

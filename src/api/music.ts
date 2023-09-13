@@ -58,8 +58,7 @@ const musicApi = api.injectEndpoints({
 		}),
 		removeMusicJob: build.mutation<undefined, string>({
 			query: (jobId) => ({
-				url: '/music/jobs/delete',
-				params: { job_id: jobId },
+				url: `/music/job/${jobId}/delete`,
 				method: Methods.DELETE,
 			}),
 			invalidatesTags: (_, error, jobId) => {
@@ -80,7 +79,7 @@ const musicApi = api.injectEndpoints({
 				if (args.grouping) {
 					formData.append('grouping', args.grouping);
 				}
-				return { url: '/music/jobs/create', method: Methods.POST, body: formData };
+				return { url: '/music/job/create', method: Methods.POST, body: formData };
 			},
 		}),
 		createVideoMusicJob: build.query<undefined, CreateVideoJobBody>({
@@ -94,7 +93,7 @@ const musicApi = api.injectEndpoints({
 				if (args.grouping) {
 					formData.append('grouping', args.grouping);
 				}
-				return { url: '/music/jobs/create', method: Methods.POST, body: formData };
+				return { url: '/music/job/create', method: Methods.POST, body: formData };
 			},
 		}),
 	}),
