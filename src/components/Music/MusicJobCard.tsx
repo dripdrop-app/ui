@@ -2,6 +2,7 @@ import { Anchor, Button, Card, Flex, Image, Stack, Table } from '@mantine/core';
 import { MdDelete, MdDownload, MdError } from 'react-icons/md';
 
 import { useRemoveMusicJobMutation } from '../../api/music';
+import { buildURL } from '../../config';
 
 const MusicJobCard = (props: MusicJob) => {
 	const createdAt = new Date(props.createdAt).toLocaleDateString();
@@ -81,7 +82,7 @@ const MusicJobCard = (props: MusicJob) => {
 						component="a"
 						display={props.completed ? 'initial' : 'none'}
 						color="green"
-						href={`/api/music/job/${props.id}/download`}
+						href={buildURL(`api/music/job/${props.id}/download`)}
 						target="_blank"
 						rel="noopener noreferrer"
 						leftIcon={<MdDownload />}
