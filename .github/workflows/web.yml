@@ -1,6 +1,6 @@
 name: Web
 
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
@@ -31,7 +31,7 @@ jobs:
         run: |
           echo "${{ secrets.SSH_KEY }}" >> ssh_key && sudo chmod 400 ssh_key
       - name: Create Build Directory on VM
-        run: ssh -o StrictHostKeyChecking=no -i ./ssh_key -v $SSH_USER@$SSH_HOST -p $SSH_PORT "mkdir -p $ROOT_FOLDER/swag/www/dripdrop.icu"
+        run: ssh -o StrictHostKeyChecking=no -i ./ssh_key -v $SSH_USER@$SSH_HOST -p $SSH_PORT "mkdir -p $ROOT_FOLDER/www/dripdrop.icu"
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
@@ -42,7 +42,7 @@ jobs:
           sudo apt-get -y update
           sudo apt-get -y install rsync
       - name: Copy Client to VM Build Directory
-        run: rsync --verbose --recursive --delete -e "ssh -o StrictHostKeyChecking=no -i ./ssh_key -p $SSH_PORT" ./dist/ $SSH_USER@$SSH_HOST:$ROOT_FOLDER/swag/www/dripdrop.icu
+        run: rsync --verbose --recursive --delete -e "ssh -o StrictHostKeyChecking=no -i ./ssh_key -p $SSH_PORT" ./dist/ $SSH_USER@$SSH_HOST:$ROOT_FOLDER/www/dripdrop.icu
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
