@@ -109,7 +109,7 @@ const AppHeader = (props: AppHeaderProps) => {
 				</MediaQuery>
 				<Avatar
 					alt="dripdrop"
-					src="https://usc1.contabostorage.com/19b52af42e554105863370e19f11eae4:assets/dripdrop.png"
+					src="https://dripdrop-prod.s3.us-east-005.backblazeb2.com/assets/dripdrop.png"
 				/>
 				<Title color="white" order={3} weight={600}>
 					dripdrop

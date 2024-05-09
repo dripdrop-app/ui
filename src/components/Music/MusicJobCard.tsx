@@ -15,7 +15,7 @@ const MusicJobCard = (props: MusicJob) => {
 				<Image
 					src={
 						props.artworkUrl ||
-						'https://usc1.contabostorage.com/19b52af42e554105863370e19f11eae4:assets/blank_image.jpeg'
+						'https://dripdrop-prod.s3.us-east-005.backblazeb2.com/assets/blank_image.jpeg'
 					}
 					alt="Artwork"
 					withPlaceholder
