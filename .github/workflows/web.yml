@@ -2,49 +2,42 @@ name: Web
 
 on: [push, pull_request, workflow_dispatch]
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Install Client Dependencies and build
-        run: npm install --production=false && npm run build
-      - name: Upload Build artifact
-        if: ${{ github.ref }} == '/refs/heads/main'
-        uses: actions/upload-artifact@v3
-        with:
-          name: dist
-          path: dist
-          retention-days: 1
   deploy:
     if: ${{ github.ref }} == '/refs/heads/main'
     runs-on: ubuntu-latest
-    needs: build
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
     steps:
-      - name: Download Build artifact
-        uses: actions/download-artifact@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Client Dependencies and build
+        run: npm install --production=false && npm run build
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
         with:
-          name: dist
-          path: dist
-      - name: Export ssh key
-        run: |
-          echo "${{ secrets.SSH_KEY }}" >> ssh_key && sudo chmod 400 ssh_key
-      - name: Create Build Directory on VM
-        run: ssh -o StrictHostKeyChecking=no -i ./ssh_key -v $SSH_USER@$SSH_HOST -p $SSH_PORT "mkdir -p $ROOT_FOLDER/www/dripdrop.icu"
-        env:
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_PORT: ${{ secrets.SSH_PORT }}
-          ROOT_FOLDER: ${{ vars.ROOT_FOLDER }}
-      - name: Install rsync
-        run: |
-          sudo apt-get -y update
-          sudo apt-get -y install rsync
-      - name: Copy Client to VM Build Directory
-        run: rsync --verbose --recursive --delete -e "ssh -o StrictHostKeyChecking=no -i ./ssh_key -p $SSH_PORT" ./dist/ $SSH_USER@$SSH_HOST:$ROOT_FOLDER/www/dripdrop.pro
-        env:
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_PORT: ${{ secrets.SSH_PORT }}
-          ROOT_FOLDER: ${{ vars.ROOT_FOLDER }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
