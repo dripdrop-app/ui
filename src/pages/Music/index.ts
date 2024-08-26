@@ -1,1 +1,1 @@
-export { default as MusicDownloader } from './MusicDownloader';
+export { default as MusicDownloader } from "./MusicDownloader";

@@ -1,20 +1,20 @@
 interface User {
-	email: string;
-	admin: boolean;
+  email: string;
+  admin: boolean;
 }
 
 interface AuthenticatedResponse {
-	access_token: string;
-	token_type: string;
-	user: User;
+  access_token: string;
+  token_type: string;
+  user: User;
 }
 
 interface LoginBody {
-	email: string;
-	password: string;
+  email: string;
+  password: string;
 }
 
 interface ResetPasswordBody {
-	token: string;
-	password: string;
+  token: string;
+  password: string;
 }

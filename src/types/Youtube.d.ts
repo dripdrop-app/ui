@@ -1,81 +1,81 @@
 interface YoutubeVideo {
-	id: string;
-	title: string;
-	thumbnail: string;
-	categoryId: number;
-	categoryName: string;
-	publishedAt: string;
-	description: string | null;
-	channelId: string;
-	channelTitle: string;
-	channelThumbnail: string;
-	liked: string | null;
-	queued: string | null;
-	watched: string | null;
+  id: string;
+  title: string;
+  thumbnail: string;
+  categoryId: number;
+  categoryName: string;
+  publishedAt: string;
+  description: string | null;
+  channelId: string;
+  channelTitle: string;
+  channelThumbnail: string;
+  liked: string | null;
+  queued: string | null;
+  watched: string | null;
 }
 
 interface YoutubeChannel {
-	id: string;
-	title: string;
-	thumbnail?: string;
-	subscribed: boolean;
-	updating: boolean;
+  id: string;
+  title: string;
+  thumbnail?: string;
+  subscribed: boolean;
+  updating: boolean;
 }
 
 type YoutubeChannelResponse = YoutubeChannel;
 
 interface YoutubeUserChannel {
-	id: string;
+  id: string;
 }
 
 interface YoutubeSubscription {
-	channelId: string;
-	channelTitle: string;
-	channelThumbnail: string;
+  channelId: string;
+  channelTitle: string;
+  channelThumbnail: string;
 }
 
 interface YoutubeVideoCategory {
-	id: number;
-	name: string;
-	createdAt: string;
+  id: number;
+  name: string;
+  createdAt: string;
 }
 
 interface DownloadResponse {
-	url: string;
+  url: string;
 }
 
 interface YoutubeVideoCategoriesResponse {
-	categories: YoutubeVideoCategory[];
+  categories: YoutubeVideoCategory[];
 }
 
 interface ChannelBody {
-	channelId?: string;
+  channelId?: string;
 }
 
 interface PageBody {
-	perPage: number;
-	page: number;
+  perPage: number;
+  page: number;
 }
 
 interface YoutubeVideosBody extends ChannelBody, PageBody {
-	selectedCategories: number[];
-	likedOnly?: boolean;
-	queuedOnly?: boolean;
+  selectedCategories: number[];
+  likedOnly?: boolean;
+  queuedOnly?: boolean;
 }
 
 interface YoutubeVideosResponse {
-	videos: YoutubeVideo[];
-	totalPages: number;
+  videos: YoutubeVideo[];
+  totalPages: number;
 }
 
 interface YoutubeVideoBody {
-	videoId: string;
-	relatedLength?: number;
+  videoId: string;
+  relatedLength?: number;
 }
 
 interface YoutubeVideoResponse {
-	video: YoutubeVideo;
-	relatedVideos: YoutubeVideo[];
+  video: YoutubeVideo;
+  relatedVideos: YoutubeVideo[];
 }
 
 type YoutubeSubscriptionBody = ChannelBody & PageBody;
@@ -83,12 +83,12 @@ type YoutubeSubscriptionBody = ChannelBody & PageBody;
 type YoutubeSubscriptionResponse = YoutubeSubscription;
 
 interface YoutubeSubscriptionsResponse {
-	subscriptions: YoutubeSubscription[];
-	totalPages: number;
+  subscriptions: YoutubeSubscription[];
+  totalPages: number;
 }
 
 interface YoutubeVideoQueueResponse {
-	prev: boolean;
-	next: boolean;
-	currentVideo: YoutubeVideo;
+  prev: boolean;
+  next: boolean;
+  currentVideo: YoutubeVideo;
 }

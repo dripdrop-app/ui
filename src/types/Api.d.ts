@@ -1,9 +1,9 @@
 interface ValidationError {
-	loc: string[];
-	msg: string;
-	type: string;
+  loc: string[];
+  msg: string;
+  type: string;
 }
 
 interface ErrorResponse {
-	detail: ValidationError[] | string;
+  detail: ValidationError[] | string;
 }
