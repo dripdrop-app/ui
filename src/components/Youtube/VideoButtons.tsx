@@ -1,5 +1,5 @@
-import { useMemo } from "react";
 import { ActionIcon, Tooltip } from "@mantine/core";
+import { FunctionComponent, useMemo } from "react";
 import { MdAddToQueue, MdRemoveFromQueue, MdThumbUp, MdVisibility } from "react-icons/md";
 
 import {
@@ -13,9 +13,7 @@ interface VideoButtonsProps {
   video: YoutubeVideo;
 }
 
-export const VideoLikeButton = (props: VideoButtonsProps) => {
-  const { video } = props;
-
+export const VideoLikeButton: FunctionComponent<VideoButtonsProps> = ({ video }) => {
   const [likeVideo, likeVideoStatus] = useAddYoutubeVideoLikeMutation();
   const [unLikeVideo, unLikeVideoStatus] = useDeleteYoutubeVideoLikeMutation();
 

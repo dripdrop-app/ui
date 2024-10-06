@@ -1,4 +1,3 @@
-import React, { useEffect, useMemo, useState } from "react";
 import {
   Avatar,
   Box,
@@ -16,6 +15,7 @@ import {
   Title,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
 
 import { VideoQueueButton } from "./VideoButtons";
 
@@ -27,9 +27,7 @@ interface VideoQueueModalProps {
   queueIndex: number;
 }
 
-const VideoQueueModal = (props: VideoQueueModalProps) => {
-  const { currentVideo, queueIndex, changeQueueIndex } = props;
-
+const VideoQueueModal: FunctionComponent<VideoQueueModalProps> = ({ currentVideo, queueIndex, changeQueueIndex }) => {
   const [filter, setFilter] = useState<YoutubeVideosBody>({
     page: 1,
     perPage: 50,

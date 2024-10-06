@@ -1,3 +1,4 @@
+import { FunctionComponent } from "react";
 import { IconBaseProps } from "react-icons";
 import { BsFilm, BsMusicNoteBeamed, BsNewspaper, BsPersonVideo } from "react-icons/bs";
 import { CgScreen } from "react-icons/cg";
@@ -94,9 +95,7 @@ interface VideoCategoryIconProps extends IconBaseProps {
   categoryId: number;
 }
 
-const VideoCategoryIcon = (props: VideoCategoryIconProps) => {
-  const { categoryId, ...iconProps } = props;
-
+const VideoCategoryIcon: FunctionComponent<VideoCategoryIconProps> = ({ categoryId, ...iconProps }) => {
   const Icon = VideoCategoryIconMap[categoryId];
 
   if (Icon) {

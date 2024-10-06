@@ -1,9 +1,9 @@
-import { useState, useMemo } from "react";
 import { Center, Divider, Grid, Loader, Pagination, Stack, Title } from "@mantine/core";
+import { useMemo, useState } from "react";
 
 import MusicJobCard from "./MusicJobCard";
 
-import { useMusicJobsQuery, useListenMusicJobsQuery } from "../../api/music";
+import { useListenMusicJobsQuery, useMusicJobsQuery } from "../../api/music";
 
 const MusicJobList = () => {
   const [args, setArgs] = useState<PageBody>({
@@ -28,13 +28,11 @@ const MusicJobList = () => {
       <Stack>
         <Title order={3}>Jobs</Title>
         <Divider />
-        {musicJobsStatus.isLoading ? (
-          <Center>
-            <Loader />
-          </Center>
-        ) : musicJobs.length === 0 ? (
-          <Center>No Music Jobs</Center>
-        ) : (
+        <Center sx={{ ...(!musicJobsStatus.isLoading && { display: "none" }) }}>
+          <Loader />
+        </Center>
+        <Stack style={{ ...(musicJobsStatus.isLoading && { display: "none" }) }}>
+          <Center sx={{ ...(musicJobs.length !== 0 && { display: "none" }) }}>No Music Jobs</Center>
           <Stack>
             <Grid>
               {musicJobs.map((musicJob) => (
@@ -51,7 +49,7 @@ const MusicJobList = () => {
               />
             </Center>
           </Stack>
-        )}
+        </Stack>
       </Stack>
     ),
     [args.page, totalPages, musicJobsStatus.isLoading, musicJobs]

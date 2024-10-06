@@ -1,4 +1,5 @@
 import { Alert } from "@mantine/core";
+import { FunctionComponent } from "react";
 import { MdCheck, MdError } from "react-icons/md";
 
 interface AlertConfirmationProps {
@@ -8,9 +9,12 @@ interface AlertConfirmationProps {
   errorMessage?: string;
 }
 
-const AlertConfirmation = (props: AlertConfirmationProps) => {
-  const { showSuccess, successMessage, showError, errorMessage } = props;
-
+const AlertConfirmation: FunctionComponent<AlertConfirmationProps> = ({
+  showSuccess,
+  successMessage,
+  showError,
+  errorMessage,
+}) => {
   return (
     <>
       <Alert sx={{ ...(!showSuccess && { display: "none" }) }} icon={<MdCheck />} title="Success" color="green">

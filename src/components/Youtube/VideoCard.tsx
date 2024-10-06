@@ -1,7 +1,7 @@
-import { useMemo } from "react";
-import { Link } from "react-router-dom";
 import { Avatar, Box, Card, Flex, Image, Overlay, Stack, Text, Tooltip } from "@mantine/core";
 import { useHover, useOs } from "@mantine/hooks";
+import { FunctionComponent, useMemo } from "react";
+import { Link } from "react-router-dom";
 
 import { VideoQueueButton, VideoWatchButton } from "./VideoButtons";
 import VideoCategoryIcon from "./VideoCategoryIcon";
@@ -10,9 +10,7 @@ interface VideoCardProps {
   video: YoutubeVideo;
 }
 
-const VideoCard = (props: VideoCardProps) => {
-  const { video } = props;
-
+const VideoCard: FunctionComponent<VideoCardProps> = ({ video }) => {
   const { hovered, ref } = useHover();
   const os = useOs();
 

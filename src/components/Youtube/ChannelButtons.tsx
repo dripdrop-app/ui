@@ -1,6 +1,6 @@
-import { useMemo } from "react";
 import { ActionIcon, Text, Tooltip } from "@mantine/core";
 import { openConfirmModal } from "@mantine/modals";
+import { FunctionComponent, useMemo } from "react";
 import { MdAddCircle, MdRemoveCircle } from "react-icons/md";
 
 import { useAddYoutubeSubscriptionMutation, useRemoveSubscriptionMutation } from "../../api/youtube";
@@ -11,9 +11,7 @@ interface SubscribeButtonProps {
   subscribed: boolean;
 }
 
-export const SubscribeButton = (props: SubscribeButtonProps) => {
-  const { channelTitle, channelId, subscribed } = props;
-
+export const SubscribeButton: FunctionComponent<SubscribeButtonProps> = ({ channelId, channelTitle, subscribed }) => {
   const [addYoutubeSubscription, addYoutubeSubscriptionStatus] = useAddYoutubeSubscriptionMutation();
   const [removeYoutubeSubscription, removeYoutubeSubscriptionStatus] = useRemoveSubscriptionMutation();
 

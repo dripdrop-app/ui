@@ -1,16 +1,14 @@
-import { useMemo } from "react";
-import { Link } from "react-router-dom";
 import { Avatar, Flex, Spoiler, Stack, Text, Title } from "@mantine/core";
+import { FunctionComponent, useMemo } from "react";
+import { Link } from "react-router-dom";
 
-import { VideoWatchButton, VideoLikeButton, VideoQueueButton } from "./VideoButtons";
+import { VideoLikeButton, VideoQueueButton, VideoWatchButton } from "./VideoButtons";
 
 interface VideoInformationProps {
   video: YoutubeVideo;
 }
 
-const VideoInformation = (props: VideoInformationProps) => {
-  const { video } = props;
-
+const VideoInformation: FunctionComponent<VideoInformationProps> = ({ video }) => {
   const publishedAt = new Date(video.publishedAt).toLocaleDateString();
   const channelLink = `/youtube/channel/${video.channelId}`;
 

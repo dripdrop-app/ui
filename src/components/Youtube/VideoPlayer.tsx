@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { FunctionComponent, useMemo } from "react";
 import ReactPlayer from "react-player";
 
 import { useAddYoutubeVideoWatchMutation } from "../../api/youtube";
@@ -11,9 +11,7 @@ interface VideoPlayerProps {
   height?: string;
 }
 
-const VideoPlayer = (props: VideoPlayerProps) => {
-  const { video, onProgress, onEnd, playing, height } = props;
-
+const VideoPlayer: FunctionComponent<VideoPlayerProps> = ({ video, onProgress, onEnd, playing, height }) => {
   const [watchVideo] = useAddYoutubeVideoWatchMutation();
 
   return useMemo(

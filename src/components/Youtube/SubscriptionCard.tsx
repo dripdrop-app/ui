@@ -1,7 +1,7 @@
-import { useMemo } from "react";
-import { Link } from "react-router-dom";
 import { Box, Card, Image, Overlay, Stack, Text } from "@mantine/core";
 import { useHover, useOs } from "@mantine/hooks";
+import { FunctionComponent, useMemo } from "react";
+import { Link } from "react-router-dom";
 
 import { SubscribeButton } from "./ChannelButtons";
 
@@ -9,9 +9,7 @@ interface SubscriptionCardProps {
   subscription: YoutubeSubscription;
 }
 
-const SubscriptionCard = (props: SubscriptionCardProps) => {
-  const { subscription } = props;
-
+const SubscriptionCard: FunctionComponent<SubscriptionCardProps> = ({ subscription }) => {
   const { hovered, ref } = useHover();
   const os = useOs();
 
