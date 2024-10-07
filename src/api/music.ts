@@ -1,4 +1,4 @@
-import api, { Tags, Methods } from ".";
+import api, { Methods, Tags } from ".";
 import { buildWebsocketURL } from "../config";
 
 const musicApi = api.injectEndpoints({

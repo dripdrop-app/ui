@@ -1,6 +1,6 @@
+import isEqual from "lodash/isEqual";
 import { useCallback } from "react";
 import { useSearchParams as useRouterSearchParams } from "react-router-dom";
-import isEqual from "lodash/isEqual";
 
 type ParamValue = string | number | string[] | boolean;
 

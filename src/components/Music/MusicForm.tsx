@@ -1,4 +1,3 @@
-import { useCallback, useEffect, useMemo } from "react";
 import {
   Box,
   Button,
@@ -15,14 +14,15 @@ import {
 } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
-import { useForm, Controller, useWatch } from "react-hook-form";
+import { useCallback, useEffect, useMemo } from "react";
+import { Controller, useForm, useWatch } from "react-hook-form";
 
 import {
+  useLazyArtworkQuery,
   useLazyCreateFileMusicJobQuery,
   useLazyCreateVideoMusicJobQuery,
-  useLazyArtworkQuery,
-  useLazyTagsQuery,
   useLazyGroupingQuery,
+  useLazyTagsQuery,
 } from "../../api/music";
 import { isBase64, isValidImage, isValidLink, resolveAlbumFromTitle } from "../../utils/helpers";
 
@@ -185,206 +185,191 @@ const MusicForm = () => {
     resolveGrouping(debouncedVideoUrl || "");
   }, [debouncedVideoUrl, resolveGrouping]);
 
-  return useMemo(
-    () => (
-      <Stack>
-        <Title order={2}>Music Downloader / Converter</Title>
-        <Divider />
-        <Container fluid w={{ base: "100%", sm: 1500 }}>
-          <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-            <Stack>
-              <Flex align="center">
-                <Controller
-                  name="videoUrl"
-                  control={control}
-                  defaultValue={""}
-                  rules={{
-                    required: !watchFields.isFile,
-                    validate: (v) => (!watchFields.isFile ? isValidLink(v) : true),
-                  }}
-                  render={({ field, fieldState }) => {
-                    let error = "";
-                    if (fieldState.error?.type === "validate") {
-                      error = "Invalid Link";
-                    } else if (fieldState.error?.type === "required") {
-                      error = "Required";
-                    }
-                    return (
-                      <TextInput
-                        sx={{ width: "100%" }}
-                        {...field}
-                        error={error}
-                        label="Video URL"
-                        placeholder="Enter Video URL"
-                        disabled={watchFields.isFile}
-                        required={!watchFields.isFile}
-                      />
-                    );
-                  }}
-                />
-                <Controller
-                  name="isFile"
-                  control={control}
-                  defaultValue={false}
-                  render={({ field }) => <Switch {...field} value="" checked={field.value} />}
-                />
-                <Controller
-                  name="file"
-                  control={control}
-                  defaultValue={null}
-                  rules={{ required: watchFields.isFile }}
-                  render={({ field, fieldState }) => (
-                    <FileInput
+  return (
+    <Stack>
+      <Title order={2}>Music Downloader / Converter</Title>
+      <Divider />
+      <Container fluid w={{ base: "100%", sm: 1500 }}>
+        <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+          <Stack>
+            <Flex align="center">
+              <Controller
+                name="videoUrl"
+                control={control}
+                defaultValue={""}
+                rules={{
+                  required: !watchFields.isFile,
+                  validate: (v) => (!watchFields.isFile ? isValidLink(v) : true),
+                }}
+                render={({ field, fieldState }) => {
+                  let error = "";
+                  if (fieldState.error?.type === "validate") {
+                    error = "Invalid Link";
+                  } else if (fieldState.error?.type === "required") {
+                    error = "Required";
+                  }
+                  return (
+                    <TextInput
                       sx={{ width: "100%" }}
                       {...field}
-                      error={fieldState.error?.type === "required" ? "Required" : ""}
-                      label="Filename"
-                      placeholder="Select File"
-                      required={watchFields.isFile}
-                      disabled={!watchFields.isFile}
-                      accept="audio/mpeg,audio/wav"
+                      error={error}
+                      label="Video URL"
+                      placeholder="Enter Video URL"
+                      disabled={watchFields.isFile}
+                      required={!watchFields.isFile}
                     />
-                  )}
-                />
-              </Flex>
-              <Flex align="center">
-                <Box w="100%">
-                  <Image
-                    alt="blank"
-                    src={
-                      watchFields.resolvedArtworkUrl ||
-                      "https://dripdrop-prod.s3.us-east-005.backblazeb2.com/assets/blank_image.jpeg"
-                    }
-                    withPlaceholder
+                  );
+                }}
+              />
+              <Controller
+                name="isFile"
+                control={control}
+                defaultValue={false}
+                render={({ field }) => <Switch {...field} value="" checked={field.value} />}
+              />
+              <Controller
+                name="file"
+                control={control}
+                defaultValue={null}
+                rules={{ required: watchFields.isFile }}
+                render={({ field, fieldState }) => (
+                  <FileInput
+                    sx={{ width: "100%" }}
+                    {...field}
+                    error={fieldState.error?.type === "required" ? "Required" : ""}
+                    label="Filename"
+                    placeholder="Select File"
+                    required={watchFields.isFile}
+                    disabled={!watchFields.isFile}
+                    accept="audio/mpeg,audio/wav"
                   />
-                </Box>
-                <Stack justify="center" spacing="md" w="100%">
-                  <Controller
-                    name="artworkUrl"
-                    control={control}
-                    defaultValue={""}
-                    render={({ field, fieldState }) => (
-                      <TextInput
-                        {...field}
-                        error={fieldState.error?.message}
-                        label="Artwork URL"
-                        placeholder="Enter Artwork URL"
-                        disabled={tagsLoading}
-                      />
-                    )}
+                )}
+              />
+            </Flex>
+            <Flex align="center">
+              <Box w="100%">
+                <Image
+                  alt="blank"
+                  src={
+                    watchFields.resolvedArtworkUrl ||
+                    "https://dripdrop-prod.s3.us-east-005.backblazeb2.com/assets/blank_image.jpeg"
+                  }
+                  withPlaceholder
+                />
+              </Box>
+              <Stack justify="center" spacing="md" w="100%">
+                <Controller
+                  name="artworkUrl"
+                  control={control}
+                  defaultValue={""}
+                  render={({ field, fieldState }) => (
+                    <TextInput
+                      {...field}
+                      error={fieldState.error?.message}
+                      label="Artwork URL"
+                      placeholder="Enter Artwork URL"
+                      disabled={tagsLoading}
+                    />
+                  )}
+                />
+                <Controller
+                  name="resolvedArtworkUrl"
+                  control={control}
+                  defaultValue={""}
+                  render={({ field, fieldState }) => (
+                    <TextInput
+                      {...field}
+                      error={fieldState.error?.message}
+                      label="Resolved Artwork URL"
+                      disabled
+                      rightSection={artworkLoading || tagsLoading ? <Loader size="xs" /> : null}
+                    />
+                  )}
+                />
+                <Button onClick={() => setValue("artworkUrl", "")}>Clear</Button>
+              </Stack>
+            </Flex>
+            <Flex>
+              <Controller
+                name="title"
+                control={control}
+                defaultValue={""}
+                rules={{ required: true }}
+                render={({ field, fieldState }) => (
+                  <TextInput
+                    sx={{ width: "100%" }}
+                    {...field}
+                    error={fieldState.error?.type === "required" ? "Required" : ""}
+                    label="Title"
+                    placeholder="Enter Title"
+                    withAsterisk
+                    disabled={tagsLoading}
+                    rightSection={tagsLoading ? <Loader size="xs" /> : null}
                   />
-                  <Controller
-                    name="resolvedArtworkUrl"
-                    control={control}
-                    defaultValue={""}
-                    render={({ field, fieldState }) => (
-                      <TextInput
-                        {...field}
-                        error={fieldState.error?.message}
-                        label="Resolved Artwork URL"
-                        disabled
-                        rightSection={artworkLoading || tagsLoading ? <Loader size="xs" /> : null}
-                      />
-                    )}
+                )}
+              />
+              <Controller
+                name="artist"
+                control={control}
+                defaultValue={""}
+                rules={{ required: true }}
+                render={({ field, fieldState }) => (
+                  <TextInput
+                    sx={{ width: "100%" }}
+                    {...field}
+                    error={fieldState.error?.type === "required" ? "Required" : ""}
+                    label="Artist"
+                    placeholder="Enter Artist"
+                    withAsterisk
+                    disabled={tagsLoading}
+                    rightSection={tagsLoading ? <Loader size="xs" /> : null}
                   />
-                  <Button onClick={() => setValue("artworkUrl", "")}>Clear</Button>
-                </Stack>
-              </Flex>
-              <Flex>
-                <Controller
-                  name="title"
-                  control={control}
-                  defaultValue={""}
-                  rules={{ required: true }}
-                  render={({ field, fieldState }) => (
-                    <TextInput
-                      sx={{ width: "100%" }}
-                      {...field}
-                      error={fieldState.error?.type === "required" ? "Required" : ""}
-                      label="Title"
-                      placeholder="Enter Title"
-                      withAsterisk
-                      disabled={tagsLoading}
-                      rightSection={tagsLoading ? <Loader size="xs" /> : null}
-                    />
-                  )}
-                />
-                <Controller
-                  name="artist"
-                  control={control}
-                  defaultValue={""}
-                  rules={{ required: true }}
-                  render={({ field, fieldState }) => (
-                    <TextInput
-                      sx={{ width: "100%" }}
-                      {...field}
-                      error={fieldState.error?.type === "required" ? "Required" : ""}
-                      label="Artist"
-                      placeholder="Enter Artist"
-                      withAsterisk
-                      disabled={tagsLoading}
-                      rightSection={tagsLoading ? <Loader size="xs" /> : null}
-                    />
-                  )}
-                />
-                <Controller
-                  name="album"
-                  control={control}
-                  defaultValue={""}
-                  rules={{ required: true }}
-                  render={({ field, fieldState }) => (
-                    <TextInput
-                      sx={{ width: "100%" }}
-                      {...field}
-                      error={fieldState.error?.type === "required" ? "Required" : ""}
-                      label="Album"
-                      placeholder="Enter Album"
-                      withAsterisk
-                      disabled={tagsLoading}
-                      rightSection={tagsLoading ? <Loader size="xs" /> : null}
-                    />
-                  )}
-                />
-                <Controller
-                  name="grouping"
-                  control={control}
-                  defaultValue={""}
-                  render={({ field }) => (
-                    <TextInput
-                      sx={{ width: "100%" }}
-                      {...field}
-                      label="Grouping"
-                      placeholder="Enter Grouping"
-                      disabled={tagsLoading || groupingLoading}
-                      rightSection={tagsLoading || groupingLoading ? <Loader size="xs" /> : null}
-                    />
-                  )}
-                />
-              </Flex>
-              <Flex justify="center">
-                <Button disabled={artworkLoading || tagsLoading || groupingLoading} loading={jobLoading} type="submit">
-                  Download / Convert
-                </Button>
-                <Button onClick={() => reset()}>Reset</Button>
-              </Flex>
-            </Stack>
-          </Box>
-        </Container>
-      </Stack>
-    ),
-    [
-      handleSubmit,
-      onSubmit,
-      control,
-      watchFields.isFile,
-      watchFields.resolvedArtworkUrl,
-      artworkLoading,
-      tagsLoading,
-      groupingLoading,
-      jobLoading,
-      setValue,
-      reset,
-    ]
+                )}
+              />
+              <Controller
+                name="album"
+                control={control}
+                defaultValue={""}
+                rules={{ required: true }}
+                render={({ field, fieldState }) => (
+                  <TextInput
+                    sx={{ width: "100%" }}
+                    {...field}
+                    error={fieldState.error?.type === "required" ? "Required" : ""}
+                    label="Album"
+                    placeholder="Enter Album"
+                    withAsterisk
+                    disabled={tagsLoading}
+                    rightSection={tagsLoading ? <Loader size="xs" /> : null}
+                  />
+                )}
+              />
+              <Controller
+                name="grouping"
+                control={control}
+                defaultValue={""}
+                render={({ field }) => (
+                  <TextInput
+                    sx={{ width: "100%" }}
+                    {...field}
+                    label="Grouping"
+                    placeholder="Enter Grouping"
+                    disabled={tagsLoading || groupingLoading}
+                    rightSection={tagsLoading || groupingLoading ? <Loader size="xs" /> : null}
+                  />
+                )}
+              />
+            </Flex>
+            <Flex justify="center">
+              <Button disabled={artworkLoading || tagsLoading || groupingLoading} loading={jobLoading} type="submit">
+                Download / Convert
+              </Button>
+              <Button onClick={() => reset()}>Reset</Button>
+            </Flex>
+          </Stack>
+        </Box>
+      </Container>
+    </Stack>
   );
 };
 

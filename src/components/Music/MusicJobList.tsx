@@ -1,9 +1,8 @@
 import { Center, Divider, Grid, Loader, Pagination, Stack, Title } from "@mantine/core";
 import { useMemo, useState } from "react";
 
-import MusicJobCard from "./MusicJobCard";
-
 import { useListenMusicJobsQuery, useMusicJobsQuery } from "../../api/music";
+import MusicJobCard from "./MusicJobCard";
 
 const MusicJobList = () => {
   const [args, setArgs] = useState<PageBody>({
@@ -23,36 +22,33 @@ const MusicJobList = () => {
     return { musicJobs: [], totalPages: 1 };
   }, [musicJobsStatus.currentData, musicJobsStatus.data, musicJobsStatus.isSuccess]);
 
-  return useMemo(
-    () => (
-      <Stack>
-        <Title order={3}>Jobs</Title>
-        <Divider />
-        <Center sx={{ ...(!musicJobsStatus.isLoading && { display: "none" }) }}>
-          <Loader />
-        </Center>
-        <Stack style={{ ...(musicJobsStatus.isLoading && { display: "none" }) }}>
-          <Center sx={{ ...(musicJobs.length !== 0 && { display: "none" }) }}>No Music Jobs</Center>
-          <Stack>
-            <Grid>
-              {musicJobs.map((musicJob) => (
-                <Grid.Col key={musicJob.id} xs={12} sm={6} md={4} lg={3} xl={2}>
-                  <MusicJobCard {...musicJob} />
-                </Grid.Col>
-              ))}
-            </Grid>
-            <Center>
-              <Pagination
-                page={args.page}
-                total={totalPages}
-                onChange={(newPage) => setArgs((prevState) => ({ ...prevState, page: newPage }))}
-              />
-            </Center>
-          </Stack>
+  return (
+    <Stack>
+      <Title order={3}>Jobs</Title>
+      <Divider />
+      <Center sx={{ ...(!musicJobsStatus.isLoading && { display: "none" }) }}>
+        <Loader />
+      </Center>
+      <Stack style={{ ...(musicJobsStatus.isLoading && { display: "none" }) }}>
+        <Center sx={{ ...(musicJobs.length !== 0 && { display: "none" }) }}>No Music Jobs</Center>
+        <Stack>
+          <Grid>
+            {musicJobs.map((musicJob) => (
+              <Grid.Col key={musicJob.id} xs={12} sm={6} md={4} lg={3} xl={2}>
+                <MusicJobCard {...musicJob} />
+              </Grid.Col>
+            ))}
+          </Grid>
+          <Center>
+            <Pagination
+              page={args.page}
+              total={totalPages}
+              onChange={(newPage) => setArgs((prevState) => ({ ...prevState, page: newPage }))}
+            />
+          </Center>
         </Stack>
       </Stack>
-    ),
-    [args.page, totalPages, musicJobsStatus.isLoading, musicJobs]
+    </Stack>
   );
 };
 

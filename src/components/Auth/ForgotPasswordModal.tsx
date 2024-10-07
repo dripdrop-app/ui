@@ -1,4 +1,3 @@
-import { useCallback, useEffect, useState } from "react";
 import {
   Anchor,
   Box,
@@ -12,11 +11,11 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-import AlertConfirmation from "../AlertConfirmation";
-
 import { useResetPasswordMutation, useSendResetEmailMutation } from "../../api/auth";
+import AlertConfirmation from "../AlertConfirmation";
 
 interface SendResetForm {
   email: string;

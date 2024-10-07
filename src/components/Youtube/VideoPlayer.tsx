@@ -1,22 +1,25 @@
 import { FunctionComponent, useMemo } from "react";
 import ReactPlayer from "react-player";
+import { OnProgressProps } from "react-player/base";
 
 import { useAddYoutubeVideoWatchMutation } from "../../api/youtube";
 
 interface VideoPlayerProps {
   video: YoutubeVideo | null | undefined;
   playing?: boolean;
-  onEnd?: Function;
-  onProgress?: Function;
+  onEnd?: () => void;
+  onProgress?: (state: OnProgressProps) => void;
   height?: string;
+  style?: React.CSSProperties;
 }
 
-const VideoPlayer: FunctionComponent<VideoPlayerProps> = ({ video, onProgress, onEnd, playing, height }) => {
+const VideoPlayer: FunctionComponent<VideoPlayerProps> = ({ video, onProgress, onEnd, playing, height, style }) => {
   const [watchVideo] = useAddYoutubeVideoWatchMutation();
 
   return useMemo(
     () => (
       <ReactPlayer
+        style={style}
         height={height || "100%"}
         width="100%"
         playing={playing}
@@ -39,7 +42,7 @@ const VideoPlayer: FunctionComponent<VideoPlayerProps> = ({ video, onProgress, o
         }}
       />
     ),
-    [height, onEnd, onProgress, playing, video, watchVideo]
+    [height, onEnd, onProgress, playing, style, video, watchVideo]
   );
 };
 

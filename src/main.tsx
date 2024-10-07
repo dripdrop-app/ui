@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
-import { HelmetProvider, Helmet } from "react-helmet-async";
 
 import App from "./App";
 import { store } from "./store";

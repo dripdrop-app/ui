@@ -1,4 +1,4 @@
-import api, { tags, Tags, Methods, transformErrorResponse } from ".";
+import api, { Methods, tags, Tags, transformErrorResponse } from ".";
 
 const authApi = api.injectEndpoints({
   endpoints: (build) => ({
