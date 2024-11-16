@@ -1,12 +1,19 @@
 name: Web
 
-on: [push, pull_request, workflow_dispatch]
+on: [push, workflow_dispatch]
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Client Dependencies and build
+        run: npm install --production=false && npm run build
   deploy:
     if: ${{ github.ref_name == 'main' }}
     runs-on: ubuntu-latest
