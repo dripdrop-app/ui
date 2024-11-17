@@ -1,7 +1,7 @@
-import { useMemo } from "react";
 import { Button, Checkbox, Container, Stack, TextInput } from "@mantine/core";
-import { Link } from "react-router-dom";
+import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 
 import { useCheckSessionQuery, useLogoutMutation } from "../../api/auth";
 
@@ -16,31 +16,29 @@ const Account = () => {
     return null;
   }, [sessionStatus.currentData, sessionStatus.isSuccess]);
 
-  return useMemo(() => {
-    if (user) {
-      return (
-        <Container>
-          <Helmet>
-            <title>Account</title>
-          </Helmet>
-          <Stack spacing="md">
-            <TextInput label="Email" value={user.email} readOnly />
-            <Checkbox label="Admin" checked={user.admin} readOnly />
-            <Button component={Link} to="/terms">
-              Terms of Service
-            </Button>
-            <Button component={Link} to="/privacy">
-              Privacy Policy
-            </Button>
-            <Button variant="light" color="red" onClick={() => logout()} loading={logoutStatus.isLoading}>
-              Logout
-            </Button>
-          </Stack>
-        </Container>
-      );
-    }
-    return null;
-  }, [logout, logoutStatus.isLoading, user]);
+  if (user) {
+    return (
+      <Container>
+        <Helmet>
+          <title>Account</title>
+        </Helmet>
+        <Stack spacing="md">
+          <TextInput label="Email" value={user.email} readOnly />
+          <Checkbox label="Admin" checked={user.admin} readOnly />
+          <Button component={Link} to="/terms">
+            Terms of Service
+          </Button>
+          <Button component={Link} to="/privacy">
+            Privacy Policy
+          </Button>
+          <Button variant="light" color="red" onClick={() => logout()} loading={logoutStatus.isLoading}>
+            Logout
+          </Button>
+        </Stack>
+      </Container>
+    );
+  }
+  return null;
 };
 
 export default Account;

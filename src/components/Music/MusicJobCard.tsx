@@ -1,10 +1,11 @@
 import { Anchor, Button, Card, Flex, Image, Stack, Table } from "@mantine/core";
+import { FunctionComponent } from "react";
 import { MdDelete, MdDownload, MdError } from "react-icons/md";
 
 import { useRemoveMusicJobMutation } from "../../api/music";
 import { buildURL } from "../../config";
 
-const MusicJobCard = (props: MusicJob) => {
+const MusicJobCard: FunctionComponent<MusicJob> = (props) => {
   const createdAt = new Date(props.createdAt).toLocaleDateString();
 
   const [removeMusicJob, removeMusicJobStatus] = useRemoveMusicJobMutation();

@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-import { Route, Routes, Link, useLocation } from "react-router-dom";
 import {
   AppShell,
   Avatar,
@@ -17,8 +15,10 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { ModalsProvider } from "@mantine/modals";
 import { NotificationsProvider } from "@mantine/notifications";
+import { useEffect } from "react";
 import { BsYoutube } from "react-icons/bs";
 import { MdAccountCircle, MdCloudDownload, MdQueue, MdSubscriptions } from "react-icons/md";
+import { Link, Route, Routes, useLocation } from "react-router-dom";
 
 import { Account, CreateAccount, Login, PrivacyPolicy, TermsOfService, VerifyAccount } from "./pages/Auth";
 import { MusicDownloader } from "./pages/Music";

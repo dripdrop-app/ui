@@ -1,4 +1,4 @@
-import api, { Tags, Methods, TagsArray, transformErrorResponse } from ".";
+import api, { Methods, Tags, TagsArray, transformErrorResponse } from ".";
 import { buildWebsocketURL } from "../config";
 
 const youtubeApi = api.injectEndpoints({
@@ -108,18 +108,6 @@ const youtubeApi = api.injectEndpoints({
         url: `/youtube/video/${videoId}/like`,
         method: Methods.PUT,
       }),
-      onQueryStarted: async (videoId, { dispatch, getState, queryFulfilled }) => {
-        const queries = youtubeApi.util.selectInvalidatedBy(getState(), [{ type: Tags.YOUTUBE_VIDEO, id: videoId }]);
-        console.log(queries);
-
-        // const patchResult = dispatch(
-        // );
-        // try {
-        // 	await queryFulfilled;
-        // } catch {
-        // 	patchResult.undo();
-        // }
-      },
       invalidatesTags: (_, error, videoId) => {
         if (!error) {
           return [{ type: Tags.YOUTUBE_VIDEO, id: videoId }, Tags.YOUTUBE_LIKE_VIDEOS];

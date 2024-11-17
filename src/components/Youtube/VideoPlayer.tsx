@@ -1,48 +1,58 @@
-import { useMemo } from "react";
+import React, { forwardRef, useMemo } from "react";
 import ReactPlayer from "react-player";
+import { OnProgressProps } from "react-player/base";
 
 import { useAddYoutubeVideoWatchMutation } from "../../api/youtube";
 
 interface VideoPlayerProps {
   video: YoutubeVideo | null | undefined;
   playing?: boolean;
-  onEnd?: Function;
-  onProgress?: Function;
+  onDuration?: (duration: number) => void;
+  onEnd?: () => void;
+  onProgress?: (state: OnProgressProps) => void;
   height?: string;
+  style?: React.CSSProperties;
 }
 
-const VideoPlayer = (props: VideoPlayerProps) => {
-  const { video, onProgress, onEnd, playing, height } = props;
+const VideoPlayer = forwardRef<ReactPlayer, VideoPlayerProps>(
+  ({ video, onDuration, onProgress, onEnd, playing, height, style }, ref) => {
+    const [watchVideo] = useAddYoutubeVideoWatchMutation();
 
-  const [watchVideo] = useAddYoutubeVideoWatchMutation();
-
-  return useMemo(
-    () => (
-      <ReactPlayer
-        height={height || "100%"}
-        width="100%"
-        playing={playing}
-        controls={true}
-        url={`https://youtube.com/embed/${video?.id}`}
-        onProgress={(state) => {
-          if (video) {
-            if (onProgress) {
-              onProgress(state);
+    return useMemo(
+      () => (
+        <ReactPlayer
+          ref={ref}
+          style={style}
+          height={height || "100%"}
+          width="100%"
+          playing={playing}
+          controls={true}
+          url={`https://youtube.com/embed/${video?.id}`}
+          onDuration={(duration) => {
+            if (onDuration) {
+              onDuration(duration);
             }
-            if (state.playedSeconds > 20 && video && !video.watched) {
-              watchVideo(video.id);
+          }}
+          onProgress={(state) => {
+            if (video) {
+              if (onProgress) {
+                onProgress(state);
+              }
+              if (state.playedSeconds > 20 && video && !video.watched) {
+                watchVideo(video.id);
+              }
             }
-          }
-        }}
-        onEnded={() => {
-          if (onEnd) {
-            onEnd();
-          }
-        }}
-      />
-    ),
-    [height, onEnd, onProgress, playing, video, watchVideo]
-  );
-};
+          }}
+          onEnded={() => {
+            if (onEnd) {
+              onEnd();
+            }
+          }}
+        />
+      ),
+      [height, onDuration, onEnd, onProgress, playing, ref, style, video, watchVideo]
+    );
+  }
+);
 
 export default VideoPlayer;

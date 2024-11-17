@@ -1,22 +1,24 @@
-import { useMemo } from "react";
+import { Button, Divider, Group, Stack, Title } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { Helmet } from "react-helmet-async";
-import { Divider, Stack, Title } from "@mantine/core";
 
 import VideosView from "../../components/Youtube/VideosView";
 
 const YoutubeVideos = () => {
-  return useMemo(
-    () => (
-      <Stack>
-        <Helmet>
-          <title>Videos</title>
-        </Helmet>
+  const [enableAutoPlay, { toggle }] = useDisclosure(false);
+
+  return (
+    <Stack>
+      <Helmet>
+        <title>Videos</title>
+      </Helmet>
+      <Group position="apart">
         <Title order={2}>Videos</Title>
-        <Divider />
-        <VideosView />
-      </Stack>
-    ),
-    []
+        <Button onClick={toggle}>{enableAutoPlay ? "Stop AutoPlay" : "Enable AutoPlay"}</Button>
+      </Group>
+      <Divider />
+      <VideosView enableAutoPlay={enableAutoPlay} />
+    </Stack>
   );
 };
 

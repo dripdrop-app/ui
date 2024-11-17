@@ -1,11 +1,10 @@
+import { Center, Divider, Flex, Grid, Loader, Pagination, Stack, Title } from "@mantine/core";
 import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
-import { Center, Divider, Flex, Grid, Loader, Pagination, Stack, Title } from "@mantine/core";
-
-import SubscriptionCard from "../../components/Youtube/SubscriptionCard";
-import UpdateSubscriptionsModal from "../../components/Youtube/UpdateSubscriptionsModal";
 
 import { useYoutubeSubscriptionsQuery } from "../../api/youtube";
+import SubscriptionCard from "../../components/Youtube/SubscriptionCard";
+import UpdateSubscriptionsModal from "../../components/Youtube/UpdateSubscriptionsModal";
 import useSearchParams from "../../utils/useSearchParams";
 
 const YoutubeSubscriptions = () => {
@@ -18,44 +17,41 @@ const YoutubeSubscriptions = () => {
     [subscriptionsStatus.data]
   );
 
-  return useMemo(
-    () => (
-      <Stack>
-        <Helmet>
-          <title>Subscriptions</title>
-        </Helmet>
-        <Title order={2}>Subscriptions</Title>
-        <Divider />
-        <Stack sx={{ position: "relative" }}>
-          {subscriptionsStatus.isLoading ? (
+  return (
+    <Stack>
+      <Helmet>
+        <title>Subscriptions</title>
+      </Helmet>
+      <Title order={2}>Subscriptions</Title>
+      <Divider />
+      <Stack sx={{ position: "relative" }}>
+        {subscriptionsStatus.isLoading ? (
+          <Center>
+            <Loader />
+          </Center>
+        ) : (
+          <>
+            <Flex>
+              <UpdateSubscriptionsModal />
+            </Flex>
+            <Grid>
+              {subscriptions.map((subscription) => (
+                <Grid.Col key={subscription.channelId} xs={12} sm={6} md={4} lg={3} xl={2}>
+                  <SubscriptionCard subscription={subscription} />
+                </Grid.Col>
+              ))}
+            </Grid>
             <Center>
-              <Loader />
+              <Pagination
+                total={totalPages}
+                page={params.page}
+                onChange={(newPage) => setSearchParams({ page: newPage })}
+              />
             </Center>
-          ) : (
-            <>
-              <Flex>
-                <UpdateSubscriptionsModal />
-              </Flex>
-              <Grid>
-                {subscriptions.map((subscription) => (
-                  <Grid.Col key={subscription.channelId} xs={12} sm={6} md={4} lg={3} xl={2}>
-                    <SubscriptionCard subscription={subscription} />
-                  </Grid.Col>
-                ))}
-              </Grid>
-              <Center>
-                <Pagination
-                  total={totalPages}
-                  page={params.page}
-                  onChange={(newPage) => setSearchParams({ page: newPage })}
-                />
-              </Center>
-            </>
-          )}
-        </Stack>
+          </>
+        )}
       </Stack>
-    ),
-    [params.page, setSearchParams, subscriptions, subscriptionsStatus.isLoading, totalPages]
+    </Stack>
   );
 };
 
