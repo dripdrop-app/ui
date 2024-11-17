@@ -1,10 +1,12 @@
-import { ActionIcon, Avatar, Flex, Group, Space, Stack, Text } from "@mantine/core";
+import { ActionIcon, Avatar, Flex, Group, Slider, Space, Stack, Text } from "@mantine/core";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
-import { FunctionComponent, useEffect, useMemo, useState } from "react";
+import { FunctionComponent, useEffect, useMemo, useRef, useState } from "react";
 import { CgPlayTrackNext, CgPlayTrackPrev } from "react-icons/cg";
 import { FaAngleDown, FaAngleUp, FaPause, FaPlay } from "react-icons/fa";
 
 import { useDisclosure } from "@mantine/hooks";
+import ReactPlayer from "react-player";
+import { Link } from "react-router-dom";
 import { useYoutubeVideosQuery } from "../../api/youtube";
 import { VideoLikeButton, VideoQueueButton } from "./VideoButtons";
 import VideoPlayer from "./VideoPlayer";
@@ -16,6 +18,12 @@ interface VideoAutoPlayerProps {
 const VideoAutoPlayer: FunctionComponent<VideoAutoPlayerProps> = ({ initialParams }) => {
   const [currentParams, setCurrentParams] = useState<YoutubeVideosBody | undefined>();
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [videoProgress, setVideoProgress] = useState({
+    duration: 0,
+    played: 0,
+  });
+
+  const playerRef = useRef<ReactPlayer>(null);
 
   const [playing, { toggle: togglePlaying }] = useDisclosure(true);
   const [expand, { toggle: toggleExpand }] = useDisclosure(false);
@@ -29,6 +37,16 @@ const VideoAutoPlayer: FunctionComponent<VideoAutoPlayerProps> = ({ initialParam
     }
     return videos[currentVideoIndex];
   }, [currentVideoIndex, videosStatus.data]);
+
+  const channelLink = `/youtube/channel/${currentVideo?.channelId}`;
+  const videoLink = `/youtube/video/${currentVideo?.id}`;
+
+  const convertToTimeString = (seconds: number) => {
+    seconds = Math.round(seconds);
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds}`;
+  };
 
   useEffect(() => {
     if (!currentParams) {
@@ -63,19 +81,64 @@ const VideoAutoPlayer: FunctionComponent<VideoAutoPlayerProps> = ({ initialParam
       })}
     >
       <Stack align="center" w="100%" spacing={0}>
+        <Slider
+          display={!expand ? "block" : "none"}
+          w="80%"
+          py="lg"
+          marks={[
+            { value: 0, label: "0:00" },
+            { value: 100, label: convertToTimeString(videoProgress.duration) },
+          ]}
+          label={convertToTimeString(videoProgress.played)}
+          value={Math.floor((videoProgress.played / videoProgress.duration) * 100)}
+          onChange={(value) => {
+            console.log(value);
+            if (playerRef.current) {
+              playerRef.current.seekTo(value / 100, "fraction");
+            }
+          }}
+        />
         <VideoPlayer
+          ref={playerRef}
           video={currentVideo}
           playing={playing}
           height={expand ? `75vh` : "0px"}
+          onDuration={(duration) => {
+            setVideoProgress({ ...videoProgress, duration });
+          }}
+          onProgress={(state) => {
+            setVideoProgress({ ...videoProgress, played: state.playedSeconds });
+          }}
           onEnd={() => setCurrentVideoIndex(currentVideoIndex + 1)}
         />
         <Group p="sm" align="center">
           <Avatar size="md" src={currentVideo?.thumbnail} sx={{ borderRadius: 10 }} />
           <Stack spacing={0}>
-            <Text sx={{ fontSize: "0.9em" }} truncate="end">
+            <Text
+              component={Link}
+              sx={{
+                fontSize: "0.9em",
+                ":hover": {
+                  textDecoration: "underline",
+                },
+              }}
+              truncate="end"
+              to={videoLink}
+            >
               {currentVideo?.title}
             </Text>
-            <Text sx={{ fontSize: "0.75em" }}>{currentVideo?.channelTitle}</Text>
+            <Text
+              component={Link}
+              sx={{
+                fontSize: "0.75em",
+                ":hover": {
+                  textDecoration: "underline",
+                },
+              }}
+              to={channelLink}
+            >
+              {currentVideo?.channelTitle}
+            </Text>
           </Stack>
           <Space w="lg" />
           <Group noWrap>
