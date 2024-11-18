@@ -36,14 +36,14 @@ const YoutubeChannel = () => {
       </Helmet>
       <Group position="apart">
         <Group align="center">
-          <Avatar src={channel?.thumbnail} sx={{ borderRadius: 10 }} />
+          <Avatar src={channel?.thumbnail} style={{ borderRadius: 10 }} />
           <Title order={2}>{channel?.title}</Title>
           <SubscribeButton channelTitle={channel?.title} channelId={channel?.id} subscribed={channel?.subscribed} />
         </Group>
         <Button onClick={toggle}>{enableAutoPlay ? "Stop AutoPlay" : "Enable AutoPlay"}</Button>
       </Group>
       <Divider />
-      <Box sx={{ display: channel?.updating ? "contents" : "none" }}>
+      <Box style={{ display: channel?.updating ? "contents" : "none" }}>
         <Center>
           <Flex align="center">
             <Loader />

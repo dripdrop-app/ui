@@ -76,26 +76,27 @@ const VideoQueueModal: FunctionComponent<VideoQueueModalProps> = ({ currentVideo
                         }}
                       >
                         <Box
-                          sx={{ color: "inherit", flex: 9, cursor: "pointer" }}
+                          color="inherit"
+                          style={{ flex: 9, cursor: "pointer" }}
                           onClick={() => {
                             changeQueueIndex(videoIndex);
                             handlers.close();
                           }}
                         >
                           <Flex align="center">
-                            <Flex sx={{ flex: 3 }} align="center" wrap="nowrap">
-                              <Avatar src={video.thumbnail} sx={{ borderRadius: 10 }} />
-                              <Stack spacing="xs">
+                            <Flex style={{ flex: 3 }} align="center" wrap="nowrap">
+                              <Avatar src={video.thumbnail} style={{ borderRadius: 10 }} />
+                              <Stack gap="xs">
                                 <Title order={6}>{video.title}</Title>
-                                <Text sx={{ textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                <Text style={{ textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                                   {video.channelTitle}
                                 </Text>
                               </Stack>
                             </Flex>
-                            <Box sx={{ flex: 1 }}>{video.id === currentVideo?.id && <Text>Now Playing</Text>}</Box>
+                            <Box style={{ flex: 1 }}>{video.id === currentVideo?.id && <Text>Now Playing</Text>}</Box>
                           </Flex>
                         </Box>
-                        <Box sx={{ flex: 1, alignItems: "end" }}>
+                        <Box style={{ flex: 1, alignItems: "end" }}>
                           <VideoQueueButton video={video} />
                         </Box>
                       </Flex>
@@ -107,7 +108,7 @@ const VideoQueueModal: FunctionComponent<VideoQueueModalProps> = ({ currentVideo
               <Center>
                 <Pagination
                   total={totalPages}
-                  page={filter.page}
+                  value={filter.page}
                   onChange={(newPage) => setFilter((prevState) => ({ ...prevState, page: newPage }))}
                 />
               </Center>

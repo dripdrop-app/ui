@@ -16,7 +16,7 @@ const MusicJobCard: FunctionComponent<MusicJob> = (props) => {
         <Image
           src={props.artworkUrl || "https://dripdrop-prod.s3.us-east-005.backblazeb2.com/assets/blank_image.jpeg"}
           alt="Artwork"
-          withPlaceholder
+          placeholder="'artwork"
           height={150}
         />
       </Card.Section>
@@ -73,7 +73,7 @@ const MusicJobCard: FunctionComponent<MusicJob> = (props) => {
           <Button display={!props.completed && !props.failed ? "initial" : "none"} loading>
             Loading
           </Button>
-          <Button display={props.failed ? "initial" : "none"} color="red" leftIcon={<MdError />}>
+          <Button display={props.failed ? "initial" : "none"} color="red" leftSection={<MdError />}>
             Failed
           </Button>
           <Button
@@ -83,13 +83,13 @@ const MusicJobCard: FunctionComponent<MusicJob> = (props) => {
             href={buildURL(`api/music/job/${props.id}/download`)}
             target="_blank"
             rel="noopener noreferrer"
-            leftIcon={<MdDownload />}
+            leftSection={<MdDownload />}
           >
             Download
           </Button>
           <Button
             color="red"
-            leftIcon={<MdDelete />}
+            leftSection={<MdDelete />}
             loading={removeMusicJobStatus.isLoading}
             onClick={() => removeMusicJob(props.id)}
           >

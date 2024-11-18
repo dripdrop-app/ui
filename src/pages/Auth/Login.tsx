@@ -22,7 +22,7 @@ export const Login = () => {
   const onSubmit = useCallback((data: LoginForm) => login(data), [login]);
 
   return (
-    <Container sx={{ position: "relative" }}>
+    <Container pos="relative">
       <Helmet>
         <title>Login</title>
       </Helmet>

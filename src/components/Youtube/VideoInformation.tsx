@@ -33,14 +33,14 @@ const VideoInformation: FunctionComponent<VideoInformationProps> = ({ video }) =
           }}
         >
           <Flex>
-            <Avatar size="sm" src={video.channelThumbnail} sx={{ borderRadius: 10 }} />
+            <Avatar size="sm" src={video.channelThumbnail} style={{ borderRadius: 10 }} />
             <Text>{video.channelTitle}</Text>
           </Flex>
         </Text>
         <Text>{publishedAt}</Text>
       </Flex>
       {video.description && (
-        <Spoiler sx={{ whiteSpace: "pre-line" }} maxHeight={80} showLabel="Show more" hideLabel="Hide">
+        <Spoiler style={{ whiteSpace: "pre-line" }} maxHeight={80} showLabel="Show more" hideLabel="Hide">
           {video.description}
         </Spoiler>
       )}

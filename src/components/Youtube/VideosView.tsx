@@ -69,7 +69,7 @@ const VideosView: FunctionComponent<VideosViewProps> = ({ channelId, enableAutoP
         />
       </Group>
       <MultiSelect
-        sx={{ ...(!videoCategoriesStatus.data && { display: "none" }) }}
+        style={{ ...(!videoCategoriesStatus.data && { display: "none" }) }}
         label="Categories"
         placeholder="Select Categories"
         data={categories.map((category) => ({
@@ -81,11 +81,11 @@ const VideosView: FunctionComponent<VideosViewProps> = ({ channelId, enableAutoP
         valueComponent={({ value, label, onRemove, classNames, ...props }) => (
           <div {...props}>
             <Flex
-              sx={(theme) => ({
-                backgroundColor: theme.colors.dark[7],
+              bg="dark.7"
+              pl={5}
+              style={(theme) => ({
                 border: `1px solid ${theme.colors.dark[7]}`,
                 borderRadius: theme.radius.sm,
-                paddingLeft: 5,
               })}
               gap="xs"
               align="center"
@@ -99,13 +99,13 @@ const VideosView: FunctionComponent<VideosViewProps> = ({ channelId, enableAutoP
         )}
         onChange={(newCategories) => setSearchParams({ selectedCategories: newCategories, page: 1 })}
       />
-      <Center sx={{ ...(!videosStatus.isFetching && videosStatus.currentData && { display: "none" }) }}>
+      <Center style={{ ...(!videosStatus.isFetching && videosStatus.currentData && { display: "none" }) }}>
         <Loader />
       </Center>
       <Stack style={{ ...(!videosStatus.data && { display: "none" }) }}>
         <Grid>
           {videos.map((video) => (
-            <Grid.Col key={video.id} xs={12} sm={6} md={4} lg={3} xl={2}>
+            <Grid.Col key={video.id} span={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}>
               <YoutubeVideoCard video={video} />
             </Grid.Col>
           ))}
@@ -113,7 +113,7 @@ const VideosView: FunctionComponent<VideosViewProps> = ({ channelId, enableAutoP
         <Center>
           <Pagination
             total={totalPages}
-            page={params.page}
+            value={params.page}
             onChange={(newPage) => setSearchParams({ page: newPage })}
           />
         </Center>

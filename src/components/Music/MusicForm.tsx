@@ -210,8 +210,8 @@ const MusicForm = () => {
                   }
                   return (
                     <TextInput
-                      sx={{ width: "100%" }}
                       {...field}
+                      w="100%"
                       error={error}
                       label="Video URL"
                       placeholder="Enter Video URL"
@@ -234,8 +234,8 @@ const MusicForm = () => {
                 rules={{ required: watchFields.isFile }}
                 render={({ field, fieldState }) => (
                   <FileInput
-                    sx={{ width: "100%" }}
                     {...field}
+                    w="100%"
                     error={fieldState.error?.type === "required" ? "Required" : ""}
                     label="Filename"
                     placeholder="Select File"
@@ -254,10 +254,10 @@ const MusicForm = () => {
                     watchFields.resolvedArtworkUrl ||
                     "https://dripdrop-prod.s3.us-east-005.backblazeb2.com/assets/blank_image.jpeg"
                   }
-                  withPlaceholder
+                  placeholder="artwork"
                 />
               </Box>
-              <Stack justify="center" spacing="md" w="100%">
+              <Stack justify="center" gap="md" w="100%">
                 <Controller
                   name="artworkUrl"
                   control={control}
@@ -297,8 +297,8 @@ const MusicForm = () => {
                 rules={{ required: true }}
                 render={({ field, fieldState }) => (
                   <TextInput
-                    sx={{ width: "100%" }}
                     {...field}
+                    w="100%"
                     error={fieldState.error?.type === "required" ? "Required" : ""}
                     label="Title"
                     placeholder="Enter Title"
@@ -315,8 +315,8 @@ const MusicForm = () => {
                 rules={{ required: true }}
                 render={({ field, fieldState }) => (
                   <TextInput
-                    sx={{ width: "100%" }}
                     {...field}
+                    w="100%"
                     error={fieldState.error?.type === "required" ? "Required" : ""}
                     label="Artist"
                     placeholder="Enter Artist"
@@ -333,8 +333,8 @@ const MusicForm = () => {
                 rules={{ required: true }}
                 render={({ field, fieldState }) => (
                   <TextInput
-                    sx={{ width: "100%" }}
                     {...field}
+                    w="100%"
                     error={fieldState.error?.type === "required" ? "Required" : ""}
                     label="Album"
                     placeholder="Enter Album"
@@ -350,8 +350,8 @@ const MusicForm = () => {
                 defaultValue={""}
                 render={({ field }) => (
                   <TextInput
-                    sx={{ width: "100%" }}
                     {...field}
+                    w="100%"
                     label="Grouping"
                     placeholder="Enter Grouping"
                     disabled={tagsLoading || groupingLoading}

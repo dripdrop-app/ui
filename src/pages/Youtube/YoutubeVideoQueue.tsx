@@ -30,7 +30,7 @@ const YoutubeVideoQueue = () => {
         <Title order={2}>Video Queue</Title>
         <Flex>
           <Button
-            leftIcon={<MdSkipPrevious />}
+            leftSection={<MdSkipPrevious />}
             disabled={!prev}
             onClick={() => setSearchParams({ index: params.index - 1 })}
           >
@@ -42,7 +42,7 @@ const YoutubeVideoQueue = () => {
             changeQueueIndex={(newIndex) => setSearchParams({ index: newIndex })}
           />
           <Button
-            rightIcon={<MdSkipNext />}
+            rightSection={<MdSkipNext />}
             disabled={!next}
             onClick={() => setSearchParams({ index: params.index + 1 })}
           >
@@ -51,7 +51,7 @@ const YoutubeVideoQueue = () => {
         </Flex>
       </Flex>
       <Divider />
-      <AspectRatio sx={{ maxHeight: "80vh", overflow: "hidden" }} ratio={16 / 9}>
+      <AspectRatio mah="80vh" style={{ overflow: "hidden" }} ratio={16 / 9}>
         <VideoPlayer
           video={currentVideo}
           playing={true}

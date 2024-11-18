@@ -33,7 +33,7 @@ export const SubscribeButton: FunctionComponent<SubscribeButtonProps> = ({ chann
             children: (
               <Text>
                 Remove subscription from channel:{" "}
-                <Text display="inline-block" weight="bold">
+                <Text display="inline-block" fw="bold">
                   {channelTitle}
                 </Text>
               </Text>

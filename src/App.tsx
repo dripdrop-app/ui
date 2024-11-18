@@ -1,30 +1,17 @@
-import {
-  AppShell,
-  Avatar,
-  Burger,
-  Center,
-  Flex,
-  Header,
-  Loader,
-  MantineProvider,
-  MediaQuery,
-  Navbar,
-  NavLink,
-  Title,
-} from "@mantine/core";
+import { AppShell, Avatar, Burger, Center, Flex, Loader, MantineProvider, NavLink, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { ModalsProvider } from "@mantine/modals";
-import { NotificationsProvider } from "@mantine/notifications";
+import { Notifications } from "@mantine/notifications";
 import { useEffect } from "react";
 import { BsYoutube } from "react-icons/bs";
 import { MdAccountCircle, MdCloudDownload, MdQueue, MdSubscriptions } from "react-icons/md";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
 
 import { Account, CreateAccount, Login, PrivacyPolicy, TermsOfService, VerifyAccount } from "./pages/Auth";
-import { MusicDownloader } from "./pages/Music";
-import { YoutubeChannel, YoutubeSubscriptions, YoutubeVideo, YoutubeVideoQueue, YoutubeVideos } from "./pages/Youtube";
 
 import { useCheckSessionQuery } from "./api/auth";
+import { MusicDownloader } from "./pages/Music";
+import { YoutubeChannel, YoutubeSubscriptions, YoutubeVideo, YoutubeVideoQueue, YoutubeVideos } from "./pages/Youtube";
 
 interface AuthenticatedRouteProps {
   children: JSX.Element;
@@ -48,74 +35,6 @@ const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
   );
 };
 
-interface AppNavbarProps {
-  opened: boolean;
-  close: () => void;
-}
-
-const AppNavbar = (props: AppNavbarProps) => {
-  const { opened, close } = props;
-
-  return (
-    <Navbar
-      width={{ sm: 200 }}
-      hiddenBreakpoint="sm"
-      hidden={!opened}
-      p="sm"
-      sx={(theme) => ({
-        "& .mantine-NavLink-icon": {
-          color: theme.colors.blue[8],
-        },
-      })}
-    >
-      <Navbar.Section grow>
-        <NavLink
-          component={Link}
-          to="/music/downloader"
-          label="Music Downloader"
-          onClick={close}
-          icon={<MdCloudDownload />}
-        />
-        <NavLink component={Link} to="/youtube/videos" label="Videos" onClick={close} icon={<BsYoutube />} />
-        <NavLink
-          component={Link}
-          to="/youtube/subscriptions"
-          label="Subscriptions"
-          onClick={close}
-          icon={<MdSubscriptions />}
-        />
-        <NavLink component={Link} to="/youtube/videos/queue" label="Queue" onClick={close} icon={<MdQueue />} />
-      </Navbar.Section>
-      <Navbar.Section>
-        <NavLink component={Link} to="/account" label="Account" onClick={close} icon={<MdAccountCircle />} />
-      </Navbar.Section>
-    </Navbar>
-  );
-};
-
-interface AppHeaderProps {
-  showBurger: boolean;
-  toggle: () => void;
-}
-
-const AppHeader = (props: AppHeaderProps) => {
-  const { showBurger, toggle } = props;
-
-  return (
-    <Header sx={(theme) => ({ backgroundColor: theme.colors.blue[8] })} height={{ base: 65 }}>
-      <Flex align="center" direction="row" sx={{ height: "100%" }} mx="lg">
-        <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-          <Burger opened={showBurger} onClick={toggle} />
-        </MediaQuery>
-        <Avatar alt="dripdrop" src="https://dripdrop-prod.s3.us-east-005.backblazeb2.com/assets/dripdrop.png" />
-        <Title color="white" order={3} weight={600}>
-          dripdrop
-        </Title>
-      </Flex>
-    </Header>
-  );
-};
-
 const App = () => {
   const [openedSideBar, handlers] = useDisclosure(false);
 
@@ -129,12 +48,10 @@ const App = () => {
 
   return (
     <MantineProvider
-      withGlobalStyles
-      withNormalizeCSS
+      defaultColorScheme="dark"
       theme={{
-        colorScheme: "dark",
         breakpoints: {
-          xl: 2000,
+          xl: "2000",
         },
         components: {
           Anchor: {
@@ -158,12 +75,77 @@ const App = () => {
       }}
     >
       <ModalsProvider>
-        <NotificationsProvider position="top-center">
-          <AppShell
-            navbarOffsetBreakpoint="sm"
-            navbar={sessionStatus.isSuccess ? <AppNavbar opened={openedSideBar} close={handlers.close} /> : undefined}
-            header={<AppHeader showBurger={sessionStatus.isSuccess && openedSideBar} toggle={handlers.toggle} />}
-          >
+        <Notifications />
+        <AppShell
+          padding="md"
+          header={{ height: 60 }}
+          navbar={{
+            width: 200,
+            breakpoint: "sm",
+            collapsed: { desktop: false, mobile: !openedSideBar },
+          }}
+        >
+          {sessionStatus.isSuccess ? (
+            <AppShell.Navbar
+              p="sm"
+
+              // sx={(theme) => ({
+              //   "& .mantine-NavLink-icon": {
+              //     color: theme.colors.blue[8],
+              //   },
+              // })}
+            >
+              <AppShell.Section grow>
+                <NavLink
+                  component={Link}
+                  to="/music/downloader"
+                  label="Music Downloader"
+                  onClick={handlers.close}
+                  leftSection={<MdCloudDownload />}
+                />
+                <NavLink
+                  component={Link}
+                  to="/youtube/videos"
+                  label="Videos"
+                  onClick={handlers.close}
+                  leftSection={<BsYoutube />}
+                />
+                <NavLink
+                  component={Link}
+                  to="/youtube/subscriptions"
+                  label="Subscriptions"
+                  onClick={handlers.close}
+                  leftSection={<MdSubscriptions />}
+                />
+                <NavLink
+                  component={Link}
+                  to="/youtube/videos/queue"
+                  label="Queue"
+                  onClick={handlers.close}
+                  leftSection={<MdQueue />}
+                />
+              </AppShell.Section>
+              <AppShell.Section>
+                <NavLink
+                  component={Link}
+                  to="/account"
+                  label="Account"
+                  onClick={handlers.close}
+                  leftSection={<MdAccountCircle />}
+                />
+              </AppShell.Section>
+            </AppShell.Navbar>
+          ) : undefined}
+          <AppShell.Header bg="blue.8">
+            <Flex align="center" direction="row" h="100%" mx="lg">
+              <Burger hiddenFrom="sm" opened={sessionStatus.isSuccess && openedSideBar} onClick={handlers.toggle} />
+              <Avatar alt="dripdrop" src="https://dripdrop-prod.s3.us-east-005.backblazeb2.com/assets/dripdrop.png" />
+              <Title c="white" order={3} fw={600}>
+                dripdrop
+              </Title>
+            </Flex>
+          </AppShell.Header>
+          <AppShell.Main>
             <Routes>
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<TermsOfService />} />
@@ -234,8 +216,8 @@ const App = () => {
                 }
               />
             </Routes>
-          </AppShell>
-        </NotificationsProvider>
+          </AppShell.Main>
+        </AppShell>
       </ModalsProvider>
     </MantineProvider>
   );

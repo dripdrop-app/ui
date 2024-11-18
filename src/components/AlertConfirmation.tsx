@@ -17,10 +17,10 @@ const AlertConfirmation: FunctionComponent<AlertConfirmationProps> = ({
 }) => {
   return (
     <>
-      <Alert sx={{ ...(!showSuccess && { display: "none" }) }} icon={<MdCheck />} title="Success" color="green">
+      <Alert style={{ ...(!showSuccess && { display: "none" }) }} icon={<MdCheck />} title="Success" color="green">
         {successMessage}
       </Alert>
-      <Alert sx={{ ...(!showError && { display: "none" }) }} icon={<MdError />} title="Error" color="red">
+      <Alert style={{ ...(!showError && { display: "none" }) }} icon={<MdError />} title="Error" color="red">
         {errorMessage}
       </Alert>
     </>

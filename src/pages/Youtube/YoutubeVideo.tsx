@@ -29,7 +29,7 @@ const YoutubeVideo = () => {
           <Helmet>
             <title>{video.title}</title>
           </Helmet>
-          <AspectRatio sx={{ maxHeight: "80vh", overflow: "hidden" }} ratio={16 / 9}>
+          <AspectRatio mah="80vh" style={{ overflow: "hidden" }} ratio={16 / 9}>
             <VideoPlayer video={video} playing={true} />
           </AspectRatio>
           <VideoInformation video={video} />
@@ -37,7 +37,7 @@ const YoutubeVideo = () => {
           <Title order={3}>Related Videos</Title>
           <Grid>
             {relatedVideos?.map((video) => (
-              <Grid.Col key={video.id} xs={12} sm={6} md={4} lg={3} xl={2}>
+              <Grid.Col key={video.id} span={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}>
                 <VideoCard video={video} />
               </Grid.Col>
             ))}
