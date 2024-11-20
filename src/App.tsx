@@ -5,7 +5,7 @@ import { Notifications } from "@mantine/notifications";
 import { useEffect } from "react";
 import { BsYoutube } from "react-icons/bs";
 import { MdAccountCircle, MdCloudDownload, MdQueue, MdSubscriptions } from "react-icons/md";
-import { Link, Route, Routes, useLocation } from "react-router-dom";
+import { Link, matchPath, Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 
 import { Account, CreateAccount, Login, PrivacyPolicy, TermsOfService, VerifyAccount } from "./pages/Auth";
 
@@ -13,14 +13,10 @@ import { useCheckSessionQuery } from "./api/auth";
 import { MusicDownloader } from "./pages/Music";
 import { YoutubeChannel, YoutubeSubscriptions, YoutubeVideo, YoutubeVideoQueue, YoutubeVideos } from "./pages/Youtube";
 
-interface AuthenticatedRouteProps {
-  children: JSX.Element;
-}
-
-const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
-  const { children } = props;
-
+const AuthenticatedRoute = () => {
   const sessionStatus = useCheckSessionQuery();
+
+  const location = useLocation();
 
   return (
     <>
@@ -29,8 +25,8 @@ const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
           <Loader />
         </Center>
       )}
-      {sessionStatus.isSuccess && children}
-      {sessionStatus.isError && <Login />}
+      {sessionStatus.isSuccess && <Outlet />}
+      {sessionStatus.isError && <Navigate to="/login" state={{ next: location }} />}
     </>
   );
 };
@@ -94,7 +90,7 @@ const App = () => {
                   label="Music Downloader"
                   onClick={handlers.close}
                   leftSection={<MdCloudDownload />}
-                  active={location.pathname === "/music/downloader"}
+                  active={!!matchPath("/music/downloader", location.pathname)}
                 />
                 <NavLink
                   component={Link}
@@ -102,7 +98,7 @@ const App = () => {
                   label="Videos"
                   onClick={handlers.close}
                   leftSection={<BsYoutube />}
-                  active={location.pathname === "/youtube/videos"}
+                  active={!!matchPath("/youtube/videos", location.pathname)}
                 />
                 <NavLink
                   component={Link}
@@ -110,7 +106,7 @@ const App = () => {
                   label="Subscriptions"
                   onClick={handlers.close}
                   leftSection={<MdSubscriptions />}
-                  active={location.pathname === "/youtube/subscriptions"}
+                  active={!!matchPath("/youtube/subscriptions", location.pathname)}
                 />
                 <NavLink
                   component={Link}
@@ -118,7 +114,7 @@ const App = () => {
                   label="Queue"
                   onClick={handlers.close}
                   leftSection={<MdQueue />}
-                  active={location.pathname === "/youtube/videos/queue"}
+                  active={!!matchPath("/youtube/videos/queue", location.pathname)}
                 />
               </AppShell.Section>
               <AppShell.Section>
@@ -128,7 +124,7 @@ const App = () => {
                   label="Account"
                   onClick={handlers.close}
                   leftSection={<MdAccountCircle />}
-                  active={location.pathname === "/account"}
+                  active={!!matchPath("/account", location.pathname)}
                 />
               </AppShell.Section>
             </AppShell.Navbar>
@@ -148,70 +144,18 @@ const App = () => {
               <Route path="/terms" element={<TermsOfService />} />
               <Route path="/create" element={<CreateAccount />} />
               <Route path="/verify" element={<VerifyAccount />} />
-              <Route
-                path="/youtube/channel/:id"
-                element={
-                  <AuthenticatedRoute>
-                    <YoutubeChannel />
-                  </AuthenticatedRoute>
-                }
-              />
-              <Route
-                path="/youtube/subscriptions"
-                element={
-                  <AuthenticatedRoute>
-                    <YoutubeSubscriptions />
-                  </AuthenticatedRoute>
-                }
-              />
-              <Route
-                path="/youtube/videos/queue"
-                element={
-                  <AuthenticatedRoute>
-                    <YoutubeVideoQueue />
-                  </AuthenticatedRoute>
-                }
-              />
-              <Route
-                path="/youtube/videos"
-                element={
-                  <AuthenticatedRoute>
-                    <YoutubeVideos />
-                  </AuthenticatedRoute>
-                }
-              />
-              <Route
-                path="/youtube/video/:id"
-                element={
-                  <AuthenticatedRoute>
-                    <YoutubeVideo />
-                  </AuthenticatedRoute>
-                }
-              />
-              <Route
-                path="/music/downloader"
-                element={
-                  <AuthenticatedRoute>
-                    <MusicDownloader />
-                  </AuthenticatedRoute>
-                }
-              />
-              <Route
-                path="/account"
-                element={
-                  <AuthenticatedRoute>
-                    <Account />
-                  </AuthenticatedRoute>
-                }
-              />
-              <Route
-                path="/"
-                element={
-                  <AuthenticatedRoute>
-                    <MusicDownloader />
-                  </AuthenticatedRoute>
-                }
-              />
+              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<AuthenticatedRoute />}>
+                <Route path="youtube/channel/:id" element={<YoutubeChannel />} />
+                <Route path="youtube/subscriptions" element={<YoutubeSubscriptions />} />
+                <Route path="youtube/videos/queue" element={<YoutubeVideoQueue />} />
+                <Route path="youtube/videos" element={<YoutubeVideos />} />
+                <Route path="youtube/video/:id" element={<YoutubeVideo />} />
+                <Route path="music/downloader" element={<MusicDownloader />} />
+                <Route path="account" element={<Account />} />
+                <Route path="" element={<Navigate to="music/downloader" replace />} />
+              </Route>
+              <Route path="*" element={<Navigate to="music/downloader" replace />} />
             </Routes>
           </AppShell.Main>
         </AppShell>
