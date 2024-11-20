@@ -18,7 +18,11 @@ export const SubscribeButton: FunctionComponent<SubscribeButtonProps> = ({ chann
   if (!subscribed) {
     return (
       <Tooltip label="Subscribe">
-        <ActionIcon onClick={() => addYoutubeSubscription(channelId)} loading={addYoutubeSubscriptionStatus.isLoading}>
+        <ActionIcon
+          className="transparent-bg"
+          onClick={() => addYoutubeSubscription(channelId)}
+          loading={addYoutubeSubscriptionStatus.isLoading}
+        >
           <MdAddCircle size={25} color="green" />
         </ActionIcon>
       </Tooltip>
@@ -27,13 +31,14 @@ export const SubscribeButton: FunctionComponent<SubscribeButtonProps> = ({ chann
   return (
     <Tooltip label="Unsubscribe">
       <ActionIcon
+        className="transparent-bg"
         onClick={() =>
           openConfirmModal({
             title: "Confirm Remove Subscription",
             children: (
               <Text>
                 Remove subscription from channel:{" "}
-                <Text display="inline-block" weight="bold">
+                <Text display="inline-block" fw="bold">
                   {channelTitle}
                 </Text>
               </Text>

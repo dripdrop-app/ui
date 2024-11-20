@@ -1,39 +1,22 @@
-import {
-  AppShell,
-  Avatar,
-  Burger,
-  Center,
-  Flex,
-  Header,
-  Loader,
-  MantineProvider,
-  MediaQuery,
-  Navbar,
-  NavLink,
-  Title,
-} from "@mantine/core";
+import { AppShell, Avatar, Burger, Center, Flex, Loader, MantineProvider, NavLink, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { ModalsProvider } from "@mantine/modals";
-import { NotificationsProvider } from "@mantine/notifications";
+import { Notifications } from "@mantine/notifications";
 import { useEffect } from "react";
 import { BsYoutube } from "react-icons/bs";
 import { MdAccountCircle, MdCloudDownload, MdQueue, MdSubscriptions } from "react-icons/md";
-import { Link, Route, Routes, useLocation } from "react-router-dom";
+import { Link, matchPath, Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 
 import { Account, CreateAccount, Login, PrivacyPolicy, TermsOfService, VerifyAccount } from "./pages/Auth";
+
+import { useCheckSessionQuery } from "./api/auth";
 import { MusicDownloader } from "./pages/Music";
 import { YoutubeChannel, YoutubeSubscriptions, YoutubeVideo, YoutubeVideoQueue, YoutubeVideos } from "./pages/Youtube";
 
-import { useCheckSessionQuery } from "./api/auth";
-
-interface AuthenticatedRouteProps {
-  children: JSX.Element;
-}
-
-const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
-  const { children } = props;
-
+const AuthenticatedRoute = () => {
   const sessionStatus = useCheckSessionQuery();
+
+  const location = useLocation();
 
   return (
     <>
@@ -42,77 +25,9 @@ const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
           <Loader />
         </Center>
       )}
-      {sessionStatus.isSuccess && children}
-      {sessionStatus.isError && <Login />}
+      {sessionStatus.isSuccess && <Outlet />}
+      {sessionStatus.isError && <Navigate to="/login" state={{ next: location }} />}
     </>
-  );
-};
-
-interface AppNavbarProps {
-  opened: boolean;
-  close: () => void;
-}
-
-const AppNavbar = (props: AppNavbarProps) => {
-  const { opened, close } = props;
-
-  return (
-    <Navbar
-      width={{ sm: 200 }}
-      hiddenBreakpoint="sm"
-      hidden={!opened}
-      p="sm"
-      sx={(theme) => ({
-        "& .mantine-NavLink-icon": {
-          color: theme.colors.blue[8],
-        },
-      })}
-    >
-      <Navbar.Section grow>
-        <NavLink
-          component={Link}
-          to="/music/downloader"
-          label="Music Downloader"
-          onClick={close}
-          icon={<MdCloudDownload />}
-        />
-        <NavLink component={Link} to="/youtube/videos" label="Videos" onClick={close} icon={<BsYoutube />} />
-        <NavLink
-          component={Link}
-          to="/youtube/subscriptions"
-          label="Subscriptions"
-          onClick={close}
-          icon={<MdSubscriptions />}
-        />
-        <NavLink component={Link} to="/youtube/videos/queue" label="Queue" onClick={close} icon={<MdQueue />} />
-      </Navbar.Section>
-      <Navbar.Section>
-        <NavLink component={Link} to="/account" label="Account" onClick={close} icon={<MdAccountCircle />} />
-      </Navbar.Section>
-    </Navbar>
-  );
-};
-
-interface AppHeaderProps {
-  showBurger: boolean;
-  toggle: () => void;
-}
-
-const AppHeader = (props: AppHeaderProps) => {
-  const { showBurger, toggle } = props;
-
-  return (
-    <Header sx={(theme) => ({ backgroundColor: theme.colors.blue[8] })} height={{ base: 65 }}>
-      <Flex align="center" direction="row" sx={{ height: "100%" }} mx="lg">
-        <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-          <Burger opened={showBurger} onClick={toggle} />
-        </MediaQuery>
-        <Avatar alt="dripdrop" src="https://dripdrop-prod.s3.us-east-005.backblazeb2.com/assets/dripdrop.png" />
-        <Title color="white" order={3} weight={600}>
-          dripdrop
-        </Title>
-      </Flex>
-    </Header>
   );
 };
 
@@ -129,12 +44,10 @@ const App = () => {
 
   return (
     <MantineProvider
-      withGlobalStyles
-      withNormalizeCSS
+      defaultColorScheme="dark"
       theme={{
-        colorScheme: "dark",
         breakpoints: {
-          xl: 2000,
+          xl: "2000",
         },
         components: {
           Anchor: {
@@ -158,84 +71,94 @@ const App = () => {
       }}
     >
       <ModalsProvider>
-        <NotificationsProvider position="top-center">
-          <AppShell
-            navbarOffsetBreakpoint="sm"
-            navbar={sessionStatus.isSuccess ? <AppNavbar opened={openedSideBar} close={handlers.close} /> : undefined}
-            header={<AppHeader showBurger={sessionStatus.isSuccess && openedSideBar} toggle={handlers.toggle} />}
-          >
+        <Notifications />
+        <AppShell
+          padding="md"
+          header={{ height: 60 }}
+          navbar={{
+            width: 200,
+            breakpoint: "sm",
+            collapsed: { desktop: false, mobile: !openedSideBar },
+          }}
+        >
+          {sessionStatus.isSuccess ? (
+            <AppShell.Navbar p="sm">
+              <AppShell.Section grow>
+                <NavLink
+                  component={Link}
+                  to="/music/downloader"
+                  label="Music Downloader"
+                  onClick={handlers.close}
+                  leftSection={<MdCloudDownload />}
+                  active={!!matchPath("/music/downloader", location.pathname)}
+                />
+                <NavLink
+                  component={Link}
+                  to="/youtube/videos"
+                  label="Videos"
+                  onClick={handlers.close}
+                  leftSection={<BsYoutube />}
+                  active={!!matchPath("/youtube/videos", location.pathname)}
+                />
+                <NavLink
+                  component={Link}
+                  to="/youtube/subscriptions"
+                  label="Subscriptions"
+                  onClick={handlers.close}
+                  leftSection={<MdSubscriptions />}
+                  active={!!matchPath("/youtube/subscriptions", location.pathname)}
+                />
+                <NavLink
+                  component={Link}
+                  to="/youtube/videos/queue"
+                  label="Queue"
+                  onClick={handlers.close}
+                  leftSection={<MdQueue />}
+                  active={!!matchPath("/youtube/videos/queue", location.pathname)}
+                />
+              </AppShell.Section>
+              <AppShell.Section>
+                <NavLink
+                  component={Link}
+                  to="/account"
+                  label="Account"
+                  onClick={handlers.close}
+                  leftSection={<MdAccountCircle />}
+                  active={!!matchPath("/account", location.pathname)}
+                />
+              </AppShell.Section>
+            </AppShell.Navbar>
+          ) : undefined}
+          <AppShell.Header bg="blue.8">
+            <Flex align="center" direction="row" h="100%" mx="lg">
+              <Burger hiddenFrom="sm" opened={sessionStatus.isSuccess && openedSideBar} onClick={handlers.toggle} />
+              <Avatar alt="dripdrop" src="https://dripdrop-prod.s3.us-east-005.backblazeb2.com/assets/dripdrop.png" />
+              <Title c="white" order={3} fw={600}>
+                dripdrop
+              </Title>
+            </Flex>
+          </AppShell.Header>
+          <AppShell.Main>
             <Routes>
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<TermsOfService />} />
               <Route path="/create" element={<CreateAccount />} />
               <Route path="/verify" element={<VerifyAccount />} />
-              <Route
-                path="/youtube/channel/:id"
-                element={
-                  <AuthenticatedRoute>
-                    <YoutubeChannel />
-                  </AuthenticatedRoute>
-                }
-              />
-              <Route
-                path="/youtube/subscriptions"
-                element={
-                  <AuthenticatedRoute>
-                    <YoutubeSubscriptions />
-                  </AuthenticatedRoute>
-                }
-              />
-              <Route
-                path="/youtube/videos/queue"
-                element={
-                  <AuthenticatedRoute>
-                    <YoutubeVideoQueue />
-                  </AuthenticatedRoute>
-                }
-              />
-              <Route
-                path="/youtube/videos"
-                element={
-                  <AuthenticatedRoute>
-                    <YoutubeVideos />
-                  </AuthenticatedRoute>
-                }
-              />
-              <Route
-                path="/youtube/video/:id"
-                element={
-                  <AuthenticatedRoute>
-                    <YoutubeVideo />
-                  </AuthenticatedRoute>
-                }
-              />
-              <Route
-                path="/music/downloader"
-                element={
-                  <AuthenticatedRoute>
-                    <MusicDownloader />
-                  </AuthenticatedRoute>
-                }
-              />
-              <Route
-                path="/account"
-                element={
-                  <AuthenticatedRoute>
-                    <Account />
-                  </AuthenticatedRoute>
-                }
-              />
-              <Route
-                path="/"
-                element={
-                  <AuthenticatedRoute>
-                    <MusicDownloader />
-                  </AuthenticatedRoute>
-                }
-              />
+              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<AuthenticatedRoute />}>
+                <Route path="youtube/channel/:id" element={<YoutubeChannel />} />
+                <Route path="youtube/subscriptions" element={<YoutubeSubscriptions />} />
+                <Route path="youtube/videos/queue" element={<YoutubeVideoQueue />} />
+                <Route path="youtube/videos" element={<YoutubeVideos />} />
+                <Route path="youtube/video/:id" element={<YoutubeVideo />} />
+                <Route path="music/downloader" element={<MusicDownloader />} />
+                <Route path="account" element={<Account />} />
+                <Route path="" element={<Navigate to="music/downloader" replace />} />
+              </Route>
+              <Route path="*" element={<Navigate to="music/downloader" replace />} />
             </Routes>
-          </AppShell>
-        </NotificationsProvider>
+          </AppShell.Main>
+        </AppShell>
       </ModalsProvider>
     </MantineProvider>
   );

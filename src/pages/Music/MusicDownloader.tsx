@@ -6,7 +6,7 @@ import MusicJobList from "../../components/Music/MusicJobList";
 
 const MusicDownloader = () => {
   return (
-    <Stack spacing={10}>
+    <Stack gap={10}>
       <Helmet>
         <title>Music Downloader</title>
       </Helmet>

@@ -26,7 +26,11 @@ export const VideoLikeButton: FunctionComponent<VideoButtonsProps> = ({ video })
 
   return (
     <Tooltip label={video.liked ? `Liked on ${likedDate}` : "Like"}>
-      <ActionIcon onClick={() => (video.liked ? unLikeVideo(video.id) : likeVideo(video.id))} loading={loading}>
+      <ActionIcon
+        className="transparent-bg"
+        onClick={() => (video.liked ? unLikeVideo(video.id) : likeVideo(video.id))}
+        loading={loading}
+      >
         <MdThumbUp size={25} color={video.liked ? "green" : ""} />
       </ActionIcon>
     </Tooltip>
@@ -46,7 +50,11 @@ export const VideoQueueButton = (props: VideoButtonsProps) => {
 
   return (
     <Tooltip label={video.queued ? "Unqueue" : "Queue"}>
-      <ActionIcon loading={loading} onClick={() => (video.queued ? unQueueVideo(video.id) : queueVideo(video.id))}>
+      <ActionIcon
+        className="transparent-bg"
+        loading={loading}
+        onClick={() => (video.queued ? unQueueVideo(video.id) : queueVideo(video.id))}
+      >
         {video.queued ? <MdRemoveFromQueue size={25} color="red" /> : <MdAddToQueue size={25} />}
       </ActionIcon>
     </Tooltip>
@@ -64,7 +72,7 @@ export const VideoWatchButton = (props: VideoButtonsProps) => {
 
   return (
     <Tooltip label={`Watched on ${watchedDate}`}>
-      <ActionIcon>
+      <ActionIcon className="transparent-bg">
         <MdVisibility size={25} />
       </ActionIcon>
     </Tooltip>

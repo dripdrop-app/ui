@@ -75,12 +75,10 @@ const VideoAutoPlayer: FunctionComponent<VideoAutoPlayerProps> = ({ initialParam
       mr="-16px"
       ml="-16px"
       mt="auto"
-      sx={(theme) => ({
-        backgroundColor: theme.colors.dark[7],
-        zIndex: 99,
-      })}
+      bg="dark.7"
+      style={{ zIndex: 99 }}
     >
-      <Stack align="center" w="100%" spacing={0}>
+      <Stack align="center" w="100%" gap={0}>
         <Slider
           display={!expand ? "block" : "none"}
           w="80%"
@@ -112,15 +110,13 @@ const VideoAutoPlayer: FunctionComponent<VideoAutoPlayerProps> = ({ initialParam
           onEnd={() => setCurrentVideoIndex(currentVideoIndex + 1)}
         />
         <Group p="sm" align="center">
-          <Avatar size="md" src={currentVideo?.thumbnail} sx={{ borderRadius: 10 }} />
-          <Stack spacing={0}>
+          <Avatar size="md" src={currentVideo?.thumbnail} style={{ borderRadius: 10 }} />
+          <Stack gap={0}>
             <Text
               component={Link}
-              sx={{
+              className="hover-underline"
+              style={{
                 fontSize: "0.9em",
-                ":hover": {
-                  textDecoration: "underline",
-                },
               }}
               truncate="end"
               to={videoLink}
@@ -129,11 +125,9 @@ const VideoAutoPlayer: FunctionComponent<VideoAutoPlayerProps> = ({ initialParam
             </Text>
             <Text
               component={Link}
-              sx={{
+              className="hover-underline"
+              style={{
                 fontSize: "0.75em",
-                ":hover": {
-                  textDecoration: "underline",
-                },
               }}
               to={channelLink}
             >
@@ -141,29 +135,37 @@ const VideoAutoPlayer: FunctionComponent<VideoAutoPlayerProps> = ({ initialParam
             </Text>
           </Stack>
           <Space w="lg" />
-          <Group noWrap>
+          <Group wrap="nowrap">
             {currentVideo && <VideoLikeButton video={currentVideo} />}
             {currentVideo && <VideoQueueButton video={currentVideo} />}
           </Group>
           <Space w="lg" />
-          <Group noWrap>
-            <ActionIcon onClick={() => setCurrentVideoIndex(currentVideoIndex - 1)}>
+          <Group wrap="nowrap">
+            <ActionIcon className="transparent-bg" onClick={() => setCurrentVideoIndex(currentVideoIndex - 1)}>
               <CgPlayTrackPrev size={25} />
             </ActionIcon>
-            <ActionIcon sx={{ ...(playing && { display: "none" }) }} onClick={togglePlaying}>
+            <ActionIcon
+              className="transparent-bg"
+              style={{ ...(playing && { display: "none" }) }}
+              onClick={togglePlaying}
+            >
               <FaPlay />
             </ActionIcon>
-            <ActionIcon sx={{ ...(!playing && { display: "none" }) }} onClick={togglePlaying}>
+            <ActionIcon
+              className="transparent-bg"
+              style={{ ...(!playing && { display: "none" }) }}
+              onClick={togglePlaying}
+            >
               <FaPause />
             </ActionIcon>
-            <ActionIcon onClick={() => setCurrentVideoIndex(currentVideoIndex + 1)}>
+            <ActionIcon className="transparent-bg" onClick={() => setCurrentVideoIndex(currentVideoIndex + 1)}>
               <CgPlayTrackNext size={25} />
             </ActionIcon>
           </Group>
-          <ActionIcon sx={{ ...(expand && { display: "none" }) }} onClick={toggleExpand}>
+          <ActionIcon className="transparent-bg" style={{ ...(expand && { display: "none" }) }} onClick={toggleExpand}>
             <FaAngleUp />
           </ActionIcon>
-          <ActionIcon sx={{ ...(!expand && { display: "none" }) }} onClick={toggleExpand}>
+          <ActionIcon className="transparent-bg" style={{ ...(!expand && { display: "none" }) }} onClick={toggleExpand}>
             <FaAngleDown />
           </ActionIcon>
         </Group>

@@ -12,16 +12,16 @@ const VerifyAccount = () => {
 
   return (
     <Container>
-      <Stack sx={{ margin: 20 }} align="center" spacing={40}>
+      <Stack m={20} align="center" gap={40}>
         <Title>Account Verification</Title>
-        <Loader sx={{ ...(!verifyAccountStatus.isLoading && { display: "none" }) }} />
+        <Loader style={{ ...(!verifyAccountStatus.isLoading && { display: "none" }) }} />
         <AlertConfirmation
           showError={verifyAccountStatus.isError}
           errorMessage={String(verifyAccountStatus.error)}
           showSuccess={verifyAccountStatus.isSuccess}
           successMessage="Account Verified !"
         />
-        <Button sx={{ ...(verifyAccountStatus.isLoading && { display: "none" }) }} component={Link} to="/">
+        <Button style={{ ...(verifyAccountStatus.isLoading && { display: "none" }) }} component={Link} to="/">
           Redirect Home
         </Button>
       </Stack>

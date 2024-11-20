@@ -22,7 +22,7 @@ const Account = () => {
         <Helmet>
           <title>Account</title>
         </Helmet>
-        <Stack spacing="md">
+        <Stack gap="md">
           <TextInput label="Email" value={user.email} readOnly />
           <Checkbox label="Admin" checked={user.admin} readOnly />
           <Button component={Link} to="/terms">

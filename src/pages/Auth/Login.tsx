@@ -1,8 +1,8 @@
 import { Box, Button, Container, Flex, LoadingOverlay, PasswordInput, Stack, TextInput } from "@mantine/core";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Controller, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import AlertConfirmation from "../../components/AlertConfirmation";
 import ForgotPasswordModal from "../../components/Auth/ForgotPasswordModal";
@@ -21,8 +21,23 @@ export const Login = () => {
 
   const onSubmit = useCallback((data: LoginForm) => login(data), [login]);
 
+  const location = useLocation();
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (loginStatus.isSuccess) {
+      const nextLocation = location.state?.next as Location | undefined;
+      if (nextLocation) {
+        navigate({ pathname: nextLocation.pathname, search: nextLocation.search });
+      } else {
+        navigate("/");
+      }
+    }
+  }, [location.state?.next, location.state.previous, loginStatus.isSuccess, navigate, reset]);
+
   return (
-    <Container sx={{ position: "relative" }}>
+    <Container pos="relative">
       <Helmet>
         <title>Login</title>
       </Helmet>

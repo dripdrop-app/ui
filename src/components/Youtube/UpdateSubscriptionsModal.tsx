@@ -44,13 +44,13 @@ const UpdateSubscriptionsModal = () => {
       <Button onClick={handlers.open}>Update Subscriptions</Button>
       <Modal title="Update Subscriptions" size="lg" opened={opened} onClose={handlers.close}>
         <Stack>
-          <Tabs value={tab} onTabChange={(newTab) => (newTab ? setTab(newTab) : null)}>
+          <Tabs value={tab} onChange={(newTab) => (newTab ? setTab(newTab) : null)}>
             <Tabs.List>
               <Tabs.Tab value="0">Subscriptions</Tabs.Tab>
               <Tabs.Tab value="1">User Channel</Tabs.Tab>
             </Tabs.List>
             <Tabs.Panel value="1">
-              <Stack sx={{ padding: 10 }} spacing="md">
+              <Stack p={10} gap="md">
                 <Alert icon={<MdInfo />}>
                   Connect and sync Youtube subscriptions by creating a{" "}
                   <Anchor href="https://support.google.com/youtube/answer/1646861?hl=en">
@@ -88,7 +88,7 @@ const UpdateSubscriptionsModal = () => {
               </Stack>
             </Tabs.Panel>
             <Tabs.Panel value="0">
-              <Stack sx={{ padding: 10 }} spacing="md">
+              <Stack p={10} gap="md">
                 <TextInput
                   label="New Subscription Channel ID or Handle"
                   placeholder="Enter New Subscription Channel ID or Handle"

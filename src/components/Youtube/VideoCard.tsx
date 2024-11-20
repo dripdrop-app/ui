@@ -27,10 +27,10 @@ const VideoCard: FunctionComponent<VideoCardProps> = ({ video }) => {
   return (
     <Box>
       <Card>
-        <Card.Section ref={ref} sx={{ position: "relative" }}>
-          <Image src={video.thumbnail} withPlaceholder />
+        <Card.Section ref={ref} pos="relative">
+          <Image src={video.thumbnail} placeholder="thumbnail" />
           <Overlay
-            sx={{ ...(hideOverlay && { display: "none" }) }}
+            style={{ ...(hideOverlay && { display: "none" }) }}
             opacity={0.5}
             color="black"
             zIndex={1}
@@ -38,29 +38,29 @@ const VideoCard: FunctionComponent<VideoCardProps> = ({ video }) => {
             to={videoLink}
           />
           <Box
-            sx={{
+            pos="absolute"
+            right="5%"
+            top="5%"
+            style={{
               ...(hideQueueButton && { display: "none" }),
-              position: "absolute",
-              right: "5%",
-              top: "5%",
               zIndex: 2,
             }}
           >
             <VideoQueueButton video={video} />
           </Box>
-          <Box sx={{ position: "absolute", left: "5%", top: "5%", zIndex: 2 }}>
+          <Box pos="absolute" left="5%" top="5%" style={{ zIndex: 2 }}>
             <VideoWatchButton video={video} />
           </Box>
           <Tooltip label={video.categoryName}>
             <Box
-              sx={(theme) => ({
-                position: "absolute",
-                right: "5%",
-                bottom: "5%",
+              style={(theme) => ({
                 zIndex: 2,
-                backgroundColor: theme.colors.dark[7],
                 borderRadius: theme.spacing.xs,
               })}
+              pos="absolute"
+              right="5%"
+              bottom="5%"
+              bg="dark.7"
               px={6}
               py={2}
             >
@@ -69,35 +69,26 @@ const VideoCard: FunctionComponent<VideoCardProps> = ({ video }) => {
           </Tooltip>
         </Card.Section>
         <Stack py={10}>
-          <Text
-            component={Link}
-            to={videoLink}
-            sx={{
-              ":hover": {
-                textDecoration: "underline",
-              },
-            }}
-          >
+          <Text component={Link} to={videoLink} className="hover-underline">
             {video.title}
           </Text>
-          <Flex justify="space-between" wrap="wrap">
+          <Flex justify="space-between">
             <Text
               variant="link"
-              color="dimmed"
+              c="dimmed"
               component={Link}
               to={channelLink}
-              sx={{
-                ":hover": {
-                  textDecoration: "underline",
-                },
-              }}
+              className="hover-underline"
+              style={{ overflow: "hidden" }}
             >
               <Flex>
-                <Avatar size="sm" src={video.channelThumbnail} sx={{ borderRadius: 10 }} />
-                <Text>{video.channelTitle}</Text>
+                <Avatar size="sm" src={video.channelThumbnail} style={{ borderRadius: 10 }} />
+                <Text style={{ overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                  {video.channelTitle}
+                </Text>
               </Flex>
             </Text>
-            <Text sx={{ flex: 1, textAlign: "right" }} color="dimmed">
+            <Text ta="right" style={{ flex: 1 }} c="dimmed">
               {publishedAt}
             </Text>
           </Flex>
