@@ -69,29 +69,11 @@ const VideoCard: FunctionComponent<VideoCardProps> = ({ video }) => {
           </Tooltip>
         </Card.Section>
         <Stack py={10}>
-          <Text
-            component={Link}
-            to={videoLink}
-            sx={{
-              ":hover": {
-                textDecoration: "underline",
-              },
-            }}
-          >
+          <Text component={Link} to={videoLink} className="hover-underline">
             {video.title}
           </Text>
           <Flex justify="space-between" wrap="wrap">
-            <Text
-              variant="link"
-              color="dimmed"
-              component={Link}
-              to={channelLink}
-              sx={{
-                ":hover": {
-                  textDecoration: "underline",
-                },
-              }}
-            >
+            <Text variant="link" c="dimmed" component={Link} to={channelLink} className="hover-underline">
               <Flex>
                 <Avatar size="sm" src={video.channelThumbnail} style={{ borderRadius: 10 }} />
                 <Text>{video.channelTitle}</Text>

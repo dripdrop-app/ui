@@ -68,11 +68,9 @@ const VideoQueueModal: FunctionComponent<VideoQueueModalProps> = ({ currentVideo
                       <Flex
                         align="center"
                         p="sm"
-                        sx={{
+                        className="hover-bg-white"
+                        style={{
                           borderRadius: 5,
-                          "&:hover": {
-                            backgroundColor: "#111111",
-                          },
                         }}
                       >
                         <Box

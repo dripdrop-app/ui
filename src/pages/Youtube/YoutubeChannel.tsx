@@ -34,7 +34,7 @@ const YoutubeChannel = () => {
       <Helmet>
         <title>{channel?.title}</title>
       </Helmet>
-      <Group position="apart">
+      <Group justify="space-between">
         <Group align="center">
           <Avatar src={channel?.thumbnail} style={{ borderRadius: 10 }} />
           <Title order={2}>{channel?.title}</Title>

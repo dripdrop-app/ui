@@ -23,15 +23,7 @@ const VideoInformation: FunctionComponent<VideoInformationProps> = ({ video }) =
         </Flex>
       </Flex>
       <Flex justify="space-between">
-        <Text
-          component={Link}
-          to={channelLink}
-          sx={{
-            ":hover": {
-              textDecoration: "underline",
-            },
-          }}
-        >
+        <Text component={Link} to={channelLink} className="hover-underline">
           <Flex>
             <Avatar size="sm" src={video.channelThumbnail} style={{ borderRadius: 10 }} />
             <Text>{video.channelTitle}</Text>

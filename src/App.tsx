@@ -86,15 +86,7 @@ const App = () => {
           }}
         >
           {sessionStatus.isSuccess ? (
-            <AppShell.Navbar
-              p="sm"
-
-              // sx={(theme) => ({
-              //   "& .mantine-NavLink-icon": {
-              //     color: theme.colors.blue[8],
-              //   },
-              // })}
-            >
+            <AppShell.Navbar p="sm">
               <AppShell.Section grow>
                 <NavLink
                   component={Link}
@@ -102,6 +94,7 @@ const App = () => {
                   label="Music Downloader"
                   onClick={handlers.close}
                   leftSection={<MdCloudDownload />}
+                  active={location.pathname === "/music/downloader"}
                 />
                 <NavLink
                   component={Link}
@@ -109,6 +102,7 @@ const App = () => {
                   label="Videos"
                   onClick={handlers.close}
                   leftSection={<BsYoutube />}
+                  active={location.pathname === "/youtube/videos"}
                 />
                 <NavLink
                   component={Link}
@@ -116,6 +110,7 @@ const App = () => {
                   label="Subscriptions"
                   onClick={handlers.close}
                   leftSection={<MdSubscriptions />}
+                  active={location.pathname === "/youtube/subscriptions"}
                 />
                 <NavLink
                   component={Link}
@@ -123,6 +118,7 @@ const App = () => {
                   label="Queue"
                   onClick={handlers.close}
                   leftSection={<MdQueue />}
+                  active={location.pathname === "/youtube/videos/queue"}
                 />
               </AppShell.Section>
               <AppShell.Section>
@@ -132,6 +128,7 @@ const App = () => {
                   label="Account"
                   onClick={handlers.close}
                   leftSection={<MdAccountCircle />}
+                  active={location.pathname === "/account"}
                 />
               </AppShell.Section>
             </AppShell.Navbar>

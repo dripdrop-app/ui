@@ -36,7 +36,7 @@ const YoutubeSubscriptions = () => {
             </Flex>
             <Grid>
               {subscriptions.map((subscription) => (
-                <Grid.Col key={subscription.channelId} span={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}>
+                <Grid.Col key={subscription.channelId} span={{ xs: 12, sm: 6, md: 4, lg: 2, xl: 1 }}>
                   <SubscriptionCard subscription={subscription} />
                 </Grid.Col>
               ))}

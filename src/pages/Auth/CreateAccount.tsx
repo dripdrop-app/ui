@@ -85,27 +85,11 @@ export const CreateAccount = () => {
                 label={
                   <Text>
                     Agree to our{" "}
-                    <Anchor
-                      component={Link}
-                      to="/terms"
-                      sx={{
-                        ":hover": {
-                          textDecoration: "underline",
-                        },
-                      }}
-                    >
+                    <Anchor component={Link} to="/terms" className="hover-underline">
                       Terms of Service
                     </Anchor>{" "}
                     and acknowledge our{" "}
-                    <Anchor
-                      component={Link}
-                      to="/privacy"
-                      sx={{
-                        ":hover": {
-                          textDecoration: "underline",
-                        },
-                      }}
-                    >
+                    <Anchor component={Link} to="/privacy" className="hover-underline">
                       Privacy Policy
                     </Anchor>
                   </Text>

@@ -8,6 +8,7 @@ import App from "./App";
 import { store } from "./store";
 
 import "@mantine/core/styles.css";
+import "./main.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

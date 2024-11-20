@@ -114,11 +114,9 @@ const VideoAutoPlayer: FunctionComponent<VideoAutoPlayerProps> = ({ initialParam
           <Stack gap={0}>
             <Text
               component={Link}
-              sx={{
+              className="hover-underline"
+              style={{
                 fontSize: "0.9em",
-                ":hover": {
-                  textDecoration: "underline",
-                },
               }}
               truncate="end"
               to={videoLink}
@@ -127,11 +125,9 @@ const VideoAutoPlayer: FunctionComponent<VideoAutoPlayerProps> = ({ initialParam
             </Text>
             <Text
               component={Link}
-              sx={{
+              className="hover-underline"
+              style={{
                 fontSize: "0.75em",
-                ":hover": {
-                  textDecoration: "underline",
-                },
               }}
               to={channelLink}
             >

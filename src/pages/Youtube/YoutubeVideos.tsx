@@ -12,7 +12,7 @@ const YoutubeVideos = () => {
       <Helmet>
         <title>Videos</title>
       </Helmet>
-      <Group position="apart">
+      <Group justify="space-between">
         <Title order={2}>Videos</Title>
         <Button onClick={toggle}>{enableAutoPlay ? "Stop AutoPlay" : "Enable AutoPlay"}</Button>
       </Group>
