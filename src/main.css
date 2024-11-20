@@ -9,3 +9,7 @@
         background-color: white;
     }
 }
+
+.transparent-bg {
+    background-color: transparent;
+}

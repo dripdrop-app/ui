@@ -141,23 +141,31 @@ const VideoAutoPlayer: FunctionComponent<VideoAutoPlayerProps> = ({ initialParam
           </Group>
           <Space w="lg" />
           <Group wrap="nowrap">
-            <ActionIcon onClick={() => setCurrentVideoIndex(currentVideoIndex - 1)}>
+            <ActionIcon className="transparent-bg" onClick={() => setCurrentVideoIndex(currentVideoIndex - 1)}>
               <CgPlayTrackPrev size={25} />
             </ActionIcon>
-            <ActionIcon style={{ ...(playing && { display: "none" }) }} onClick={togglePlaying}>
+            <ActionIcon
+              className="transparent-bg"
+              style={{ ...(playing && { display: "none" }) }}
+              onClick={togglePlaying}
+            >
               <FaPlay />
             </ActionIcon>
-            <ActionIcon style={{ ...(!playing && { display: "none" }) }} onClick={togglePlaying}>
+            <ActionIcon
+              className="transparent-bg"
+              style={{ ...(!playing && { display: "none" }) }}
+              onClick={togglePlaying}
+            >
               <FaPause />
             </ActionIcon>
-            <ActionIcon onClick={() => setCurrentVideoIndex(currentVideoIndex + 1)}>
+            <ActionIcon className="transparent-bg" onClick={() => setCurrentVideoIndex(currentVideoIndex + 1)}>
               <CgPlayTrackNext size={25} />
             </ActionIcon>
           </Group>
-          <ActionIcon style={{ ...(expand && { display: "none" }) }} onClick={toggleExpand}>
+          <ActionIcon className="transparent-bg" style={{ ...(expand && { display: "none" }) }} onClick={toggleExpand}>
             <FaAngleUp />
           </ActionIcon>
-          <ActionIcon style={{ ...(!expand && { display: "none" }) }} onClick={toggleExpand}>
+          <ActionIcon className="transparent-bg" style={{ ...(!expand && { display: "none" }) }} onClick={toggleExpand}>
             <FaAngleDown />
           </ActionIcon>
         </Group>

@@ -72,11 +72,20 @@ const VideoCard: FunctionComponent<VideoCardProps> = ({ video }) => {
           <Text component={Link} to={videoLink} className="hover-underline">
             {video.title}
           </Text>
-          <Flex justify="space-between" wrap="wrap">
-            <Text variant="link" c="dimmed" component={Link} to={channelLink} className="hover-underline">
+          <Flex justify="space-between">
+            <Text
+              variant="link"
+              c="dimmed"
+              component={Link}
+              to={channelLink}
+              className="hover-underline"
+              style={{ overflow: "hidden" }}
+            >
               <Flex>
                 <Avatar size="sm" src={video.channelThumbnail} style={{ borderRadius: 10 }} />
-                <Text>{video.channelTitle}</Text>
+                <Text style={{ overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                  {video.channelTitle}
+                </Text>
               </Flex>
             </Text>
             <Text ta="right" style={{ flex: 1 }} c="dimmed">

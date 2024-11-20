@@ -37,7 +37,7 @@ const YoutubeVideo = () => {
           <Title order={3}>Related Videos</Title>
           <Grid>
             {relatedVideos?.map((video) => (
-              <Grid.Col key={video.id} span={{ xs: 12, sm: 6, md: 4, lg: 2, xl: 1 }}>
+              <Grid.Col key={video.id} span={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}>
                 <VideoCard video={video} />
               </Grid.Col>
             ))}

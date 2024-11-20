@@ -64,7 +64,7 @@ const VideosView: FunctionComponent<VideosViewProps> = ({ channelId, enableAutoP
       <Stack style={{ ...(!videosStatus.data && { display: "none" }) }}>
         <Grid>
           {videos.map((video) => (
-            <Grid.Col key={video.id} span={{ xs: 12, sm: 6, md: 4, lg: 2, xl: 1 }}>
+            <Grid.Col key={video.id} span={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}>
               <YoutubeVideoCard video={video} />
             </Grid.Col>
           ))}
