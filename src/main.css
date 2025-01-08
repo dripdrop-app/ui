@@ -4,9 +4,15 @@
     }
 }
 
-.hover-bg-white {
+.hover-darken {
     :hover {
-        background-color: white;
+        filter: brightness(0.7);
+    }
+}
+
+.hover-brighten {
+    :hover {
+        filter: brightness(1.3);
     }
 }
 

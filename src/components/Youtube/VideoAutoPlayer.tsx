@@ -141,31 +141,45 @@ const VideoAutoPlayer: FunctionComponent<VideoAutoPlayerProps> = ({ initialParam
           </Group>
           <Space w="lg" />
           <Group wrap="nowrap">
-            <ActionIcon className="transparent-bg" onClick={() => setCurrentVideoIndex(currentVideoIndex - 1)}>
+            <ActionIcon
+              className="transparent-bg hover-darken"
+              onClick={() => setCurrentVideoIndex(currentVideoIndex - 1)}
+            >
               <CgPlayTrackPrev size={25} />
             </ActionIcon>
             <ActionIcon
-              className="transparent-bg"
+              className="transparent-bg hover-darken"
               style={{ ...(playing && { display: "none" }) }}
               onClick={togglePlaying}
             >
               <FaPlay />
             </ActionIcon>
             <ActionIcon
-              className="transparent-bg"
+              className="transparent-bg hover-darken"
               style={{ ...(!playing && { display: "none" }) }}
               onClick={togglePlaying}
             >
               <FaPause />
             </ActionIcon>
-            <ActionIcon className="transparent-bg" onClick={() => setCurrentVideoIndex(currentVideoIndex + 1)}>
+            <ActionIcon
+              className="transparent-bg hover-darken"
+              onClick={() => setCurrentVideoIndex(currentVideoIndex + 1)}
+            >
               <CgPlayTrackNext size={25} />
             </ActionIcon>
           </Group>
-          <ActionIcon className="transparent-bg" style={{ ...(expand && { display: "none" }) }} onClick={toggleExpand}>
+          <ActionIcon
+            className="transparent-bg hover-darken"
+            style={{ ...(expand && { display: "none" }) }}
+            onClick={toggleExpand}
+          >
             <FaAngleUp />
           </ActionIcon>
-          <ActionIcon className="transparent-bg" style={{ ...(!expand && { display: "none" }) }} onClick={toggleExpand}>
+          <ActionIcon
+            className="transparent-bg hover-darken"
+            style={{ ...(!expand && { display: "none" }) }}
+            onClick={toggleExpand}
+          >
             <FaAngleDown />
           </ActionIcon>
         </Group>
