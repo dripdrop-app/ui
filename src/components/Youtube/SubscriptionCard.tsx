@@ -43,7 +43,7 @@ const SubscriptionCard: FunctionComponent<SubscriptionCardProps> = ({ subscripti
             />
           </Box>
         </Card.Section>
-        <Stack py={10}>
+        <Stack py={10} className="hover-underline">
           <Text component={Link} to={channelLink}>
             {subscription.channelTitle}
           </Text>

@@ -69,9 +69,11 @@ const VideoCard: FunctionComponent<VideoCardProps> = ({ video }) => {
           </Tooltip>
         </Card.Section>
         <Stack py={10}>
-          <Text component={Link} to={videoLink} className="hover-underline">
-            {video.title}
-          </Text>
+          <Stack className="hover-underline">
+            <Text component={Link} to={videoLink}>
+              {video.title}
+            </Text>
+          </Stack>
           <Flex justify="space-between">
             <Text
               variant="link"

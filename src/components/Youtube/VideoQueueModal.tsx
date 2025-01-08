@@ -68,7 +68,7 @@ const VideoQueueModal: FunctionComponent<VideoQueueModalProps> = ({ currentVideo
                       <Flex
                         align="center"
                         p="sm"
-                        className="hover-bg-white"
+                        className="hover-brighten"
                         style={{
                           borderRadius: 5,
                         }}
