@@ -19,7 +19,8 @@ export const SubscribeButton: FunctionComponent<SubscribeButtonProps> = ({ chann
     return (
       <Tooltip label="Subscribe">
         <ActionIcon
-          className="transparent-bg"
+          variant="transparent"
+          color="white"
           onClick={() => addYoutubeSubscription(channelId)}
           loading={addYoutubeSubscriptionStatus.isLoading}
         >
@@ -31,7 +32,8 @@ export const SubscribeButton: FunctionComponent<SubscribeButtonProps> = ({ chann
   return (
     <Tooltip label="Unsubscribe">
       <ActionIcon
-        className="transparent-bg"
+        variant="transparent"
+        color="white"
         onClick={() =>
           openConfirmModal({
             title: "Confirm Remove Subscription",

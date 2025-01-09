@@ -142,41 +142,47 @@ const VideoAutoPlayer: FunctionComponent<VideoAutoPlayerProps> = ({ initialParam
           <Space w="lg" />
           <Group wrap="nowrap">
             <ActionIcon
-              className="transparent-bg hover-darken"
+              className="hover-darken"
+              variant="transparent"
               onClick={() => setCurrentVideoIndex(currentVideoIndex - 1)}
             >
               <CgPlayTrackPrev size={25} />
             </ActionIcon>
             <ActionIcon
-              className="transparent-bg hover-darken"
+              className="hover-darken"
+              variant="transparent"
               style={{ ...(playing && { display: "none" }) }}
               onClick={togglePlaying}
             >
               <FaPlay />
             </ActionIcon>
             <ActionIcon
-              className="transparent-bg hover-darken"
+              className="hover-darken"
+              variant="transparent"
               style={{ ...(!playing && { display: "none" }) }}
               onClick={togglePlaying}
             >
               <FaPause />
             </ActionIcon>
             <ActionIcon
-              className="transparent-bg hover-darken"
+              className="hover-darken"
+              variant="transparent"
               onClick={() => setCurrentVideoIndex(currentVideoIndex + 1)}
             >
               <CgPlayTrackNext size={25} />
             </ActionIcon>
           </Group>
           <ActionIcon
-            className="transparent-bg hover-darken"
+            className="hover-darken"
+            variant="transparent"
             style={{ ...(expand && { display: "none" }) }}
             onClick={toggleExpand}
           >
             <FaAngleUp />
           </ActionIcon>
           <ActionIcon
-            className="transparent-bg hover-darken"
+            className="hover-darken"
+            variant="transparent"
             style={{ ...(!expand && { display: "none" }) }}
             onClick={toggleExpand}
           >
