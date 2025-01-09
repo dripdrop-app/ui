@@ -252,9 +252,8 @@ const MusicForm = () => {
                   alt="blank"
                   src={
                     watchFields.resolvedArtworkUrl ||
-                    "https://dripdrop-prod.s3.us-east-005.backblazeb2.com/assets/blank_image.jpeg"
+                    "https://ewr1.vultrobjects.com/dripdrop-prod/assets/blank_image.jpeg"
                   }
-                  placeholder="artwork"
                 />
               </Box>
               <Stack justify="center" gap="md" w="100%">

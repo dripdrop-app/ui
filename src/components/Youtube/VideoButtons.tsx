@@ -27,7 +27,9 @@ export const VideoLikeButton: FunctionComponent<VideoButtonsProps> = ({ video })
   return (
     <Tooltip label={video.liked ? `Liked on ${likedDate}` : "Like"}>
       <ActionIcon
-        className="transparent-bg"
+        className="hover-brighten"
+        variant="transparent"
+        color="white"
         onClick={() => (video.liked ? unLikeVideo(video.id) : likeVideo(video.id))}
         loading={loading}
       >
@@ -51,7 +53,9 @@ export const VideoQueueButton = (props: VideoButtonsProps) => {
   return (
     <Tooltip label={video.queued ? "Unqueue" : "Queue"}>
       <ActionIcon
-        className="transparent-bg"
+        className="hover-brighten"
+        variant="transparent"
+        color="white"
         loading={loading}
         onClick={() => (video.queued ? unQueueVideo(video.id) : queueVideo(video.id))}
       >
@@ -72,7 +76,7 @@ export const VideoWatchButton = (props: VideoButtonsProps) => {
 
   return (
     <Tooltip label={`Watched on ${watchedDate}`}>
-      <ActionIcon className="transparent-bg">
+      <ActionIcon className="hover-brighten" variant="transparent" color="white">
         <MdVisibility size={25} />
       </ActionIcon>
     </Tooltip>

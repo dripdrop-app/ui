@@ -132,7 +132,7 @@ const App = () => {
           <AppShell.Header bg="blue.8">
             <Flex align="center" direction="row" h="100%" mx="lg">
               <Burger hiddenFrom="sm" opened={sessionStatus.isSuccess && openedSideBar} onClick={handlers.toggle} />
-              <Avatar alt="dripdrop" src="https://dripdrop-prod.s3.us-east-005.backblazeb2.com/assets/dripdrop.png" />
+              <Avatar alt="dripdrop" src="https://ewr1.vultrobjects.com/dripdrop-prod/assets/dripdrop.png" />
               <Title c="white" order={3} fw={600}>
                 dripdrop
               </Title>
