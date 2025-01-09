@@ -21,12 +21,7 @@ const SubscriptionCard: FunctionComponent<SubscriptionCardProps> = ({ subscripti
     <Box ref={ref}>
       <Card>
         <Card.Section style={{ position: "relative" }}>
-          <Image
-            src={subscription.channelThumbnail}
-            alt={subscription.channelTitle}
-            placeholder="channelThumbnail"
-            height={200}
-          />
+          <Image src={subscription.channelThumbnail} alt={subscription.channelTitle} height={200} />
           <Overlay
             style={{ ...(!showOverlay && { display: "none" }) }}
             opacity={0.5}

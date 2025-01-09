@@ -28,7 +28,7 @@ const VideoCard: FunctionComponent<VideoCardProps> = ({ video }) => {
     <Box>
       <Card>
         <Card.Section ref={ref} pos="relative">
-          <Image src={video.thumbnail} placeholder="thumbnail" />
+          <Image src={video.thumbnail} alt="thumbnail" />
           <Overlay
             style={{ ...(hideOverlay && { display: "none" }) }}
             opacity={0.5}
