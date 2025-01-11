@@ -1,5 +1,5 @@
 import { ActionIcon, Avatar, Flex, Group, Slider, Space, Stack, Text } from "@mantine/core";
-import { skipToken } from "@reduxjs/toolkit/dist/query";
+import { skipToken } from "@reduxjs/toolkit/query/react";
 import { FunctionComponent, useEffect, useMemo, useRef, useState } from "react";
 import { CgPlayTrackNext, CgPlayTrackPrev } from "react-icons/cg";
 import { FaAngleDown, FaAngleUp, FaPause, FaPlay } from "react-icons/fa";
