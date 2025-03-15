@@ -32,9 +32,13 @@ const MusicJobList = () => {
       <Stack style={{ ...(musicJobsStatus.isLoading && { display: "none" }) }}>
         <Center style={{ ...(musicJobs.length !== 0 && { display: "none" }) }}>No Music Jobs</Center>
         <Stack>
-          <Grid>
+          <Grid
+            justify="center"
+            type="container"
+            breakpoints={{ xs: "400px", sm: "800px", md: "1000px", lg: "1200px", xl: "2000px" }}
+          >
             {musicJobs.map((musicJob) => (
-              <Grid.Col key={musicJob.id} span={{ xs: 12, sm: 6, md: 5, lg: 3, xl: 2 }}>
+              <Grid.Col key={musicJob.id} span={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}>
                 <MusicJobCard {...musicJob} />
               </Grid.Col>
             ))}

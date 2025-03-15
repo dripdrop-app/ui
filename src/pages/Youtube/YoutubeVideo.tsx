@@ -35,7 +35,11 @@ const YoutubeVideo = () => {
           <VideoInformation video={video} />
           <Divider />
           <Title order={3}>Related Videos</Title>
-          <Grid>
+          <Grid
+            justify="center"
+            type="container"
+            breakpoints={{ xs: "400px", sm: "800px", md: "1000px", lg: "1200px", xl: "2000px" }}
+          >
             {relatedVideos?.map((video) => (
               <Grid.Col key={video.id} span={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}>
                 <VideoCard video={video} />

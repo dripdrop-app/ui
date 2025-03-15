@@ -20,53 +20,65 @@ const MusicJobCard: FunctionComponent<MusicJob> = (props) => {
         />
       </Card.Section>
       <Stack>
-        <Table>
-          <tbody>
-            <tr>
-              <td>ID</td>
-              <td>{props.id}</td>
-            </tr>
-            <tr>
-              <td>Video URL</td>
-              <td>{props.videoUrl ? <Anchor href={props.videoUrl}>{props.videoUrl}</Anchor> : props.videoUrl}</td>
-            </tr>
-            <tr>
-              <td>Filename</td>
-              <td>
+        <Table variant="vertical" withColumnBorders withRowBorders>
+          <Table.Tbody>
+            <Table.Tr>
+              <Table.Th>Video URL</Table.Th>
+              <Table.Td>
+                {props.videoUrl ? (
+                  <Anchor href={props.videoUrl} target="_blank" rel="noopener noreferrer">
+                    {props.videoUrl}
+                  </Anchor>
+                ) : (
+                  props.videoUrl
+                )}
+              </Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Th>Filename</Table.Th>
+              <Table.Td>
                 {props.filename ? (
-                  <Anchor href={props.filename}>{props.originalFilename}</Anchor>
+                  <Anchor href={props.filename} target="_blank" rel="noopener noreferrer">
+                    {props.originalFilename}
+                  </Anchor>
                 ) : (
                   props.originalFilename
                 )}
-              </td>
-            </tr>
-            <tr>
-              <td>Artwork URL</td>
-              <td>
-                {props.artworkUrl ? <Anchor href={props.artworkUrl}>{props.artworkUrl}</Anchor> : props.artworkUrl}
-              </td>
-            </tr>
-            <tr>
-              <td>Title</td>
-              <td>{props.title}</td>
-            </tr>
-            <tr>
-              <td>Artist</td>
-              <td>{props.artist}</td>
-            </tr>
-            <tr>
-              <td>Album</td>
-              <td>{props.album}</td>
-            </tr>
-            <tr>
-              <td>Grouping</td>
-              <td>{props.grouping}</td>
-            </tr>
-            <tr>
-              <td>Created At</td>
-              <td>{createdAt}</td>
-            </tr>
-          </tbody>
+              </Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Th>Artwork URL</Table.Th>
+              <Table.Td>
+                {props.artworkUrl ? (
+                  <Anchor href={props.artworkUrl} target="_blank" rel="noopener noreferrer">
+                    {props.artworkUrl}
+                  </Anchor>
+                ) : (
+                  props.artworkUrl
+                )}
+              </Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Th>Title</Table.Th>
+              <Table.Td>{props.title}</Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Th>Artist</Table.Th>
+              <Table.Td>{props.artist}</Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Th>Album</Table.Th>
+              <Table.Td>{props.album}</Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Th>Grouping</Table.Th>
+              <Table.Td>{props.grouping}</Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Th>Created At</Table.Th>
+              <Table.Td>{createdAt}</Table.Td>
+            </Table.Tr>
+          </Table.Tbody>
         </Table>
         <Flex justify="center">
           <Button display={!props.completed && !props.failed ? "initial" : "none"} loading>

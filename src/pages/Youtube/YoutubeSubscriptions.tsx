@@ -34,7 +34,7 @@ const YoutubeSubscriptions = () => {
             <Flex>
               <UpdateSubscriptionsModal />
             </Flex>
-            <Grid>
+            <Grid type="container" breakpoints={{ xs: "400px", sm: "800px", md: "1000px", lg: "1200px", xl: "2000px" }}>
               {subscriptions.map((subscription) => (
                 <Grid.Col key={subscription.channelId} span={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}>
                   <SubscriptionCard subscription={subscription} />
